@@ -1,11 +1,11 @@
-
-name: Sukka List to Egern V1.1.2 Final Bugfix
+name: Sukka List to Egern V1.1.3 no_resolve Fix
 
 on:
   workflow_dispatch:
 
   schedule:
-    # 每天 UTC 06:20 自动执行一次
+    # 每 24 小时检查一次
+    # UTC 06:20
     - cron: "20 6 * * *"
 
 permissions:
@@ -107,7 +107,7 @@ jobs:
 
 
       # ==========================================================
-      # 5. Discover List rules
+      # 5. Discover Sukka List rules
       # ==========================================================
 
       - name: Discover Sukka List rules
@@ -156,13 +156,14 @@ jobs:
           if [ "${DOMAINSET}" -eq 0 ] || \
              [ "${NON_IP}" -eq 0 ] || \
              [ "${IP}" -eq 0 ]; then
+
             echo "ERROR: Missing List category."
             exit 1
           fi
 
 
       # ==========================================================
-      # 6. Download source rules
+      # 6. Download Sukka List rules
       # ==========================================================
 
       - name: Download Sukka List rules
@@ -211,7 +212,12 @@ jobs:
 
 
       # ==========================================================
-      # 7. Convert Sukka List -> Egern YAML
+      # 7. Convert Sukka List -> Egern
+      #
+      # V1.1.3:
+      # - 保留 no-resolve 语义
+      # - 文件内任一支持的 IP 规则带 no-resolve
+      #   => Egern 顶层 no_resolve: true
       # ==========================================================
 
       - name: Convert List rules to Egern
@@ -277,15 +283,16 @@ jobs:
               "deprecated": 0,
               "empty": 0,
               "unsupported": 0,
+              "no_resolve_files": 0,
           }
 
           skipped_files = []
           unsupported_rules = []
+          no_resolve_files = []
 
 
           # ------------------------------------------------------
-          # 所有值统一使用 JSON 双引号
-          # JSON 字符串也是合法 YAML 字符串
+          # 所有值统一输出为安全双引号
           # ------------------------------------------------------
 
           def yaml_quote(value: str) -> str:
@@ -318,7 +325,17 @@ jobs:
               )
 
 
-          def write_yaml(dst: Path, groups) -> bool:
+          # ------------------------------------------------------
+          # 写 Egern YAML
+          #
+          # no_resolve=True 时放在文件最前面
+          # ------------------------------------------------------
+
+          def write_yaml(
+              dst: Path,
+              groups,
+              no_resolve: bool = False
+          ) -> bool:
 
               has_rules = any(
                   groups.get(key)
@@ -338,6 +355,13 @@ jobs:
                   encoding="utf-8"
               ) as f:
 
+                  if no_resolve:
+                      f.write("no_resolve: true\n")
+
+                      # 分隔一下，便于阅读
+                      if has_rules:
+                          f.write("\n")
+
                   for key in OUTPUT_ORDER:
 
                       values = groups.get(key)
@@ -351,6 +375,8 @@ jobs:
                           f.write(
                               f"  - {yaml_quote(value)}\n"
                           )
+
+                      f.write("\n")
 
               return True
 
@@ -404,7 +430,12 @@ jobs:
                           line
                       )
 
-              if write_yaml(dst, groups):
+
+              if write_yaml(
+                  dst,
+                  groups,
+                  no_resolve=False
+              ):
 
                   stats["generated"] += 1
 
@@ -440,6 +471,9 @@ jobs:
 
               groups = OrderedDict()
 
+              file_no_resolve = False
+
+
               for raw in text.splitlines():
 
                   line = raw.strip()
@@ -465,18 +499,13 @@ jobs:
                   rule_type, value = line.split(",", 1)
 
                   rule_type = rule_type.strip().upper()
+
                   value = value.strip()
 
 
-                  # 删除 no-resolve
-                  if rule_type in IP_TYPES:
-
-                      if value.lower().endswith(",no-resolve"):
-
-                          value = value[
-                              :-len(",no-resolve")
-                          ].strip()
-
+                  # ----------------------------------------------
+                  # 先找对应 Egern field
+                  # ----------------------------------------------
 
                   field = TYPE_MAP.get(rule_type)
 
@@ -489,6 +518,34 @@ jobs:
                       )
 
                       continue
+
+
+                  # ----------------------------------------------
+                  # no-resolve 语义转换
+                  #
+                  # Sukka:
+                  #
+                  # IP-CIDR,1.1.1.0/24,no-resolve
+                  #
+                  # Egern:
+                  #
+                  # no_resolve: true
+                  #
+                  # ip_cidr_set:
+                  #   - "1.1.1.0/24"
+                  # ----------------------------------------------
+
+                  if rule_type in IP_TYPES:
+
+                      suffix = ",no-resolve"
+
+                      if value.lower().endswith(suffix):
+
+                          file_no_resolve = True
+
+                          value = value[
+                              :-len(suffix)
+                          ].strip()
 
 
                   if not value:
@@ -509,9 +566,22 @@ jobs:
                   )
 
 
-              if write_yaml(dst, groups):
+              if write_yaml(
+                  dst,
+                  groups,
+                  no_resolve=file_no_resolve
+              ):
 
                   stats["generated"] += 1
+
+
+                  if file_no_resolve:
+
+                      stats["no_resolve_files"] += 1
+
+                      no_resolve_files.append(
+                          f"{category}/{src.name}"
+                      )
 
               else:
 
@@ -590,12 +660,13 @@ jobs:
 
           print("")
           print("====================================")
-          print(" Sukka -> Egern Conversion")
+          print(" Sukka -> Egern V1.1.3")
           print("====================================")
-          print(f" Generated   : {stats['generated']}")
-          print(f" Deprecated  : {stats['deprecated']}")
-          print(f" Empty       : {stats['empty']}")
-          print(f" Unsupported : {stats['unsupported']}")
+          print(f" Generated        : {stats['generated']}")
+          print(f" no_resolve files : {stats['no_resolve_files']}")
+          print(f" Deprecated       : {stats['deprecated']}")
+          print(f" Empty            : {stats['empty']}")
+          print(f" Unsupported      : {stats['unsupported']}")
           print("====================================")
 
 
@@ -621,6 +692,22 @@ jobs:
                   "\n".join(unsupported_rules),
                   encoding="utf-8"
               )
+
+
+          if no_resolve_files:
+
+              Path(
+                  "/tmp/sukka-egern/no_resolve.txt"
+              ).write_text(
+                  "\n".join(no_resolve_files),
+                  encoding="utf-8"
+              )
+
+              print("")
+              print("no_resolve enabled:")
+
+              for item in no_resolve_files:
+                  print(f"  {item}")
 
 
           if stats["generated"] == 0:
@@ -663,6 +750,7 @@ jobs:
 
           TOTAL=$((DOMAIN + NON_IP + IP))
 
+
           echo ""
           echo "===================================="
           echo " Egern Rule Sets"
@@ -674,21 +762,27 @@ jobs:
           echo " TOTAL  : ${TOTAL}"
           echo "===================================="
 
+
           if [ "${TOTAL}" -lt "${MIN_TOTAL_RULES}" ]; then
+
             echo "ERROR: Too few Egern rule sets."
+
             exit 1
           fi
+
 
           if [ "${DOMAIN}" -eq 0 ] || \
              [ "${NON_IP}" -eq 0 ] || \
              [ "${IP}" -eq 0 ]; then
 
             echo "ERROR: One or more categories are empty."
+
             exit 1
           fi
 
 
           EMPTY=0
+
 
           while IFS= read -r FILE; do
 
@@ -727,7 +821,7 @@ jobs:
 
 
       # ==========================================================
-      # 10. YAML parse validation
+      # 10. Parse + semantic validation
       # ==========================================================
 
       - name: Parse Egern YAML
@@ -762,7 +856,15 @@ jobs:
               "no_resolve",
           }
 
+          IP_KEYS = {
+              "geoip_set",
+              "ip_cidr_set",
+              "ip_cidr6_set",
+              "asn_set",
+          }
+
           count = 0
+          no_resolve_count = 0
 
           for file in sorted(
               ROOT.rglob("*.yaml")
@@ -811,8 +913,25 @@ jobs:
                       if not isinstance(value, bool):
 
                           raise RuntimeError(
-                              f"{file}: no_resolve is not bool"
+                              f"{file}: "
+                              f"no_resolve must be boolean"
                           )
+
+                      if value is True:
+
+                          no_resolve_count += 1
+
+                          # no_resolve 没有 IP 类规则就没有意义
+                          if not any(
+                              ip_key in data
+                              for ip_key in IP_KEYS
+                          ):
+
+                              raise RuntimeError(
+                                  f"{file}: "
+                                  f"no_resolve=true but no "
+                                  f"IP-related rule set exists"
+                              )
 
                       continue
 
@@ -841,8 +960,15 @@ jobs:
               )
 
 
+          print("")
           print(
-              f"Validated {count} Egern YAML files."
+              f"Validated {count} "
+              f"Egern YAML files."
+          )
+
+          print(
+              f"no_resolve=true files: "
+              f"{no_resolve_count}"
           )
 
           PY
@@ -864,6 +990,23 @@ jobs:
             echo "https://ruleset.skk.moe/"
             echo ""
 
+
+            echo "## no_resolve enabled"
+            echo ""
+
+            if [ -s /tmp/sukka-egern/no_resolve.txt ]; then
+
+              sed 's/^/- /' \
+                /tmp/sukka-egern/no_resolve.txt
+
+            else
+
+              echo "- None"
+
+            fi
+
+
+            echo ""
             echo "## Skipped source files"
             echo ""
 
@@ -897,6 +1040,7 @@ jobs:
 
             fi
 
+
           } > /tmp/sukka-egern/REPORT.md
 
 
@@ -923,12 +1067,14 @@ jobs:
             | awk '{print $1}' \
             > /tmp/sukka-egern/new.master
 
+          echo ""
           echo "New version:"
+
           cat /tmp/sukka-egern/new.master
 
 
       # ==========================================================
-      # 13. Current checksum
+      # 13. Generate current checksum
       # ==========================================================
 
       - name: Generate current checksum
@@ -965,7 +1111,7 @@ jobs:
 
 
       # ==========================================================
-      # 14. Compare versions
+      # 14. Compare rule versions
       # ==========================================================
 
       - name: Compare rule versions
@@ -978,6 +1124,7 @@ jobs:
 
           echo "Old: ${OLD}"
           echo "New: ${NEW}"
+
 
           if [ "${NEW}" = "${OLD}" ]; then
 
@@ -1005,7 +1152,7 @@ jobs:
         run: |
           echo ""
           echo "===================================="
-          echo " Sukka List -> Egern V1.1.2"
+          echo " Sukka List -> Egern V1.1.3"
           echo "===================================="
           echo " STATUS : UP TO DATE"
           echo " COMMIT : NO"
@@ -1013,8 +1160,7 @@ jobs:
 
 
       # ==========================================================
-      # 16. Replace rules
-      # FIXED Bash arithmetic
+      # 16. Replace Egern rules
       # ==========================================================
 
       - name: Replace Egern rules
@@ -1047,14 +1193,12 @@ jobs:
               | wc -l
           )
 
-
           NEW_NON_IP=$(
             find non_ip.new \
               -type f \
               -name "*.yaml" \
               | wc -l
           )
-
 
           NEW_IP=$(
             find ip.new \
@@ -1158,7 +1302,7 @@ jobs:
 
 
       # ==========================================================
-      # 19. README
+      # 19. Update README
       # ==========================================================
 
       - name: Update README
@@ -1188,6 +1332,16 @@ jobs:
           )
 
           TOTAL=$((DOMAIN + NON_IP + IP))
+
+
+          NO_RESOLVE=$(
+            grep -rl '^no_resolve: true$' \
+              domain non_ip ip \
+              --include="*.yaml" \
+              2>/dev/null \
+              | wc -l
+          )
+
 
           VERSION=$(cat RULES_VERSION.sha256)
 
@@ -1225,12 +1379,32 @@ jobs:
           | non_ip | ${NON_IP} |
           | ip | ${IP} |
           | Total | ${TOTAL} |
+          | no_resolve enabled | ${NO_RESOLVE} |
 
           ## Current Version
 
           \`\`\`
           ${VERSION}
           \`\`\`
+
+          ## no_resolve
+
+          Sukka 源规则中的：
+
+          \`\`\`text
+          IP-CIDR,...,no-resolve
+          IP-CIDR6,...,no-resolve
+          IP-ASN,...,no-resolve
+          GEOIP,...,no-resolve
+          \`\`\`
+
+          会自动转换为 Egern Rule Set 顶层：
+
+          \`\`\`yaml
+          no_resolve: true
+          \`\`\`
+
+          只有源规则实际包含 \`no-resolve\` 时才会添加。
 
           ## Raw URL Examples
 
@@ -1265,14 +1439,15 @@ jobs:
 
           - 每 24 小时自动同步
           - 直接读取 Sukka List
-          - 自动转换 Egern YAML
+          - 自动转换为 Egern YAML
+          - 精确保留 no-resolve 语义
           - 所有规则值安全双引号
           - 支持 DOMAIN-WILDCARD
           - 支持 IP-ASN
-          - 支持正则和百分号字符
+          - 支持 IPv6、百分号、正则
           - 自动跳过 Deprecated 文件
-          - 自动跳过纯注释文件
-          - 自动 YAML 语法验证
+          - 自动跳过纯注释规则
+          - YAML 自动解析验证
           - SHA256 版本校验
           - 无变化不 Commit
           - 转换失败不覆盖旧规则
@@ -1280,7 +1455,7 @@ jobs:
 
           ---
 
-          Generated by Sukka List -> Egern V1.1.2 Final Bugfix.
+          Generated by Sukka List -> Egern V1.1.3.
           EOF
 
 
@@ -1316,15 +1491,26 @@ jobs:
 
           TOTAL=$((DOMAIN + NON_IP + IP))
 
+
+          NO_RESOLVE=$(
+            grep -rl '^no_resolve: true$' \
+              domain non_ip ip \
+              --include="*.yaml" \
+              2>/dev/null \
+              | wc -l
+          )
+
+
           echo ""
           echo "===================================="
           echo " Final Validation"
           echo "===================================="
-          echo " domain : ${DOMAIN}"
-          echo " non_ip : ${NON_IP}"
-          echo " ip     : ${IP}"
+          echo " domain     : ${DOMAIN}"
+          echo " non_ip     : ${NON_IP}"
+          echo " ip         : ${IP}"
+          echo " no_resolve : ${NO_RESOLVE}"
           echo "------------------------------------"
-          echo " TOTAL  : ${TOTAL}"
+          echo " TOTAL      : ${TOTAL}"
           echo "===================================="
 
 
@@ -1413,10 +1599,11 @@ jobs:
         run: |
           echo ""
           echo "===================================="
-          echo " Sukka List -> Egern V1.1.2"
+          echo " Sukka List -> Egern V1.1.3"
           echo "===================================="
-          echo " SOURCE : Sukka List"
-          echo " FORMAT : Egern YAML"
-          echo " SYNC   : 24 hours"
-          echo " STATUS : SUCCESS"
+          echo " SOURCE     : Sukka List"
+          echo " FORMAT     : Egern YAML"
+          echo " no_resolve : preserved"
+          echo " SYNC       : 24 hours"
+          echo " STATUS     : SUCCESS"
           echo "===================================="

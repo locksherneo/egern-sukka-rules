@@ -1,0 +1,805 @@
+name: Sync Sukka List to Egern
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    # 每 24 小时执行一次
+    # UTC 06:20
+    - cron: "20 6 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sukka-egern-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      SOURCE_BASE: https://ruleset.skk.moe
+      MIN_TOTAL_RULES: 20
+      MIN_FILE_SIZE: 5
+
+    steps:
+
+      # ==========================================================
+      # 1. Checkout
+      # ==========================================================
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+
+      # ==========================================================
+      # 2. 配置 Git
+      # ==========================================================
+
+      - name: Configure Git
+        run: |
+          set -euo pipefail
+
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+
+      # ==========================================================
+      # 3. 准备临时目录
+      # ==========================================================
+
+      - name: Prepare workspace
+        run: |
+          set -euo pipefail
+
+          rm -rf /tmp/sukka-egern
+
+          mkdir -p /tmp/sukka-egern/source/domainset
+          mkdir -p /tmp/sukka-egern/source/non_ip
+          mkdir -p /tmp/sukka-egern/source/ip
+
+          mkdir -p /tmp/sukka-egern/output/domain
+          mkdir -p /tmp/sukka-egern/output/non_ip
+          mkdir -p /tmp/sukka-egern/output/ip
+
+
+      # ==========================================================
+      # 4. 获取 Sukka 首页
+      # ==========================================================
+
+      - name: Fetch Sukka index
+        run: |
+          set -euo pipefail
+
+          curl \
+            --fail \
+            --location \
+            --silent \
+            --show-error \
+            --retry 5 \
+            --retry-delay 3 \
+            --retry-all-errors \
+            --connect-timeout 15 \
+            --max-time 60 \
+            "${SOURCE_BASE}/" \
+            -o /tmp/sukka-egern/index.html
+
+          if [ ! -s /tmp/sukka-egern/index.html ]; then
+            echo "ERROR: Sukka index is empty."
+            exit 1
+          fi
+
+
+      # ==========================================================
+      # 5. 自动发现 List/*.conf
+      # ==========================================================
+
+      - name: Discover List rules
+        run: |
+          set -euo pipefail
+
+          grep -oE \
+            'List/(domainset|non_ip|ip)/[^"<> ]+\.conf' \
+            /tmp/sukka-egern/index.html \
+            | sort -u \
+            > /tmp/sukka-egern/files.txt
+
+          TOTAL=$(wc -l < /tmp/sukka-egern/files.txt)
+
+          DOMAINSET=$(
+            grep -c '^List/domainset/' \
+            /tmp/sukka-egern/files.txt || true
+          )
+
+          NON_IP=$(
+            grep -c '^List/non_ip/' \
+            /tmp/sukka-egern/files.txt || true
+          )
+
+          IP=$(
+            grep -c '^List/ip/' \
+            /tmp/sukka-egern/files.txt || true
+          )
+
+          echo "===================================="
+          echo " Sukka List Rules"
+          echo "===================================="
+          echo " domainset : ${DOMAINSET}"
+          echo " non_ip    : ${NON_IP}"
+          echo " ip        : ${IP}"
+          echo "------------------------------------"
+          echo " TOTAL     : ${TOTAL}"
+          echo "===================================="
+
+          if [ "${TOTAL}" -lt "${MIN_TOTAL_RULES}" ]; then
+            echo "ERROR: Too few List rules discovered."
+            exit 1
+          fi
+
+          if [ "${DOMAINSET}" -eq 0 ] || \
+             [ "${NON_IP}" -eq 0 ] || \
+             [ "${IP}" -eq 0 ]; then
+            echo "ERROR: Missing List category."
+            exit 1
+          fi
+
+
+      # ==========================================================
+      # 6. 下载所有 List 规则
+      # ==========================================================
+
+      - name: Download List rules
+        run: |
+          set -euo pipefail
+
+          while IFS= read -r FILE; do
+
+            [ -z "${FILE}" ] && continue
+
+            RELATIVE="${FILE#List/}"
+
+            DEST="/tmp/sukka-egern/source/${RELATIVE}"
+
+            mkdir -p "$(dirname "${DEST}")"
+
+            echo "Downloading ${FILE}"
+
+            curl \
+              --fail \
+              --location \
+              --silent \
+              --show-error \
+              --retry 5 \
+              --retry-delay 3 \
+              --retry-all-errors \
+              --connect-timeout 15 \
+              --max-time 120 \
+              "${SOURCE_BASE}/${FILE}" \
+              -o "${DEST}"
+
+            if [ ! -s "${DEST}" ]; then
+              echo "ERROR: Empty file: ${FILE}"
+              exit 1
+            fi
+
+          done < /tmp/sukka-egern/files.txt
+
+
+      # ==========================================================
+      # 7. 转换成 Egern YAML Rule Set
+      # ==========================================================
+
+      - name: Convert List rules to Egern
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          from pathlib import Path
+          from collections import OrderedDict
+
+          SOURCE_ROOT = Path("/tmp/sukka-egern/source")
+          OUTPUT_ROOT = Path("/tmp/sukka-egern/output")
+
+          TYPE_MAP = {
+              "DOMAIN": "domain_set",
+              "DOMAIN-SUFFIX": "domain_suffix_set",
+              "DOMAIN-KEYWORD": "domain_keyword_set",
+              "DOMAIN-REGEX": "domain_regex_set",
+              "URL-REGEX": "url_regex_set",
+              "IP-CIDR": "ip_cidr_set",
+              "IP-CIDR6": "ip_cidr6_set",
+              "GEOIP": "geoip_set",
+              "ASN": "asn_set",
+              "USER-AGENT": "user_agent_set",
+              "DEST-PORT": "dest_port_set",
+              "DST-PORT": "dest_port_set",
+              "PROTOCOL": "protocol_set",
+          }
+
+          OUTPUT_ORDER = [
+              "domain_set",
+              "domain_keyword_set",
+              "domain_suffix_set",
+              "domain_regex_set",
+              "domain_wildcard_set",
+              "geoip_set",
+              "ip_cidr_set",
+              "ip_cidr6_set",
+              "url_regex_set",
+              "asn_set",
+              "user_agent_set",
+              "dest_port_set",
+              "protocol_set",
+          ]
+
+          def yaml_quote(value: str) -> str:
+              value = value.strip()
+
+              if not value:
+                  return '""'
+
+              special = (
+                  ":" in value
+                  or "#" in value
+                  or "\\" in value
+                  or '"' in value
+                  or value.startswith(("*", "&", "!", "{", "[", "-", "?"))
+                  or value.lower() in {
+                      "true", "false", "null", "yes", "no",
+                      "on", "off"
+                  }
+              )
+
+              if special:
+                  value = value.replace("\\", "\\\\").replace('"', '\\"')
+                  return f'"{value}"'
+
+              return value
+
+          def add_value(groups, key, value):
+              if key not in groups:
+                  groups[key] = []
+
+              if value not in groups[key]:
+                  groups[key].append(value)
+
+          def convert_domainset(src: Path, dst: Path):
+              groups = OrderedDict()
+
+              for raw in src.read_text(
+                  encoding="utf-8",
+                  errors="ignore"
+              ).splitlines():
+
+                  line = raw.strip()
+
+                  if not line:
+                      continue
+
+                  if line.startswith("#"):
+                      continue
+
+                  # Sukka domainset:
+                  #
+                  # example.com  = exact domain
+                  # .example.com = suffix
+                  #
+                  if line.startswith("."):
+                      value = line[1:].strip()
+
+                      if value:
+                          add_value(
+                              groups,
+                              "domain_suffix_set",
+                              value
+                          )
+                  else:
+                      add_value(
+                          groups,
+                          "domain_set",
+                          line
+                      )
+
+              write_yaml(dst, groups, False)
+
+
+          def convert_standard(src: Path, dst: Path):
+              groups = OrderedDict()
+              no_resolve = False
+              unsupported = []
+
+              for raw in src.read_text(
+                  encoding="utf-8",
+                  errors="ignore"
+              ).splitlines():
+
+                  line = raw.strip()
+
+                  if not line:
+                      continue
+
+                  if line.startswith("#"):
+                      continue
+
+                  parts = [
+                      item.strip()
+                      for item in line.split(",")
+                  ]
+
+                  if len(parts) < 2:
+                      unsupported.append(line)
+                      continue
+
+                  rule_type = parts[0].upper()
+                  value = parts[1]
+
+                  field = TYPE_MAP.get(rule_type)
+
+                  if not field:
+                      unsupported.append(line)
+                      continue
+
+                  add_value(groups, field, value)
+
+                  if any(
+                      item.lower() == "no-resolve"
+                      for item in parts[2:]
+                  ):
+                      no_resolve = True
+
+              write_yaml(dst, groups, no_resolve)
+
+              return unsupported
+
+
+          def write_yaml(
+              dst: Path,
+              groups,
+              no_resolve: bool
+          ):
+              dst.parent.mkdir(
+                  parents=True,
+                  exist_ok=True
+              )
+
+              with dst.open(
+                  "w",
+                  encoding="utf-8"
+              ) as f:
+
+                  if no_resolve:
+                      f.write("no_resolve: true\n")
+
+                  for key in OUTPUT_ORDER:
+
+                      values = groups.get(key)
+
+                      if not values:
+                          continue
+
+                      f.write(f"{key}:\n")
+
+                      for value in values:
+                          f.write(
+                              f"  - {yaml_quote(value)}\n"
+                          )
+
+
+          unsupported_all = []
+          generated = 0
+
+          # ===============================================
+          # domainset
+          # ===============================================
+
+          for src in sorted(
+              (SOURCE_ROOT / "domainset").glob("*.conf")
+          ):
+              dst = (
+                  OUTPUT_ROOT
+                  / "domain"
+                  / f"{src.stem}.yaml"
+              )
+
+              convert_domainset(src, dst)
+
+              generated += 1
+
+
+          # ===============================================
+          # non_ip
+          # ===============================================
+
+          for src in sorted(
+              (SOURCE_ROOT / "non_ip").glob("*.conf")
+          ):
+              dst = (
+                  OUTPUT_ROOT
+                  / "non_ip"
+                  / f"{src.stem}.yaml"
+              )
+
+              unsupported = convert_standard(
+                  src,
+                  dst
+              )
+
+              for rule in unsupported:
+                  unsupported_all.append(
+                      f"{src.name}: {rule}"
+                  )
+
+              generated += 1
+
+
+          # ===============================================
+          # ip
+          # ===============================================
+
+          for src in sorted(
+              (SOURCE_ROOT / "ip").glob("*.conf")
+          ):
+              dst = (
+                  OUTPUT_ROOT
+                  / "ip"
+                  / f"{src.stem}.yaml"
+              )
+
+              unsupported = convert_standard(
+                  src,
+                  dst
+              )
+
+              for rule in unsupported:
+                  unsupported_all.append(
+                      f"{src.name}: {rule}"
+                  )
+
+              generated += 1
+
+
+          print(
+              f"Generated {generated} Egern rule sets."
+          )
+
+          if unsupported_all:
+              report = Path(
+                  "/tmp/sukka-egern/unsupported.txt"
+              )
+
+              report.write_text(
+                  "\n".join(unsupported_all),
+                  encoding="utf-8"
+              )
+
+              print(
+                  f"Unsupported rules: "
+                  f"{len(unsupported_all)}"
+              )
+          PY
+
+
+      # ==========================================================
+      # 8. 校验转换结果
+      # ==========================================================
+
+      - name: Validate Egern output
+        run: |
+          set -euo pipefail
+
+          TOTAL=$(
+            find /tmp/sukka-egern/output \
+              -type f \
+              -name "*.yaml" \
+              | wc -l
+          )
+
+          DOMAIN=$(
+            find /tmp/sukka-egern/output/domain \
+              -type f \
+              -name "*.yaml" \
+              | wc -l
+          )
+
+          NON_IP=$(
+            find /tmp/sukka-egern/output/non_ip \
+              -type f \
+              -name "*.yaml" \
+              | wc -l
+          )
+
+          IP=$(
+            find /tmp/sukka-egern/output/ip \
+              -type f \
+              -name "*.yaml" \
+              | wc -l
+          )
+
+          echo "===================================="
+          echo " Egern Rule Sets"
+          echo "===================================="
+          echo " domain : ${DOMAIN}"
+          echo " non_ip : ${NON_IP}"
+          echo " ip     : ${IP}"
+          echo "------------------------------------"
+          echo " TOTAL  : ${TOTAL}"
+          echo "===================================="
+
+          if [ "${TOTAL}" -lt "${MIN_TOTAL_RULES}" ]; then
+            echo "ERROR: Too few Egern rule sets."
+            exit 1
+          fi
+
+          EMPTY=0
+
+          while IFS= read -r FILE; do
+
+            if [ ! -s "${FILE}" ]; then
+              echo "ERROR: Empty Egern YAML:"
+              echo "${FILE}"
+              EMPTY=$((EMPTY + 1))
+            fi
+
+          done < <(
+            find /tmp/sukka-egern/output \
+              -type f \
+              -name "*.yaml"
+          )
+
+          if [ "${EMPTY}" -ne 0 ]; then
+            exit 1
+          fi
+
+
+      # ==========================================================
+      # 9. 安装 PyYAML 做 YAML 语法检查
+      # ==========================================================
+
+      - name: Install YAML validator
+        run: |
+          python3 -m pip install \
+            --quiet \
+            pyyaml
+
+
+      # ==========================================================
+      # 10. YAML 解析验证
+      # ==========================================================
+
+      - name: Parse Egern YAML
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          from pathlib import Path
+          import yaml
+
+          root = Path(
+              "/tmp/sukka-egern/output"
+          )
+
+          count = 0
+
+          for file in root.rglob("*.yaml"):
+
+              with file.open(
+                  "r",
+                  encoding="utf-8"
+              ) as f:
+                  data = yaml.safe_load(f)
+
+              if not isinstance(data, dict):
+                  raise RuntimeError(
+                      f"Invalid rule set: {file}"
+                  )
+
+              count += 1
+
+          print(
+              f"Validated {count} YAML files."
+          )
+          PY
+
+
+      # ==========================================================
+      # 11. 计算新版本 Hash
+      # ==========================================================
+
+      - name: Generate new checksum
+        run: |
+          set -euo pipefail
+
+          cd /tmp/sukka-egern/output
+
+          find domain non_ip ip \
+            -type f \
+            -name "*.yaml" \
+            -print0 \
+            | sort -z \
+            | xargs -0 sha256sum \
+            > /tmp/sukka-egern/new.sha256
+
+          sha256sum \
+            /tmp/sukka-egern/new.sha256 \
+            | awk '{print $1}' \
+            > /tmp/sukka-egern/new.master
+
+
+      # ==========================================================
+      # 12. 当前版本 Hash
+      # ==========================================================
+
+      - name: Generate current checksum
+        run: |
+          set -euo pipefail
+
+          if [ -d domain ] && \
+             [ -d non_ip ] && \
+             [ -d ip ]; then
+
+            find domain non_ip ip \
+              -type f \
+              -name "*.yaml" \
+              -print0 \
+              | sort -z \
+              | xargs -0 sha256sum \
+              > /tmp/sukka-egern/current.sha256
+
+            sha256sum \
+              /tmp/sukka-egern/current.sha256 \
+              | awk '{print $1}' \
+              > /tmp/sukka-egern/current.master
+
+          else
+
+            echo "none" \
+              > /tmp/sukka-egern/current.master
+
+          fi
+
+
+      # ==========================================================
+      # 13. 判断是否变化
+      # ==========================================================
+
+      - name: Compare
+        id: compare
+        run: |
+          NEW=$(cat /tmp/sukka-egern/new.master)
+          OLD=$(cat /tmp/sukka-egern/current.master)
+
+          echo "Old: ${OLD}"
+          echo "New: ${NEW}"
+
+          if [ "${NEW}" = "${OLD}" ]; then
+            echo "changed=false" \
+              >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" \
+              >> "$GITHUB_OUTPUT"
+          fi
+
+
+      # ==========================================================
+      # 14. 替换规则
+      # ==========================================================
+
+      - name: Replace Egern rules
+        if: steps.compare.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+
+          rm -rf domain.new
+          rm -rf non_ip.new
+          rm -rf ip.new
+
+          cp -a \
+            /tmp/sukka-egern/output/domain \
+            domain.new
+
+          cp -a \
+            /tmp/sukka-egern/output/non_ip \
+            non_ip.new
+
+          cp -a \
+            /tmp/sukka-egern/output/ip \
+            ip.new
+
+          rm -rf domain non_ip ip
+
+          mv domain.new domain
+          mv non_ip.new non_ip
+          mv ip.new ip
+
+
+      # ==========================================================
+      # 15. README
+      # ==========================================================
+
+      - name: Update README
+        if: steps.compare.outputs.changed == 'true'
+        run: |
+          cat > README.md <<'EOF'
+          # Sukka Rules for Egern
+
+          自动从 Sukka Ruleset Server 的通用 List 规则转换为 Egern Rule Set。
+
+          Upstream:
+
+          https://ruleset.skk.moe/
+
+          ## Directory
+
+          ```text
+          domain/
+          non_ip/
+          ip/
+          ```
+
+          ## Example
+
+          ```yaml
+          rules:
+            - rule_set:
+                match: "https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/non_ip/ai.yaml"
+                policy: Proxy
+                update_interval: 86400
+          ```
+
+          ## Sync
+
+          - 每 24 小时检查一次
+          - 使用 Sukka List 通用规则
+          - 自动转换 Egern YAML
+          - 无变化不提交
+          - 下载失败不覆盖旧版本
+          - YAML 语法自动验证
+          EOF
+
+
+      # ==========================================================
+      # 16. Commit
+      # ==========================================================
+
+      - name: Commit changes
+        if: steps.compare.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+
+          git add -A
+
+          if git diff \
+            --cached \
+            --quiet; then
+
+            echo "No effective changes."
+
+            exit 0
+          fi
+
+          git commit \
+            -m "chore: sync Sukka List for Egern"
+
+          git push
+
+
+      # ==========================================================
+      # 17. 完成
+      # ==========================================================
+
+      - name: Completed
+        run: |
+          echo ""
+          echo "===================================="
+          echo " Sukka → Egern"
+          echo "===================================="
+          echo " Source : List/"
+          echo " Format : Egern YAML"
+          echo " Sync   : 24h"
+          echo "===================================="

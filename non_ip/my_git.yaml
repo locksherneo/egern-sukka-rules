@@ -5,6 +5,8 @@ domain_set:
   - "api.github.com"
   - "alive.github.com"
   - "android.googlesource.com"
+
 domain_suffix_set:
   - "huggingface.co"
   - "githubcopilot.com"
+

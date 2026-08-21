@@ -7,6 +7,7 @@ domain_set:
   - "ees.elsevier.com"
   - "news.ycombinator.com"
   - "community.oneplus.com"
+
 domain_suffix_set:
   - "ac"
   - "ai"
@@ -1260,6 +1261,7 @@ domain_suffix_set:
   - "onepluscommunityserver.com"
   - "returnyoutubedislikeapi.com"
   - "certificate-transparency.org"
+
 domain_keyword_set:
   - "google"
   - "blogspot"
@@ -1270,5 +1272,7 @@ domain_keyword_set:
   - "browserleaks"
   - "dropbox"
   - "pinterest"
+
 user_agent_set:
   - "Roam*"
+

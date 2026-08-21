@@ -17,6 +17,7 @@ domain_set:
   - "injections.adguard.org"
   - "instant.arubanetworks.com"
   - "setmeup.arubanetworks.com"
+
 domain_suffix_set:
   - "lan"
   - "m2m"
@@ -173,6 +174,7 @@ domain_suffix_set:
   - "blackwell-synergy.com"
   - "lcdn-locator.apple.com"
   - "classix-unlimited.co.uk"
+
 domain_keyword_set:
   - "cnki.net"
   - "wanfangdata"
@@ -183,5 +185,7 @@ domain_keyword_set:
   - "elsevier"
   - "deepdyve"
   - "els-cdn"
+
 user_agent_set:
   - "%E8%BF%85%E9%9B%B7"
+

@@ -6,6 +6,7 @@ domain_set:
   - "qn-cdnfile1pcdn.msstatic.com"
   - "upos-sz-302kodo.bilivideo.com"
   - "upos-sz-302ppio.bilivideo.com"
+
 domain_suffix_set:
   - "bvmlt.top"
   - "gjfzpt.cn"
@@ -36,9 +37,11 @@ domain_suffix_set:
   - "p2perrorlog.douyucdn.cn"
   - "p2pupdate.gamedl.qq.com"
   - "p2pupgrade.gamedl.qq.com"
+
 domain_keyword_set:
   - "-p2p.pull.yximgs.com"
   - "-p2p-v2.pull.yximgs.com"
+
 domain_wildcard_set:
   - "p2p*.qq.com"
   - "p2p-*.douyucdn.cn"
@@ -46,3 +49,4 @@ domain_wildcard_set:
   - "dyp2p-*.douyucdn.cn"
   - "p2plive-*.douyucdn.cn"
   - "stun*.douyucdn.cn"
+

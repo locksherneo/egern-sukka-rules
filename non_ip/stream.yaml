@@ -59,6 +59,7 @@ domain_set:
   - "upos-bstar1-mirrorakam.akamaized.net"
   - "chuangcachecdnoversea-tw.inter.ptqy.gitv.tv"
   - "44wilhpljf.execute-api.ap-southeast-1.amazonaws.com"
+
 domain_suffix_set:
   - "iq.com"
   - "kfs.io"
@@ -259,6 +260,7 @@ domain_suffix_set:
   - "avodmp4s3ww-a.akamaihd.net"
   - "intl-subscription.iqiyi.com"
   - "dca-ll-livedazn-dznlivejp.s.llnwi.net"
+
 domain_keyword_set:
   - "avoddashs"
   - "bbcfmt"
@@ -274,6 +276,7 @@ domain_keyword_set:
   - "-spotify-com"
   - "-tiktokcdn-com"
   - "tvbanywhere"
+
 user_agent_set:
   - "AbemaTV*"
   - "InstantVideo.US*"
@@ -324,3 +327,4 @@ user_agent_set:
   - "YouTube*"
   - "com.google.ios.youtubemusic*"
   - "YouTubeMusic*"
+

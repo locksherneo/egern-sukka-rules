@@ -4,6 +4,18 @@ Source:
 
 https://ruleset.skk.moe/
 
+## no_resolve enabled
+
+- non_ip/apple_services.conf
+- non_ip/reject.conf
+- ip/ai.conf
+- ip/apple_services.conf
+- ip/domestic.conf
+- ip/download.conf
+- ip/neteasemusic.conf
+- ip/reject.conf
+- ip/stream.conf
+- ip/telegram.conf
 ## Skipped source files
 
 - DEPRECATED: domainset/download.conf

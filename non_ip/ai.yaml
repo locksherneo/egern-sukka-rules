@@ -13,6 +13,7 @@ domain_set:
   - "robinfrontend-pa.googleapis.com"
   - "alkalicore-pa.clients6.google.com"
   - "daily-cloudcode-pa.googleapis.com"
+
 domain_suffix_set:
   - "g.ai"
   - "x.ai"
@@ -48,8 +49,11 @@ domain_suffix_set:
   - "cloudcode-pa.googleapis.com"
   - "generativelanguage.googleapis.com"
   - "proactivebackend-pa.googleapis.com"
+
 domain_keyword_set:
   - "openai"
   - "alkalimakersuite-pa.clients6.google.com"
+
 url_regex_set:
   - "https://www\\.google\\.com/.*continue=https://gemini\\.google\\.com.+"
+

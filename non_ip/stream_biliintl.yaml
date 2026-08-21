@@ -3,6 +3,8 @@ domain_set:
   - "apm-misaka.biliapi.net"
   - "upos-bstar-mirrorakam.akamaized.net"
   - "upos-bstar1-mirrorakam.akamaized.net"
+
 domain_suffix_set:
   - "bilibili.tv"
   - "biliintl.com"
+

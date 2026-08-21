@@ -1,5 +1,6 @@
 domain_set:
   - "7h15.ru1353t.1s.m4d3.by.5ukk4w.skk.moe"
+
 url_regex_set:
   - "^https?://premiumyva\\.appspot\\.com/vmclickstoadvertisersite"
   - "^https?://service\\.4gtv\\.tv/4gtv/Data/(GetAD|ADLog)"
@@ -177,3 +178,4 @@ url_regex_set:
   - "^https?://dspsdk\\.abreader\\.com/v\\d/api/ad\\?"
   - "^https?://mi\\.gdt\\.qq\\.com/gdt_mview\\.fcg"
   - "^http://\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}/(EcomResourceServer/AdPlayPage/adinfo|MobileAdServer/)"
+

@@ -4,6 +4,7 @@ domain_set:
   - "api.wakatime.com"
   - "hv-monster-submit.skk.moe"
   - "a1ewuiz2p7wdvw-ats.iot.us-west-2.amazonaws.com"
+
 domain_suffix_set:
   - "kxcdn.com"
   - "sososo.io"
@@ -15,3 +16,4 @@ domain_suffix_set:
   - "vo.msecnd.net"
   - "hentaiverse.org"
   - "akamai-content-networks.com"
+

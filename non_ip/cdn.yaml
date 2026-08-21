@@ -4,6 +4,7 @@ domain_set:
   - "cdn-msp.18comic.org"
   - "cdn-msp.18comic.vip"
   - "cdn-msp.jmcomic-zzz.one"
+
 domain_keyword_set:
   - "-files.gitbook.io"
   - "vod-adaptive.akamaized.net"
@@ -25,6 +26,7 @@ domain_keyword_set:
   - "99avcdn"
   - "-images.disco-api.com"
   - "static.grammarly.com"
+
 domain_wildcard_set:
   - "cdn.*.office.net"
   - "cdn.*.microsoft.com"
@@ -85,3 +87,4 @@ domain_wildcard_set:
   - "cdn*.porn87.com"
   - "cdn*.pornhost.com"
   - "cdn*.boysfood.com"
+

@@ -5,6 +5,7 @@ domain_set:
   - "res-2.cdn.office.net"
   - "res-h3.public.cdn.office.net"
   - "statics.teams.cdn.office.net"
+
 domain_suffix_set:
   - "sdx.microsoft.com"
   - "cn.windowssearch.com"
@@ -53,6 +54,8 @@ domain_suffix_set:
   - "azurestackhubuat.download.prss.microsoft.com"
   - "mpnbenefitsrtluat.download.prss.microsoft.com"
   - "storecorefulfillment.download.prss.microsoft.com"
+
 url_regex_set:
   - "^http://www\\.microsoft\\.com/pki/"
   - "^http://www\\.microsoft\\.com/pkiops/"
+

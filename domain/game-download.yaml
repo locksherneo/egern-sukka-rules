@@ -36,6 +36,7 @@ domain_set:
   - "epicgames-download1.akamaized.net"
   - "pf-cdn-content-prod.azureedge.net"
   - "gamedownloads-rockstargames-com.akamaized.net"
+
 domain_suffix_set:
   - "cdn.ea.com"
   - "cdn.ubi.com"
@@ -53,3 +54,4 @@ domain_suffix_set:
   - "content.steampowered.com"
   - "download.cdp.bethesda.net"
   - "egdownload.fastly-edge.com"
+

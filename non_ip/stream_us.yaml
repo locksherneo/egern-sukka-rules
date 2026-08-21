@@ -14,6 +14,7 @@ domain_set:
   - "staticasiafox.akamaized.net"
   - "bcbolt446c5271-a.akamaihd.net"
   - "cbsplaylistserver.aws.syncbak.com"
+
 domain_suffix_set:
   - "fox.com"
   - "hulu.jp"
@@ -43,6 +44,7 @@ domain_suffix_set:
   - "paramountplus.com"
   - "discoveryplus.co.uk"
   - "production-public.tubi.io"
+
 user_agent_set:
   - "FOX NOW*"
   - "FOXPlus*"
@@ -53,3 +55,4 @@ user_agent_set:
   - "discovery+*"
   - "PPlus*"
   - "PeacockMobile*"
+

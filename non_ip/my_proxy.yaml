@@ -6,6 +6,7 @@ domain_set:
   - "sgshort.wechat.com"
   - "fonts.googleapis.cn"
   - "sgminorshort.wechat.com"
+
 domain_suffix_set:
   - "ip.sb"
   - "ipwho.is"
@@ -17,3 +18,4 @@ domain_suffix_set:
   - "ipregistry.co"
   - "ipgeolocation.io"
   - "services.googleapis.cn"
+

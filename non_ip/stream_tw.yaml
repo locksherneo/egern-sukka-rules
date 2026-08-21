@@ -15,6 +15,7 @@ domain_set:
   - "4gtvfreepcvod-cds.cdn.hinet.net"
   - "litvfreemobile-hichannel.cdn.hinet.net"
   - "44wilhpljf.execute-api.ap-southeast-1.amazonaws.com"
+
 domain_suffix_set:
   - "4gtv.tv"
   - "kktv.me"
@@ -34,8 +35,10 @@ domain_suffix_set:
   - "bahamut.com.tw"
   - "ani.gamer.com.tw"
   - "api.gamer.com.tw"
+
 user_agent_set:
   - "com.kktv.ios.kktv*"
   - "KKTV*"
   - "LINE TV*"
   - "Anime*"
+

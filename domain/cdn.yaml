@@ -3404,6 +3404,7 @@ domain_set:
   - "epic-social-social-modules-prod.ol.epicgames.com"
   - "net-fe-static-assets.network-controller.svc.ui.com"
   - "s3-figma-force-client-reloads-production.figma.com"
+
 domain_suffix_set:
   - "esm.sh"
   - "gcr.si"
@@ -4627,3 +4628,4 @@ domain_suffix_set:
   - "content-storage-upload.googleapis.com"
   - "prod-east.frontend.public.atl-paas.net"
   - "dtci-pe-vp-image-resizer.platform.edgedatg.com"
+

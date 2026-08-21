@@ -3224,6 +3224,7 @@ domain_set:
   - "this_ruleset_is_made_by_sukkaw.ruleset.skk.moe"
   - "albuquerque-speedtest.sacredwindcommunications.com"
   - "secretspeedsterserver2364.cpe.nj.crnrstn.comcast.net"
+
 domain_suffix_set:
   - "fast.com"
   - "nperf.net"
@@ -3337,3 +3338,4 @@ domain_suffix_set:
   - "speedtest.vipnetconexao.com.br"
   - "speedtest.seattle.wa.limewave.net"
   - "wifiman-stability-test.ubncloud.com"
+

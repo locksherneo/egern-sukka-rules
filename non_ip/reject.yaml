@@ -1,3 +1,5 @@
+no_resolve: true
+
 domain_set:
   - "7h15.ru1353t.1s.m4d3.by.5ukk4w.skk.moe"
   - "dns.jd.com"
@@ -70,6 +72,7 @@ domain_set:
   - "httpdns.platform.dbankcloud.com"
   - "httpdns-euex-push.heytapmobile.com"
   - "httpdns-browser.platform.dbankcloud.cn"
+
 domain_suffix_set:
   - "data"
   - "api.bz"
@@ -161,6 +164,7 @@ domain_suffix_set:
   - "telemetry-coverage.mozilla.org"
   - "incoming-telemetry.thunderbird.net"
   - "classify-client.services.mozilla.com"
+
 domain_keyword_set:
   - ".estream."
   - "jshosting"
@@ -306,6 +310,7 @@ domain_keyword_set:
   - "pangolin-sdk-toutiao"
   - "httpdns.gslb.yy.com"
   - "httpdns-v6.gslb.yy.com"
+
 domain_wildcard_set:
   - "info.*.aleragroup.com"
   - "f-log*.grammarly.io"
@@ -322,6 +327,7 @@ domain_wildcard_set:
   - "pixel*.adswizz.com"
   - "log*-normal-*.tiktokv.com"
   - "analytics-*.aasaam.com"
+
 ip_cidr_set:
   - "39.97.128.148/32"
   - "39.97.130.51/32"
@@ -366,12 +372,15 @@ ip_cidr_set:
   - "203.107.1.0/24"
   - "203.119.204.66/32"
   - "203.119.238.194/32"
+
 ip_cidr6_set:
   - "2402:db40:5100:1011::5/128"
   - "2402:4e00:1900:1700:0:9554:1ad9:c3a/128"
   - "240e:928:1400:10::25/128"
   - "2402:4e00:1200:ed00:0:9089:6dac:96b6/128"
+
 url_regex_set:
   - "/igd\\.xml"
   - "/\\d+/resolve"
   - "/\\d+/sign_d"
+

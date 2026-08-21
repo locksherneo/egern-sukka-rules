@@ -12,6 +12,7 @@ domain_set:
   - "locationhistory-pa.googleapis.com"
   - "locationhistoryaggregates-pa.googleapis.com"
   - "locationhistoryplacedetails-pa.googleapis.com"
+
 domain_suffix_set:
   - "pipi.cn"
   - "ule.com"
@@ -42,10 +43,13 @@ domain_suffix_set:
   - "newbuy.chinaunicom.cn"
   - "expenses-fe.meituan.com"
   - "video-zb.cloudvideocdn.taobao.com"
+
 domain_keyword_set:
   - "bahoom"
   - "-flv.meituan.net"
   - "-live.meituan.net"
   - "-fin.meituan.com"
+
 dest_port_set:
   - "7680"
+

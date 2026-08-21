@@ -11,6 +11,7 @@ domain_set:
   - "upos-bstar-mirrorakam.akamaized.net"
   - "upos-bstar1-mirrorakam.akamaized.net"
   - "44wilhpljf.execute-api.ap-southeast-1.amazonaws.com"
+
 domain_suffix_set:
   - "viu.tv"
   - "tvb.com"
@@ -28,9 +29,12 @@ domain_suffix_set:
   - "hbogoasia.com"
   - "mytvsuper.com"
   - "psg.cdn.hgc.com.hk"
+
 domain_keyword_set:
   - "nowtv100"
   - "rthklive"
+
 user_agent_set:
   - "Viu*"
   - "mytv*"
+

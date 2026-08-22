@@ -1,0 +1,908 @@
+{
+  "version": "V1.3.0",
+  "stats": {
+    "source_rule_lines": 378326,
+    "generated": 60,
+    "deprecated": 3,
+    "unsupported": 113,
+    "empty": 7,
+    "mixed_no_resolve_files": 1,
+    "strict_companion_files": 2,
+    "ipv6_networks_pruned": 1,
+    "no_resolve_files": 11
+  },
+  "conversion_coverage_percent": 99.97014,
+  "generated_by_category": {
+    "domain": 9,
+    "ip": 16,
+    "non_ip": 35
+  },
+  "marker_audit": {
+    "domain_marker": "7h15.ru1353t.1s.m4d3.by.5ukk4w.skk.moe",
+    "keyword_marker_pattern": "^this[_-]?rule[_-]?set[_-]?is[_-]?made[_-]?by[_-]?sukkaw?$",
+    "source_files": 68,
+    "marker_files": 63,
+    "removed_total": 65,
+    "removed_by_category": {
+      "domainset": 10,
+      "ip": 19,
+      "non_ip": 36
+    },
+    "removed_by_kind": {
+      "domain_marker": 64,
+      "keyword_marker": 1
+    },
+    "files_without_marker": [
+      "ip/stream_biliintl.conf",
+      "non_ip/stream_biliintl.conf"
+    ],
+    "records": [
+      {
+        "file": "domainset/apple_cdn.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 16,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "domainset/cdn.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "domainset/download.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "domainset/game-download.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 14,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "domainset/icloud_private_relay.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "domainset/reject.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 23,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "domainset/reject_extra.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 37,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "domainset/reject_phishing.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 18,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "domainset/speedtest.conf",
+        "removed": 2,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          },
+          {
+            "line": 3293,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/ai.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 16,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/apple_services.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/cdn.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/china_ip.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 14,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/china_ip_ipv6.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 17,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/domestic.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/download.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/lan.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/neteasemusic.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/reject.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 39,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/stream.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 72,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/stream_eu.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 14,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/stream_hk.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 17,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/stream_jp.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 18,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/stream_kr.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/stream_tw.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 20,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/stream_us.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 25,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/telegram.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 16,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/telegram_asn.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 14,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/ai.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/apple_cn.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/apple_intelligence.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/apple_services.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/cdn.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/cloudmounter.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 11,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/direct.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/domestic.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/download.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/gitlab.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/global.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/lan.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/microsoft.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/microsoft_cdn.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 16,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/my_direct.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 11,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/my_git.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 11,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/my_plus.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 11,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/my_proxy.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 11,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/my_reject.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 11,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/my_tw.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 11,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/my_us.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 11,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/neteasemusic.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/reject-drop.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/reject-no-drop.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/reject-url-regex.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 14,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/reject.conf",
+        "removed": 2,
+        "markers": [
+          {
+            "line": 39,
+            "kind": "domain_marker"
+          },
+          {
+            "line": 220,
+            "kind": "keyword_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/sogouinput.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/stream.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 72,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/stream_eu.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 14,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/stream_hk.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 17,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/stream_jp.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 18,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/stream_kr.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/stream_tw.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 20,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/stream_us.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 25,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "non_ip/telegram.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 13,
+            "kind": "domain_marker"
+          }
+        ]
+      }
+    ]
+  },
+  "no_resolve_files": [
+    "ip/ai.yaml",
+    "ip/apple_services.yaml",
+    "ip/domestic.yaml",
+    "ip/download.yaml",
+    "ip/neteasemusic.yaml",
+    "ip/reject.no_resolve.yaml",
+    "ip/reject.yaml",
+    "ip/stream.yaml",
+    "ip/telegram.yaml",
+    "non_ip/apple_services.yaml",
+    "non_ip/reject.yaml"
+  ],
+  "mixed_no_resolve_files": [
+    {
+      "source": "ip/reject.conf",
+      "compatibility": "ip/reject.yaml",
+      "strict_non_ip": null,
+      "strict_no_resolve": "ip/reject.no_resolve.yaml",
+      "strict_resolve": "ip/reject.resolve.yaml",
+      "no_resolve_rules": 42,
+      "resolve_rules": 734
+    }
+  ],
+  "skipped_files": [
+    "DEPRECATED: domainset/reject_sukka.conf",
+    "DEPRECATED: non_ip/apple_cdn.conf",
+    "EMPTY: non_ip/cloudmounter.conf",
+    "DEPRECATED: non_ip/global_plus.conf",
+    "EMPTY: ip/stream_eu.conf",
+    "EMPTY: ip/stream_hk.conf",
+    "EMPTY: ip/stream_jp.conf",
+    "EMPTY: ip/stream_kr.conf",
+    "EMPTY: ip/stream_tw.conf",
+    "EMPTY: ip/stream_us.conf"
+  ],
+  "unsupported_rules": [
+    "non_ip/apple_services.conf:30: PROCESS-NAME,com.apple.geod",
+    "non_ip/apple_services.conf:31: PROCESS-NAME,mapspushd",
+    "non_ip/apple_services.conf:32: PROCESS-NAME,com.apple.Maps",
+    "non_ip/apple_services.conf:33: PROCESS-NAME,apsd",
+    "non_ip/apple_services.conf:34: PROCESS-NAME,fmfd",
+    "non_ip/apple_services.conf:35: PROCESS-NAME,findmydevice-user-agent",
+    "non_ip/apple_services.conf:36: PROCESS-NAME,CoreLocationAgent",
+    "non_ip/apple_services.conf:37: PROCESS-NAME,WeatherWidget",
+    "non_ip/cloudmounter.conf:12: AND,((DOMAIN-SUFFIX,sharepoint.com),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:13: AND,((DOMAIN-SUFFIX,sharepoint.com),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:14: AND,((DOMAIN-SUFFIX,sharepoint.com),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:15: AND,((DOMAIN-SUFFIX,sharepoint.com),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:16: AND,((DOMAIN-SUFFIX,graph.microsoft.com),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:17: AND,((DOMAIN-SUFFIX,graph.microsoft.com),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:18: AND,((DOMAIN-SUFFIX,graph.microsoft.com),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:19: AND,((DOMAIN-SUFFIX,graph.microsoft.com),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:20: AND,((DOMAIN,www.googleapis.com),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:21: AND,((DOMAIN,www.googleapis.com),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:22: AND,((DOMAIN,www.googleapis.com),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:23: AND,((DOMAIN,www.googleapis.com),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:24: AND,((DOMAIN,api.onedrive.com),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:25: AND,((DOMAIN,api.onedrive.com),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:26: AND,((DOMAIN,api.onedrive.com),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:27: AND,((DOMAIN,api.onedrive.com),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:28: AND,((DOMAIN-SUFFIX,storage.live.com),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:29: AND,((DOMAIN-SUFFIX,storage.live.com),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:30: AND,((DOMAIN-SUFFIX,storage.live.com),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:31: AND,((DOMAIN-SUFFIX,storage.live.com),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:32: AND,((DOMAIN-SUFFIX,files.1drv.com),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:33: AND,((DOMAIN-SUFFIX,files.1drv.com),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:34: AND,((DOMAIN-SUFFIX,files.1drv.com),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:35: AND,((DOMAIN-SUFFIX,files.1drv.com),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:36: AND,((DOMAIN-SUFFIX,my.microsoftpersonalcontent.com),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:37: AND,((DOMAIN-SUFFIX,my.microsoftpersonalcontent.com),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:38: AND,((DOMAIN-SUFFIX,my.microsoftpersonalcontent.com),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:39: AND,((DOMAIN-SUFFIX,my.microsoftpersonalcontent.com),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:40: AND,((DOMAIN-WILDCARD,*-medi*.svc.ms),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:41: AND,((DOMAIN-WILDCARD,*-medi*.svc.ms),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:42: AND,((DOMAIN-WILDCARD,*-medi*.svc.ms),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:43: AND,((DOMAIN-WILDCARD,*-medi*.svc.ms),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:44: AND,((DOMAIN-SUFFIX,upload.box.com),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:45: AND,((DOMAIN-SUFFIX,upload.box.com),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:46: AND,((DOMAIN-SUFFIX,upload.box.com),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:47: AND,((DOMAIN-SUFFIX,upload.box.com),(SRC-IP,192.168.0.0/16))",
+    "non_ip/direct.conf:196: PROCESS-NAME,v2ray",
+    "non_ip/direct.conf:197: PROCESS-NAME,xray",
+    "non_ip/direct.conf:198: PROCESS-NAME,ss-local",
+    "non_ip/direct.conf:199: PROCESS-NAME,clash",
+    "non_ip/direct.conf:200: PROCESS-NAME,ClashX",
+    "non_ip/direct.conf:201: PROCESS-NAME,trojan",
+    "non_ip/direct.conf:202: PROCESS-NAME,trojan-go",
+    "non_ip/direct.conf:203: PROCESS-NAME,privoxy",
+    "non_ip/direct.conf:204: PROCESS-NAME,cloudflared",
+    "non_ip/direct.conf:205: PROCESS-NAME,aria2c",
+    "non_ip/direct.conf:206: PROCESS-NAME,fdm",
+    "non_ip/direct.conf:207: PROCESS-NAME,Folx",
+    "non_ip/direct.conf:208: PROCESS-NAME,NetTransport",
+    "non_ip/direct.conf:209: PROCESS-NAME,Thunder",
+    "non_ip/direct.conf:210: PROCESS-NAME,ThunderVIP",
+    "non_ip/direct.conf:211: PROCESS-NAME,Transmission",
+    "non_ip/direct.conf:212: PROCESS-NAME,transmission-daemon",
+    "non_ip/direct.conf:213: PROCESS-NAME,transmission-qt",
+    "non_ip/direct.conf:214: PROCESS-NAME,BitComet",
+    "non_ip/direct.conf:215: PROCESS-NAME,uTorrent",
+    "non_ip/direct.conf:216: PROCESS-NAME,qbittorrent*",
+    "non_ip/direct.conf:217: PROCESS-NAME,DownloadService",
+    "non_ip/direct.conf:218: PROCESS-NAME,qBittorrent",
+    "non_ip/direct.conf:219: PROCESS-NAME,qbittorrent-nox",
+    "non_ip/direct.conf:220: PROCESS-NAME,WebTorrent",
+    "non_ip/direct.conf:221: PROCESS-NAME,WebTorrent Helper",
+    "non_ip/direct.conf:222: PROCESS-NAME,amuled",
+    "non_ip/direct.conf:223: PROCESS-NAME,LocalSend",
+    "non_ip/direct.conf:224: PROCESS-NAME,UUBooster",
+    "non_ip/direct.conf:225: PROCESS-NAME,tailscaled",
+    "non_ip/direct.conf:226: PROCESS-NAME,parsecd",
+    "non_ip/direct.conf:227: PROCESS-NAME,SunloginClient_Desktop",
+    "non_ip/direct.conf:228: PROCESS-NAME,SunloginClient_Helper",
+    "non_ip/direct.conf:229: PROCESS-NAME,BaiduNetdisk_mac",
+    "non_ip/direct.conf:230: PROCESS-NAME,Logi Options",
+    "non_ip/direct.conf:231: PROCESS-NAME,Logi Options Daemon",
+    "non_ip/my_direct.conf:13: PROCESS-NAME,nmap",
+    "non_ip/my_reject.conf:57: PROCESS-NAME,Tencent Lemon",
+    "non_ip/my_reject.conf:58: PROCESS-NAME,LemonMonitor",
+    "non_ip/my_reject.conf:59: PROCESS-NAME,LemonDaemon",
+    "non_ip/my_reject.conf:60: PROCESS-NAME,LemonAgent",
+    "non_ip/my_reject.conf:61: PROCESS-NAME,LemonService",
+    "non_ip/my_reject.conf:63: AND,((DOMAIN-KEYWORD,genuine), (DOMAIN-KEYWORD,autodesk))",
+    "non_ip/reject-no-drop.conf:57: AND,((PROTOCOL,UDP), (DOMAIN-SUFFIX,googlevideo.com))",
+    "non_ip/sogouinput.conf:25: PROCESS-NAME,SogouInput",
+    "non_ip/sogouinput.conf:26: PROCESS-NAME,SogouTaskManager",
+    "non_ip/sogouinput.conf:27: PROCESS-NAME,SogouServices",
+    "non_ip/stream.conf:394: PROCESS-NAME,com.amazon.avod.thirdpartyclient",
+    "non_ip/stream.conf:395: PROCESS-NAME,tv",
+    "non_ip/stream.conf:396: PROCESS-NAME,music",
+    "non_ip/stream.conf:397: PROCESS-NAME,com.bstar.intl",
+    "non_ip/stream.conf:398: PROCESS-NAME,com.hulu.plus",
+    "non_ip/stream.conf:399: PROCESS-NAME,com.tencent.ibg.joox",
+    "non_ip/stream.conf:400: PROCESS-NAME,com.linecorp.linetv",
+    "non_ip/stream.conf:401: PROCESS-NAME,com.netflix.mediaclient",
+    "non_ip/stream.conf:402: PROCESS-NAME,com.twgood.android",
+    "non_ip/stream.conf:403: PROCESS-NAME,tv.twitch.android.app",
+    "non_ip/stream.conf:404: PROCESS-NAME,com.viu.pad",
+    "non_ip/stream.conf:405: PROCESS-NAME,com.viu.phone",
+    "non_ip/stream.conf:406: PROCESS-NAME,com.vuclip.viu",
+    "non_ip/stream.conf:407: PROCESS-NAME,com.hktve.viutv",
+    "non_ip/stream_biliintl.conf:17: PROCESS-NAME,com.bstar.intl",
+    "non_ip/stream_hk.conf:49: PROCESS-NAME,com.viu.pad",
+    "non_ip/stream_hk.conf:50: PROCESS-NAME,com.viu.phone",
+    "non_ip/stream_hk.conf:51: PROCESS-NAME,com.vuclip.viu",
+    "non_ip/stream_hk.conf:52: PROCESS-NAME,com.hktve.viutv",
+    "non_ip/stream_hk.conf:53: PROCESS-NAME,com.bstar.intl",
+    "non_ip/stream_tw.conf:58: PROCESS-NAME,com.linecorp.linetv",
+    "non_ip/stream_us.conf:77: PROCESS-NAME,com.hulu.plus"
+  ],
+  "invalid_rules": [],
+  "category_warnings": [
+    "NON_IP_CONTAINS_IP: non_ip/apple_services.conf",
+    "NON_IP_CONTAINS_IP: non_ip/reject.conf",
+    "IP_CONTAINS_DOMAIN: ip/stream_biliintl.conf"
+  ],
+  "ios_lite": {
+    "enabled": true,
+    "generated_rulesets": 56,
+    "generated_by_category": {
+      "domain": 6,
+      "ip": 16,
+      "non_ip": 34
+    },
+    "total_rules": 20694,
+    "max_rules_per_set": 25000,
+    "excluded_files": [
+      {
+        "file": "domain/reject.yaml",
+        "reason": "large_base_ad_block_list"
+      },
+      {
+        "file": "domain/reject_extra.yaml",
+        "reason": "large_extra_ad_block_list"
+      },
+      {
+        "file": "domain/reject_phishing.yaml",
+        "reason": "large_phishing_list"
+      },
+      {
+        "file": "non_ip/reject-url-regex.yaml",
+        "reason": "high_cost_url_regex_ruleset"
+      }
+    ],
+    "modified_files": [
+      {
+        "file": "non_ip/ai.yaml",
+        "reason": "url_regex_removed",
+        "removed_rules": 1
+      },
+      {
+        "file": "non_ip/download.yaml",
+        "reason": "url_regex_removed",
+        "removed_rules": 1
+      },
+      {
+        "file": "non_ip/microsoft_cdn.yaml",
+        "reason": "url_regex_removed",
+        "removed_rules": 2
+      },
+      {
+        "file": "non_ip/reject.yaml",
+        "reason": "url_regex_removed",
+        "removed_rules": 3
+      }
+    ]
+  },
+  "default_branch": "main",
+  "safety_guard": {
+    "previous_files": 0,
+    "current_files": 60,
+    "previous_source_rules": 0,
+    "current_source_rules": 378326,
+    "file_drop_percent": 0.0,
+    "rule_drop_percent": 0.0,
+    "required_rulesets": [
+      "domain/apple_cdn.yaml",
+      "domain/cdn.yaml",
+      "non_ip/ai.yaml",
+      "non_ip/telegram.yaml",
+      "ip/ai.yaml",
+      "ip/telegram.yaml"
+    ],
+    "missing_rulesets": [],
+    "issues": [],
+    "manual_override": false
+  }
+}

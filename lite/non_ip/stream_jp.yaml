@@ -1,0 +1,38 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/stream_jp.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_set:
+  - "ds-linear-abematv.akamaized.net"
+
+domain_suffix_set:
+  - "dmm.com"
+  - "hulu.jp"
+  - "tver.jp"
+  - "abema.io"
+  - "abema.tv"
+  - "ameba.jp"
+  - "dmc.nico"
+  - "ameblo.jp"
+  - "dmm.co.jp"
+  - "socdm.com"
+  - "happyon.jp"
+  - "amebame.com"
+  - "hayabusa.io"
+  - "abema-tv.com"
+  - "hayabusa.dev"
+  - "nicovideo.jp"
+  - "winticket.jp"
+  - "amebaownd.com"
+  - "hjholdings.jp"
+  - "hayabusa.media"
+  - "amebaowndme.com"
+  - "dmm-extension.com"
+  - "dokusho-ojikan.jp"
+  - "location-plus.nhk.jp"
+
+user_agent_set:
+  - "AbemaTV*"
+  - "Niconico*"
+

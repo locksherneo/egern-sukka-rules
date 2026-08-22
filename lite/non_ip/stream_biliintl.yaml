@@ -1,0 +1,15 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/stream_biliintl.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_set:
+  - "this_ruleset_is_made_by_sukkaw.ruleset.skk.moe"
+  - "apm-misaka.biliapi.net"
+  - "upos-bstar-mirrorakam.akamaized.net"
+  - "upos-bstar1-mirrorakam.akamaized.net"
+
+domain_suffix_set:
+  - "bilibili.tv"
+  - "biliintl.com"
+

@@ -1,7 +1,10 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/reject.conf
+# Upstream license: AGPL-3.0
+
 no_resolve: true
 
 domain_set:
-  - "7h15.ru1353t.1s.m4d3.by.5ukk4w.skk.moe"
   - "dns.jd.com"
   - "dns.m.sm.cn"
   - "dns.weibo.cn"
@@ -186,7 +189,6 @@ domain_keyword_set:
   - "cp-home-pl-"
   - "tlauncher"
   - "packetsdk"
-  - "this_rule_set_is_made_by_sukkaw"
   - "umeng"
   - "adsby"
   - "adsdk"

@@ -1,0 +1,24 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/my_tw.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_set:
+  - "javdb.com"
+  - "mhgui.com"
+  - "avbebe.com"
+  - "hanime1.me"
+  - "yymanhua.com"
+  - "av.jkforum.net"
+  - "www.yymanhua.com"
+  - "www.manhuagui.com"
+
+domain_suffix_set:
+  - "cdn.hinet.net"
+
+domain_wildcard_set:
+  - "*.ffzy-online?.com"
+  - "*.ffzy-play?.com"
+  - "*.lz-cdn?.com"
+  - "*.lz-cdn??.com"
+

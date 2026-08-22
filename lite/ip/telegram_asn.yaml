@@ -1,0 +1,12 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/ip/telegram_asn.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+asn_set:
+  - "62041"
+  - "62014"
+  - "59930"
+  - "44907"
+  - "211157"
+

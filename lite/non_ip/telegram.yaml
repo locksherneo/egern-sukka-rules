@@ -1,0 +1,21 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/telegram.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_suffix_set:
+  - "t.me"
+  - "tx.me"
+  - "tg.dev"
+  - "legra.ph"
+  - "graph.org"
+  - "telega.one"
+  - "telegra.ph"
+  - "telesco.pe"
+  - "telegram.me"
+  - "tdesktop.com"
+  - "telegram.dog"
+  - "telegram.org"
+  - "telegram.space"
+  - "cdn-telegram.org"
+

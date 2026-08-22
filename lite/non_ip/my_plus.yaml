@@ -1,0 +1,23 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/my_plus.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_set:
+  - "simpcraft.com"
+  - "api.wakatime.com"
+  - "hv-monster-submit.skk.moe"
+  - "a1ewuiz2p7wdvw-ats.iot.us-west-2.amazonaws.com"
+
+domain_suffix_set:
+  - "kxcdn.com"
+  - "sososo.io"
+  - "18comic.org"
+  - "18comic.vip"
+  - "azurefd.net"
+  - "akamaihd.net"
+  - "akamaized.net"
+  - "vo.msecnd.net"
+  - "hentaiverse.org"
+  - "akamai-content-networks.com"
+

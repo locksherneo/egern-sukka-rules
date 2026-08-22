@@ -1,0 +1,12 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/apple_intelligence.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_set:
+  - "cp4.cloudflare.com"
+  - "apple-relay.apple.com"
+  - "gspe1-ssl.ls.apple.com"
+  - "apple-relay.cloudflare.com"
+  - "apple-relay.fastly-edge.com"
+

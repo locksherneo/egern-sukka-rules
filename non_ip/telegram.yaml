@@ -1,5 +1,6 @@
-domain_set:
-  - "7h15.ru1353t.1s.m4d3.by.5ukk4w.skk.moe"
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/telegram.conf
+# Upstream license: AGPL-3.0
 
 domain_suffix_set:
   - "t.me"

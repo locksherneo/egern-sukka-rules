@@ -1,0 +1,13 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/domainset/icloud_private_relay.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_set:
+  - "mask.icloud.com"
+  - "mask-h2.icloud.com"
+  - "mask.apple-dns.net"
+  - "mask-api.icloud.com"
+  - "mask-canary.icloud.com"
+  - "canary.mask.apple-dns.net"
+

@@ -1,0 +1,8 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/my_direct.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_suffix_set:
+  - "engage.cloudflareclient.com"
+

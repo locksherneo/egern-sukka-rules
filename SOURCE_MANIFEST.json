@@ -1,0 +1,415 @@
+{
+  "converter_version": "V1.3.0",
+  "upstream_build": "2026-08-22T05:44:10.125Z",
+  "upstream_url": "https://ruleset.skk.moe",
+  "source_files": [
+    {
+      "source": "List/domainset/apple_cdn.conf",
+      "bytes": 4598,
+      "sha256": "2cba990ebb05636744486f3391736980937a2293717da7733d3de5f49532eb25",
+      "upstream_content_hash": "8nUMBKPuv5hpO7O7PCZGi-9iEo7dB8jneGtIkh4UvKs"
+    },
+    {
+      "source": "List/domainset/cdn.conf",
+      "bytes": 88617,
+      "sha256": "f3355de355c1fe667b82e0e224b4c1c3932cf2b24b7fabe151ef0dc3ba051a63",
+      "upstream_content_hash": "vPt48rBk3C59Lt3QBDMf4FOhk1MyTVblsGr5YoXOlNM"
+    },
+    {
+      "source": "List/domainset/download.conf",
+      "bytes": 45658,
+      "sha256": "3e18eb0191cc7f27f349d073988cb3909a230a608650d2c47d8d20a6c361e712",
+      "upstream_content_hash": "ZjSCeyywLn6hYPnPClTnZ7nO_b2Hf9pvYGNh6ZzLLYQ"
+    },
+    {
+      "source": "List/domainset/game-download.conf",
+      "bytes": 1892,
+      "sha256": "3a31ec975e1d0a1d0ee588c249f3cd84c77943576f8081c682a7170fcc4ccfcd",
+      "upstream_content_hash": "PPeD9HYTsScsNzNZOvasSFGkz1Cx23bip3Gt4LPQPG8"
+    },
+    {
+      "source": "List/domainset/icloud_private_relay.conf",
+      "bytes": 611,
+      "sha256": "118e0ab653e296c8c588c9dbcee303d3ea9692031ec62aa2d9d01980670a53a8",
+      "upstream_content_hash": "wxb1pvki3KlKKm29a-IvXbEgsDB7dfospLGZ7Eyvtdo"
+    },
+    {
+      "source": "List/domainset/reject.conf",
+      "bytes": 3013170,
+      "sha256": "0a54351734a43fadd79da2c6e342f1780c4b940303d744b37ebfd1342eefb9b9",
+      "upstream_content_hash": "TPW54A8y47gK3A0QfAk029kDfBD6ICMG2LXIL__PkNo"
+    },
+    {
+      "source": "List/domainset/reject_extra.conf",
+      "bytes": 1472223,
+      "sha256": "4cd9ed6a548aade28ffa4cbbdd8902768bbbb5f8544f65c22f4059122768852a",
+      "upstream_content_hash": "ilgWBJnUYOSXEJeUW0A1HvX7JtF8KPREKp_3zIm3zsU"
+    },
+    {
+      "source": "List/domainset/reject_phishing.conf",
+      "bytes": 3146152,
+      "sha256": "af98d97b599b621f58cd3d53909bc2f0bab2a14fd5de2a2eb5b5b62f58fb54fe",
+      "upstream_content_hash": "CGYug0hEq-wQPcfeXZPOgPDZo31Nq7BzfiGzK3R12eo"
+    },
+    {
+      "source": "List/domainset/reject_sukka.conf",
+      "bytes": 165,
+      "sha256": "3ed8b018cfb4c387c4d6642bffd935a0b2c5dade3f1df49d97e1d4c3611a12ee",
+      "upstream_content_hash": null
+    },
+    {
+      "source": "List/domainset/speedtest.conf",
+      "bytes": 85817,
+      "sha256": "03758ca1693e5d168fe968fc70a08ff532b774921fbf1d1c6a40a9d1fa9faec3",
+      "upstream_content_hash": "X6B4M5iB5DmSBxIWqxtVUshC6n7c06BUsgRS2d5tNXM"
+    },
+    {
+      "source": "List/ip/ai.conf",
+      "bytes": 1435,
+      "sha256": "d2ab24c3306cf912cd1b425b1e1322245cbe0d8beee8badaab7d1bdaf332ea95",
+      "upstream_content_hash": "7ePsedVTy4qFWs1-ctLTUgKS5TU8TaQE2-2VkF36A0c"
+    },
+    {
+      "source": "List/ip/apple_services.conf",
+      "bytes": 814,
+      "sha256": "1bd5ce680fc1a4858e44e0b402abe9319181d6486a45d1b9196bfd4b44a5c5b8",
+      "upstream_content_hash": "bRySVapqq4_abI18vFGwj-CEf8gAlZ_NWBHmh4PHnZQ"
+    },
+    {
+      "source": "List/ip/cdn.conf",
+      "bytes": 571,
+      "sha256": "7d692c7f5b3e2c57f0d79ba47b1d541dd30f2b55fd213a582887828fe305d570",
+      "upstream_content_hash": "am-JrHj1Uc-4IZHIl1HU_gdAcPUK0qeVQPpndcVwmAU"
+    },
+    {
+      "source": "List/ip/china_ip.conf",
+      "bytes": 92816,
+      "sha256": "f3b52dae7a56d00b1a698ce9b706b6458e387c3a0b7b9ea8d91a62c83f1f97bf",
+      "upstream_content_hash": "TtaFcqJ9rhRYI3bYNnKTtA-lHzV6OWSEmHrdzsL5aEU"
+    },
+    {
+      "source": "List/ip/china_ip_ipv6.conf",
+      "bytes": 33647,
+      "sha256": "8f24839e2a68c7b417927c7b119c2bc2a83b52b736fe06c567d7b335622b20ad",
+      "upstream_content_hash": "j_SK0TRnTS0PScztR62dPqvA5eO3nnYhlx4vwgnHOo4"
+    },
+    {
+      "source": "List/ip/domestic.conf",
+      "bytes": 566,
+      "sha256": "99fd01e3b16bb3715dc2a07f5e3c4fde213c2031469256282c55aa7e1ed46494",
+      "upstream_content_hash": "MtVGNUmHRxFWknlTrfbeedjKU1N8e17g1u26PWcFVAU"
+    },
+    {
+      "source": "List/ip/download.conf",
+      "bytes": 894,
+      "sha256": "649094b68cf54ea2ce890e6f4e4e4540f23c8bb44aa8f18aef61a6d26ddc34ea",
+      "upstream_content_hash": "bmcIA93uRoY23mAYUxG3JYqIyadUFiIm5vlgufsm5Bo"
+    },
+    {
+      "source": "List/ip/lan.conf",
+      "bytes": 693,
+      "sha256": "0866aadd6e3a726914b2db4f001c00a2df739bf7639795b475aef4ab3f676806",
+      "upstream_content_hash": "AcyY1IsPOA4BBFgKlSC14TLEln-zD7bAz8N-cXfvVlg"
+    },
+    {
+      "source": "List/ip/neteasemusic.conf",
+      "bytes": 1094,
+      "sha256": "49783e54766c86852c17299e2aa0182e53fa31435e33f5b66a40c4e32705f29c",
+      "upstream_content_hash": "wrKkG7f_hRUDQTxJO-TnebGpuxm3eoV9-MPlcdmwuTc"
+    },
+    {
+      "source": "List/ip/reject.conf",
+      "bytes": 22216,
+      "sha256": "43fd81daa8d37edaa368b3b95872ea0a7106548b5a5ce151b561c4c472f8af9d",
+      "upstream_content_hash": "93uUe3VL_Eqndq4WsOFYhaf88w1a4qCnhBYXRwj1PIY"
+    },
+    {
+      "source": "List/ip/stream.conf",
+      "bytes": 1869,
+      "sha256": "e99e1e589e7bb2c92f9f68dbfed59e3e1182adfb78eeedb8d74d62b5156dc348",
+      "upstream_content_hash": "5KP69tA3ZiWzJLoVRbQzN3Nl5Aq80EEPLEmrcuKwTEk"
+    },
+    {
+      "source": "List/ip/stream_biliintl.conf",
+      "bytes": 422,
+      "sha256": "3374bd8c037a5e97cf93540ea75e3b84afbf84d5be1e08c4529dd813af4313ce",
+      "upstream_content_hash": null
+    },
+    {
+      "source": "List/ip/stream_eu.conf",
+      "bytes": 454,
+      "sha256": "a68eb796f1b1044f78b15c8782782dfd88bb33454e2cc89c2ce00c56e8b39f88",
+      "upstream_content_hash": "aU5fNVP34N4t8gJGwRh1yk67t7dLb-4SMoM7ZK6bHho"
+    },
+    {
+      "source": "List/ip/stream_hk.conf",
+      "bytes": 516,
+      "sha256": "63137a000c89bb5ae5679ff91c14808ca41d6da5c09064f4e29079b8c3bb60a7",
+      "upstream_content_hash": "5nuNWaiYLfrht_8ettsM6eEfnE4HopBtsFQxH1m7YFs"
+    },
+    {
+      "source": "List/ip/stream_jp.conf",
+      "bytes": 515,
+      "sha256": "69b1b205209c2694fcea0eeaa37560999406943aa7e21302d816acbfea55dd13",
+      "upstream_content_hash": "OEZi24wF6VAqylwvcqZwfibqamPn1uV5l2iibG7uKHI"
+    },
+    {
+      "source": "List/ip/stream_kr.conf",
+      "bytes": 451,
+      "sha256": "4af571f5c42708cecbb7fcd2e5a699731b376c4cbf7d01eb726d896fdcb76810",
+      "upstream_content_hash": "qQz7Hca319Jp4y8O88u-IHynBEUfLNOhcP8lvS3h0oQ"
+    },
+    {
+      "source": "List/ip/stream_tw.conf",
+      "bytes": 529,
+      "sha256": "875e3fe79abca6702bbe96d7859cf7a163c6328fcc21928f30627dc3cf16ea0d",
+      "upstream_content_hash": "ZnL0s6kVGQ_FBWm2Gjj602jUNFEM3IvCFh66DUXMxEo"
+    },
+    {
+      "source": "List/ip/stream_us.conf",
+      "bytes": 605,
+      "sha256": "8362f4a41e9c0e9f3f03305de97ef3c3f5a66a663703cd4a49f858f7c8ca5846",
+      "upstream_content_hash": "vLRtzA5DNXSqnpi10pc5pIjExfe8lagltBKI1cQXuFo"
+    },
+    {
+      "source": "List/ip/telegram.conf",
+      "bytes": 1116,
+      "sha256": "27f6bab896e98ec9631fd187ff5147fb101260fc7a322c0dc994bbd27ed0a81f",
+      "upstream_content_hash": "m4nwfeQVBUEMqFes8QCpK8lYP_bF0GXmWzqjOTXMHZs"
+    },
+    {
+      "source": "List/ip/telegram_asn.conf",
+      "bytes": 685,
+      "sha256": "d6d8f75ed1cae4c7de00c86a834c5f630abbc614f28f50f0a63e741ffa8d2cf9",
+      "upstream_content_hash": "q-4xTNYSx86R21Js4bVczyxB2YPM0F8HmBEt-jbA44Y"
+    },
+    {
+      "source": "List/non_ip/ai.conf",
+      "bytes": 1986,
+      "sha256": "7a63c471d545470987ab9e14493cf9d47b6227137b9308c99cd58d02485d62ff",
+      "upstream_content_hash": "l2ICeXyMY-UpWKEQ39CTDIyO5vkAewbHS5os3IHXpjE"
+    },
+    {
+      "source": "List/non_ip/apple_cdn.conf",
+      "bytes": 167,
+      "sha256": "41b51e82a7350e4a1ba378eb0148590c6f27f7f1f85eccfcdd0d96da19eb9113",
+      "upstream_content_hash": null
+    },
+    {
+      "source": "List/non_ip/apple_cn.conf",
+      "bytes": 826,
+      "sha256": "a31f9e98c5a4fdd585a7c78b6f3a1994015ab54a57a3d82057bd17f278f6a76f",
+      "upstream_content_hash": "X8kc8kYRsrmysFRnzFpY5Aw2PsmE-xu8_9PdEFl0RFk"
+    },
+    {
+      "source": "List/non_ip/apple_intelligence.conf",
+      "bytes": 631,
+      "sha256": "728d4a842e4507e042b929ed599b9a9a3de4e89ba4a29438594470dd40c1a5f8",
+      "upstream_content_hash": "mM7ABwLpXn1--ksvD1oM7ChSbu1LyTRYRKRZhT-up34"
+    },
+    {
+      "source": "List/non_ip/apple_services.conf",
+      "bytes": 1157,
+      "sha256": "9c32e8eb6e1d334a85b972791a0afc4b0fc81f57d3a80902a50c9168269f7602",
+      "upstream_content_hash": "D1NZxJ0P8otGR-pmWun3-MR6MHrTyyNdXdnytT_bmcg"
+    },
+    {
+      "source": "List/non_ip/cdn.conf",
+      "bytes": 3447,
+      "sha256": "110f955569b55bb09ca837c77dc8c43c99c75c3bee139d9049f3a6a25931b5c6",
+      "upstream_content_hash": "XSnANR2ej23eV7GFbIL1wqIzrZ_522OY7Ubzre7S8X4"
+    },
+    {
+      "source": "List/non_ip/cloudmounter.conf",
+      "bytes": 2701,
+      "sha256": "5f9e21b4b504848020e402f01da3b9decdc4d55fd0a75d2d3cf28afc5d269301",
+      "upstream_content_hash": "NtbqvgEh-dwABrU7fAsrILFNyrQZpiKnLFAquPMoyGo"
+    },
+    {
+      "source": "List/non_ip/direct.conf",
+      "bytes": 6287,
+      "sha256": "1ab4dbeca342bfa80c8eb18da5ea387543bf612a6c0a3f263cb78d46f2bbe0f2",
+      "upstream_content_hash": "l2wStpjwYHdII8YiXiRGwUOpcgS2RedyffJ40t2ohzE"
+    },
+    {
+      "source": "List/non_ip/domestic.conf",
+      "bytes": 22632,
+      "sha256": "56809cd8399666433acb1229c3a472667a32c86fc2a0b9861a5dca54020564aa",
+      "upstream_content_hash": "T_za7NN7pWO6RMdaJduvv6ssx377hsJAKf_gBeOSZrA"
+    },
+    {
+      "source": "List/non_ip/download.conf",
+      "bytes": 874,
+      "sha256": "741c1e7dda34bae2dd7611262c15431a66a50f6bdac24b96f070e1529479a594",
+      "upstream_content_hash": "Yl6ZX6RG9FLOB_BLmHsFfEIamzPZ6LaflomfWznqQkY"
+    },
+    {
+      "source": "List/non_ip/gitlab.conf",
+      "bytes": 521,
+      "sha256": "d43baf4354759c0baa342bb63d08f74f52d578ffc95648577221fc869522af17",
+      "upstream_content_hash": "LTG_b_qlPDErtuAnui5YowlQkajrvLWOskSLaX2sYQ0"
+    },
+    {
+      "source": "List/non_ip/global.conf",
+      "bytes": 33238,
+      "sha256": "0a48f1f27effe13fa8e3f55e347a59c4d40778adf62e6c18448b59a8a4e4b5d8",
+      "upstream_content_hash": "ZN9fRXPGIwvFkg6hO1C-QenBwugCQ5dZM7Dgcqm39aQ"
+    },
+    {
+      "source": "List/non_ip/global_plus.conf",
+      "bytes": 162,
+      "sha256": "7074c88fff7f47fd1b9aa33b2642dbce6a8e6654127792c5d26bbdc9d2fcac35",
+      "upstream_content_hash": null
+    },
+    {
+      "source": "List/non_ip/lan.conf",
+      "bytes": 1868,
+      "sha256": "de25958cecccfeb384d58d989ed407f8160575e4aa9a047f9d954eaef68788ae",
+      "upstream_content_hash": "wwd8KNRkyOkoZafVWZ8ujSXwLXKWA1-mfAtFs-3Jnkk"
+    },
+    {
+      "source": "List/non_ip/microsoft.conf",
+      "bytes": 2714,
+      "sha256": "1cc7293548c9f251adf9e373a57bfef3501f6e6756d8234aed5415a5ead4e439",
+      "upstream_content_hash": "TlRZX95xyWI49Tb2ygU_MHYt2KnmC63VK2RX27P-yFw"
+    },
+    {
+      "source": "List/non_ip/microsoft_cdn.conf",
+      "bytes": 3148,
+      "sha256": "92335ab98c940ce362f2c6e92a7431fcc07113700472558ad2aeeab663ff04ee",
+      "upstream_content_hash": "cdz2BuRetM0eMYjNwvVqM-Gw8RUxOjmdOuguXib1Dh4"
+    },
+    {
+      "source": "List/non_ip/my_direct.conf",
+      "bytes": 475,
+      "sha256": "335a830ffb386ec1a194c2292507abd93ae2888e03652942cca36fceefcabe9a",
+      "upstream_content_hash": "rzDRCysrJ9kdntEyqBObdHGmq6wlsFMHWA9dZOMIUOA"
+    },
+    {
+      "source": "List/non_ip/my_git.conf",
+      "bytes": 600,
+      "sha256": "64e736234911c988b7385f7c8181dcef5446684c12e374cb5a6d646cea5df1ab",
+      "upstream_content_hash": "Xzc-44f3Yfldk4aNlQ-cHjrZ8KwtpgQFW-mKanawi4k"
+    },
+    {
+      "source": "List/non_ip/my_plus.conf",
+      "bytes": 839,
+      "sha256": "7843cbc568e1ddc7d461c408330df221a55b2bbdc4c0b4f41dc22fa89bac0159",
+      "upstream_content_hash": "TGAQPrtDfvxvELiek3OsHA9cdymRiZbLXzR9FyqUTC8"
+    },
+    {
+      "source": "List/non_ip/my_proxy.conf",
+      "bytes": 824,
+      "sha256": "f50ffd80a0b14f5ea7c80cc1071f059be2f99593fe3b833a8c67d9d64360eda8",
+      "upstream_content_hash": "VIqX_FUsOlA5AClwSushXyjfpoJCYaw75QNopSaPS8w"
+    },
+    {
+      "source": "List/non_ip/my_reject.conf",
+      "bytes": 2020,
+      "sha256": "2b22194817a8c863d658b6f489e434f068002f3d138c4ea1411ecd4cddf47f9f",
+      "upstream_content_hash": "EGHciwAr36hzxnUmdXKrTzUowNF3VZLliKwpoyGEu1M"
+    },
+    {
+      "source": "List/non_ip/my_tw.conf",
+      "bytes": 730,
+      "sha256": "43236f465f900e427c045ffa4cb21b5d0bdc4dd1d12c23b3cb152c3237ad2cc6",
+      "upstream_content_hash": "DmaZDvVOSuz0iejGJjQ34QYlM7FkNoPVdtS8zgz_YxM"
+    },
+    {
+      "source": "List/non_ip/my_us.conf",
+      "bytes": 547,
+      "sha256": "4ac1fd96e10418fecba26b36bafc0b87f5068c9aea2bc17bfa5b9f1c7295c8b4",
+      "upstream_content_hash": "307fzYyqGyPzMZTUrMDPnNnLcR65SMFRxEL2tHBLQ5E"
+    },
+    {
+      "source": "List/non_ip/neteasemusic.conf",
+      "bytes": 608,
+      "sha256": "8e3017a526f50ed80deddf4b26339f25cc0f60ad1c4ef0667ec7080f3ee1215e",
+      "upstream_content_hash": "ENn2cYM3OsxN_KwEr498kSw6AxuL-ibfKIShjBVdSUo"
+    },
+    {
+      "source": "List/non_ip/reject-drop.conf",
+      "bytes": 1335,
+      "sha256": "4cfe98c96d52bc619c4f1cd653ead98bf48b063fe0db3f18e565459e74d2b5b2",
+      "upstream_content_hash": "ThUctphCm3VyD-btLUnI4q2F8o7Ty2MTqth8kZUGt0s"
+    },
+    {
+      "source": "List/non_ip/reject-no-drop.conf",
+      "bytes": 1865,
+      "sha256": "d6c6f2332480c8f6ecce5b3e39e51b539c69d743dd6495155b07888cec9d8130",
+      "upstream_content_hash": "LBBOK9eC3dff2Z4P7nGR0uCtpdrcU-QJtRJ6iZsr9nI"
+    },
+    {
+      "source": "List/non_ip/reject-url-regex.conf",
+      "bytes": 12192,
+      "sha256": "ebbcd4a75c2673eb597477d11f2fc4935ff10c8fbf68d0782097074c45c4f668",
+      "upstream_content_hash": "fmpihN0aKNYCBHo8_IOEI4gR44dKm-f-d04A9e927D4"
+    },
+    {
+      "source": "List/non_ip/reject.conf",
+      "bytes": 13524,
+      "sha256": "0620fd54346f03eb1a17cb18aeff45423cb801845aaa7a0eb7486277a1bff91a",
+      "upstream_content_hash": "TI2f7_KaaHNeBF_3PqL1Z5Exu2XSI0LIXSmVngobkfM"
+    },
+    {
+      "source": "List/non_ip/sogouinput.conf",
+      "bytes": 879,
+      "sha256": "46884691525c0fb7058ff6dd06fb2d78174c8ab2759114ccbaa65de8b4554ccc",
+      "upstream_content_hash": "sONBbCq9K1oAt_qZTCxXcfzJULX8xQkT44MbiKyNDs0"
+    },
+    {
+      "source": "List/non_ip/stream.conf",
+      "bytes": 10487,
+      "sha256": "e35f4e37b3e1a39c6c2a1c09750299c4318feb72b65a6e79a18b4a2b39f44ce6",
+      "upstream_content_hash": "zUz1VG1GEGDNA7O_peH1kT11FMk5EfMyBg-nwRQGpoE"
+    },
+    {
+      "source": "List/non_ip/stream_biliintl.conf",
+      "bytes": 616,
+      "sha256": "a1a01421c7a697b9bc545d058171139daadfa58554d86c164f97fa5f1a92e34c",
+      "upstream_content_hash": null
+    },
+    {
+      "source": "List/non_ip/stream_eu.conf",
+      "bytes": 704,
+      "sha256": "722e0d571b44a13a06f3d17a7d74206d9023d5f34a4702e6298e37c98566180d",
+      "upstream_content_hash": "0AtQ0cIRB4P9XGuJwl6u57YZWGh1LJ74T1fcd8hNCPI"
+    },
+    {
+      "source": "List/non_ip/stream_hk.conf",
+      "bytes": 1558,
+      "sha256": "7893cb28a7e5f5cea8a122445e3331c98227c18cd2e7ca8282ddbde2705176e4",
+      "upstream_content_hash": "b5fzRWVVGo1UODbyCiUQ6AYBcWZNUDvh2dxVIkJ2sBA"
+    },
+    {
+      "source": "List/non_ip/stream_jp.conf",
+      "bytes": 1221,
+      "sha256": "ad79821bb7d7c381e28f8b6972d487218a6176b87f60671901d9e2473f5c3645",
+      "upstream_content_hash": "o9eZA3Ruix5295CoJGACtVayWgYRhSEtWxODLo4k3hE"
+    },
+    {
+      "source": "List/non_ip/stream_kr.conf",
+      "bytes": 527,
+      "sha256": "40aa62a2122605612a5db88d51bb447d0d34cb95f8ab4b20cee4993f2aec33af",
+      "upstream_content_hash": "k47Qitigr-BxjFePp3pm2WJhUEzZZ6vtBZgI8YSsOL0"
+    },
+    {
+      "source": "List/non_ip/stream_tw.conf",
+      "bytes": 1612,
+      "sha256": "c3abeaed7b3783c55de5f7e8a718112f8fa477e919b3d7beaef6174433306025",
+      "upstream_content_hash": "ruEIgFz_Uz4nk9-1mFHd17vYiuY0KCWhK2jF3w1quU4"
+    },
+    {
+      "source": "List/non_ip/stream_us.conf",
+      "bytes": 1959,
+      "sha256": "54887849393eb274da450ac0479c6e054a2227811be810f99dc39a0c1072ee83",
+      "upstream_content_hash": "1c99FkWwVGA40EBMc9pM_6I83ihmuw58OKO8ssevRXg"
+    },
+    {
+      "source": "List/non_ip/telegram.conf",
+      "bytes": 834,
+      "sha256": "bccbd162554d2cb56b16cdd59fbc2d1abec645bd53c9db18460137ffccbbc2a2",
+      "upstream_content_hash": "N5Chi4AVgtC3LLLZlmGjDDDOXFQFBqND031e-y63yX8"
+    }
+  ]
+}

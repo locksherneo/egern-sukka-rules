@@ -1,0 +1,22 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/sogouinput.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_set:
+  - "oth.str.mdt.qq.com"
+
+domain_suffix_set:
+  - "beacon.qq.com"
+  - "get.sogou.com"
+  - "ime.sogou.com"
+  - "sginput.qq.com"
+  - "macime.sogou.com"
+  - "pinyin.sogou.com"
+  - "shouji.sogou.com"
+  - "account.sogou.com"
+
+user_agent_set:
+  - "SogouInput"
+  - "com.sogou.sogouinput.BaseKeyboard"
+

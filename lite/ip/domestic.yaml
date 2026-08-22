@@ -1,0 +1,11 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/ip/domestic.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+no_resolve: true
+
+ip_cidr_set:
+  - "140.205.1.0/24"
+  - "162.14.0.0/18"
+

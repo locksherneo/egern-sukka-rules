@@ -1,0 +1,23 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/stream_eu.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_set:
+  - "bbc.mp-pxcdn.com"
+  - "itvpnpmobile-a.akamaihd.net"
+
+domain_suffix_set:
+  - "itv.com"
+  - "bbc.co.uk"
+  - "bbci.co.uk"
+  - "tvlicensing.co.uk"
+
+domain_keyword_set:
+  - "bbcfmt"
+  - "uk-live"
+
+user_agent_set:
+  - "ITV_Player*"
+  - "BBCiPlayer*"
+

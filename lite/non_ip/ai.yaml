@@ -1,0 +1,60 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/ai.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_set:
+  - "ai.google.dev"
+  - "openrouter.ai"
+  - "api.github.com"
+  - "api.jetbrains.ai"
+  - "jules.google.com"
+  - "antigravity.google"
+  - "aida.googleapis.com"
+  - "antigravity-unleash.goog"
+  - "gateway.ai.cloudflare.com"
+  - "aisandbox-pa.googleapis.com"
+  - "robinfrontend-pa.googleapis.com"
+  - "alkalicore-pa.clients6.google.com"
+  - "daily-cloudcode-pa.googleapis.com"
+
+domain_suffix_set:
+  - "g.ai"
+  - "x.ai"
+  - "ai.com"
+  - "dify.ai"
+  - "meta.ai"
+  - "poe.com"
+  - "chat.com"
+  - "grok.com"
+  - "groq.com"
+  - "sora.com"
+  - "claude.ai"
+  - "jasper.ai"
+  - "claude.com"
+  - "openart.ai"
+  - "chatgpt.com"
+  - "clipdrop.co"
+  - "chatgpt.site"
+  - "deepmind.com"
+  - "anthropic.com"
+  - "gemini.google"
+  - "oaistatic.com"
+  - "perplexity.ai"
+  - "bard.google.com"
+  - "deepmind.google"
+  - "gemini.google.com"
+  - "notebooklm.google"
+  - "aistudio.google.com"
+  - "generativeai.google"
+  - "makersuite.google.com"
+  - "notebooklm.google.com"
+  - "geller-pa.googleapis.com"
+  - "cloudcode-pa.googleapis.com"
+  - "generativelanguage.googleapis.com"
+  - "proactivebackend-pa.googleapis.com"
+
+domain_keyword_set:
+  - "openai"
+  - "alkalimakersuite-pa.clients6.google.com"
+

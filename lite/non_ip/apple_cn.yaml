@@ -1,0 +1,18 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/apple_cn.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+domain_set:
+  - "api.smoot.apple.cn"
+  - "gs-loc-cn.apple.com"
+  - "appleintelligencefeedback.care.apple.com"
+
+domain_suffix_set:
+  - "apple.com.cn"
+  - "cn.apple.com"
+  - "icloud.com.cn"
+  - "cn.ls.apple.com"
+  - "cn-ssl.ls.apple.com"
+  - "gspe19-cn-ssl.ls.apple.com"
+

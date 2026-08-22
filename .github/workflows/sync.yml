@@ -1,11 +1,20 @@
-name: Sukka List to Egern V1.1.3 no_resolve Fix
+name: Sukka List to Egern V1.3.0 iOS Lite Semantic Compression
 
-on:
+"on":
   workflow_dispatch:
-
+    inputs:
+      force_rebuild:
+        description: "Rebuild even when the upstream build has not changed"
+        type: boolean
+        required: false
+        default: false
+      allow_large_changes:
+        description: "Allow a large drop in upstream files or rule coverage"
+        type: boolean
+        required: false
+        default: false
   schedule:
-    # 每 24 小时检查一次
-    # UTC 06:20
+    # GitHub Actions uses UTC: 06:20 UTC = 03:20 in Sao Paulo.
     - cron: "20 6 * * *"
 
 permissions:
@@ -18,219 +27,539 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
 
     env:
       SOURCE_BASE: https://ruleset.skk.moe
-      MIN_TOTAL_RULES: 20
+      SOURCE_MIRROR: https://ruleset-mirror.skk.moe
+      MIN_TOTAL_RULES: "20"
+      DOWNLOAD_WORKERS: "6"
+      MAX_SOURCE_FILE_MB: "40"
+      MAX_FILE_DROP_PERCENT: "20"
+      MAX_RULE_DROP_PERCENT: "25"
+      MIN_CONVERSION_COVERAGE: "99.0"
+      ENABLE_IOS_LITE: "true"
+      IOS_MAX_RULES_PER_SET: "25000"
+      IOS_EXCLUDE_LARGE_REJECT: "true"
+      IOS_EXCLUDE_REJECT_EXTRA: "true"
+      IOS_EXCLUDE_REJECT_PHISHING: "true"
+      IOS_EXCLUDE_URL_REGEX: "true"
+      ENABLE_DOMAIN_SEMANTIC_COMPRESSION: "true"
+      ENABLE_CIDR_SEMANTIC_COMPRESSION: "true"
+      FAIL_ON_INVALID_RULES: "true"
+      FAIL_ON_UNSUPPORTED_RULES: "false"
+      STRICT_CATEGORY_VALIDATION: "false"
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch || 'main' }}
+      FORCE_REBUILD: ${{ inputs.force_rebuild && 'true' || 'false' }}
+      ALLOW_LARGE_CHANGES: ${{ inputs.allow_large_changes && 'true' || 'false' }}
+      REQUIRED_RULESETS: >-
+        domain/apple_cdn.yaml,
+        domain/cdn.yaml,
+        non_ip/ai.yaml,
+        non_ip/telegram.yaml,
+        ip/ai.yaml,
+        ip/telegram.yaml
+      WORK_ROOT: /tmp/sukka-egern
+      LC_ALL: C.UTF-8
 
     steps:
-
-      # ==========================================================
-      # 1. Checkout
-      # ==========================================================
-
       - name: Checkout repository
-        uses: actions/checkout@v4
+        # actions/checkout v7.0.1, pinned to its verified upstream commit.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          fetch-depth: 0
-
-
-      # ==========================================================
-      # 2. Configure Git
-      # ==========================================================
+          fetch-depth: 1
 
       - name: Configure Git
         run: |
           set -euo pipefail
-
           git config --global user.name "github-actions[bot]"
           git config --global user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
 
+      - name: Prepare isolated workspace
+        run: |
+          set -euo pipefail
+          rm -rf "${WORK_ROOT}"
+          mkdir -p \
+            "${WORK_ROOT}/source/domainset" \
+            "${WORK_ROOT}/source/non_ip" \
+            "${WORK_ROOT}/source/ip" \
+            "${WORK_ROOT}/clean/domainset" \
+            "${WORK_ROOT}/clean/non_ip" \
+            "${WORK_ROOT}/clean/ip" \
+            "${WORK_ROOT}/output/domain" \
+            "${WORK_ROOT}/output/non_ip" \
+            "${WORK_ROOT}/output/ip" \
+            "${WORK_ROOT}/output/lite/domain" \
+            "${WORK_ROOT}/output/lite/non_ip" \
+            "${WORK_ROOT}/output/lite/ip" \
+            "${WORK_ROOT}/fragments"
 
-      # ==========================================================
-      # 3. Prepare workspace
-      # ==========================================================
-
-      - name: Prepare workspace
+      - name: Fetch upstream index with official mirror fallback
         run: |
           set -euo pipefail
 
-          rm -rf /tmp/sukka-egern
+          SELECTED=""
 
-          mkdir -p /tmp/sukka-egern/source/domainset
-          mkdir -p /tmp/sukka-egern/source/non_ip
-          mkdir -p /tmp/sukka-egern/source/ip
+          for CANDIDATE in "${SOURCE_BASE}" "${SOURCE_MIRROR}"; do
+            echo "Checking ${CANDIDATE}/"
 
-          mkdir -p /tmp/sukka-egern/output/domain
-          mkdir -p /tmp/sukka-egern/output/non_ip
-          mkdir -p /tmp/sukka-egern/output/ip
-
-
-      # ==========================================================
-      # 4. Fetch Sukka index
-      # ==========================================================
-
-      - name: Fetch Sukka index
-        run: |
-          set -euo pipefail
-
-          echo "Fetching Sukka index..."
-
-          curl \
-            --fail \
-            --location \
-            --silent \
-            --show-error \
-            --retry 5 \
-            --retry-delay 3 \
-            --retry-all-errors \
-            --connect-timeout 15 \
-            --max-time 60 \
-            "${SOURCE_BASE}/" \
-            -o /tmp/sukka-egern/index.html
-
-          if [ ! -s /tmp/sukka-egern/index.html ]; then
-            echo "ERROR: Sukka index is empty."
-            exit 1
-          fi
-
-          SIZE=$(wc -c < /tmp/sukka-egern/index.html)
-
-          echo "Index size: ${SIZE} bytes"
-
-          if [ "${SIZE}" -lt 500 ]; then
-            echo "ERROR: Sukka index looks abnormal."
-            exit 1
-          fi
-
-
-      # ==========================================================
-      # 5. Discover Sukka List rules
-      # ==========================================================
-
-      - name: Discover Sukka List rules
-        run: |
-          set -euo pipefail
-
-          grep -oE \
-            'List/(domainset|non_ip|ip)/[^"<> ]+\.conf' \
-            /tmp/sukka-egern/index.html \
-            | sort -u \
-            > /tmp/sukka-egern/files.txt
-
-          TOTAL=$(wc -l < /tmp/sukka-egern/files.txt)
-
-          DOMAINSET=$(
-            grep -c '^List/domainset/' \
-            /tmp/sukka-egern/files.txt || true
-          )
-
-          NON_IP=$(
-            grep -c '^List/non_ip/' \
-            /tmp/sukka-egern/files.txt || true
-          )
-
-          IP=$(
-            grep -c '^List/ip/' \
-            /tmp/sukka-egern/files.txt || true
-          )
-
-          echo ""
-          echo "===================================="
-          echo " Sukka List Rules"
-          echo "===================================="
-          echo " domainset : ${DOMAINSET}"
-          echo " non_ip    : ${NON_IP}"
-          echo " ip        : ${IP}"
-          echo "------------------------------------"
-          echo " TOTAL     : ${TOTAL}"
-          echo "===================================="
-
-          if [ "${TOTAL}" -lt "${MIN_TOTAL_RULES}" ]; then
-            echo "ERROR: Too few List rules discovered."
-            exit 1
-          fi
-
-          if [ "${DOMAINSET}" -eq 0 ] || \
-             [ "${NON_IP}" -eq 0 ] || \
-             [ "${IP}" -eq 0 ]; then
-
-            echo "ERROR: Missing List category."
-            exit 1
-          fi
-
-
-      # ==========================================================
-      # 6. Download Sukka List rules
-      # ==========================================================
-
-      - name: Download Sukka List rules
-        run: |
-          set -euo pipefail
-
-          SUCCESS=0
-
-          while IFS= read -r FILE; do
-
-            [ -z "${FILE}" ] && continue
-
-            RELATIVE="${FILE#List/}"
-
-            DEST="/tmp/sukka-egern/source/${RELATIVE}"
-
-            mkdir -p "$(dirname "${DEST}")"
-
-            echo "↓ ${FILE}"
-
-            curl \
+            if curl \
               --fail \
               --location \
               --silent \
               --show-error \
-              --retry 5 \
-              --retry-delay 3 \
+              --retry 3 \
+              --retry-delay 2 \
               --retry-all-errors \
               --connect-timeout 15 \
-              --max-time 120 \
-              "${SOURCE_BASE}/${FILE}" \
-              -o "${DEST}"
+              --max-time 90 \
+              "${CANDIDATE}/" \
+              -o "${WORK_ROOT}/index.html"; then
 
-            if [ ! -s "${DEST}" ]; then
-              echo "ERROR: Empty source file:"
-              echo "${FILE}"
-              exit 1
+              if [ "$(wc -c < "${WORK_ROOT}/index.html")" -ge 500 ]; then
+                SELECTED="${CANDIDATE}"
+                break
+              fi
             fi
+          done
 
-            SUCCESS=$((SUCCESS + 1))
+          if [ -z "${SELECTED}" ]; then
+            echo "ERROR: Both upstream index endpoints are unavailable."
+            exit 1
+          fi
 
-          done < /tmp/sukka-egern/files.txt
+          printf '%s\n' "${SELECTED}" > "${WORK_ROOT}/source_base.txt"
+          echo "Selected upstream: ${SELECTED}"
 
-          echo ""
-          echo "Downloaded ${SUCCESS} source files."
-
-
-      # ==========================================================
-      # 7. Convert Sukka List -> Egern
-      #
-      # V1.1.3:
-      # - 保留 no-resolve 语义
-      # - 文件内任一支持的 IP 规则带 no-resolve
-      #   => Egern 顶层 no_resolve: true
-      # ==========================================================
-
-      - name: Convert List rules to Egern
+      - name: Detect unchanged upstream build safely
+        id: upstream
         run: |
           set -euo pipefail
 
           python3 <<'PY'
+          from html.parser import HTMLParser
           from pathlib import Path
-          from collections import OrderedDict
           import json
+          import os
+          import re
 
-          SOURCE_ROOT = Path("/tmp/sukka-egern/source")
-          OUTPUT_ROOT = Path("/tmp/sukka-egern/output")
+          root = Path(os.environ["WORK_ROOT"])
+
+
+          class VisibleTextParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.parts = []
+
+              def handle_data(self, data):
+                  if data.strip():
+                      self.parts.append(data.strip())
+
+
+          parser = VisibleTextParser()
+          parser.feed(root.joinpath("index.html").read_text(
+              encoding="utf-8", errors="replace"
+          ))
+          visible = " ".join(parser.parts)
+          match = re.search(
+              r"Last\s+Build\s*:\s*([0-9T:.+\-Z]+)", visible, flags=re.IGNORECASE
+          )
+          current_build = match.group(1) if match else ""
+          root.joinpath("index_build.txt").write_text(
+              current_build + "\n", encoding="utf-8"
+          )
+
+          previous_build = ""
+          manifest_path = Path("SOURCE_MANIFEST.json")
+          if manifest_path.is_file():
+              try:
+                  previous_build = json.loads(
+                      manifest_path.read_text(encoding="utf-8")
+                  ).get("upstream_build", "")
+              except (ValueError, OSError):
+                  previous_build = ""
+
+          required_roots = ("domain", "non_ip", "ip", "lite")
+          repository_complete = all(Path(item).is_dir() for item in required_roots)
+          repository_complete = repository_complete and all(
+              Path(item).is_file()
+              for item in (
+                  "CONVERSION_AUDIT.json",
+                  "SOURCE_MANIFEST.json",
+                  "EGERN_RULES_STRICT.yaml",
+                  "EGERN_RULES_IOS_LITE.yaml",
+              )
+          )
+          force = os.environ.get("FORCE_REBUILD", "false").casefold() == "true"
+          changed = not (
+              current_build
+              and current_build == previous_build
+              and repository_complete
+              and not force
+          )
+
+          output_path = Path(os.environ["GITHUB_OUTPUT"])
+          with output_path.open("a", encoding="utf-8") as handle:
+              handle.write(f"changed={'true' if changed else 'false'}\n")
+
+          print(f"Upstream build: {current_build or 'not advertised'}")
+          print(f"Previous build: {previous_build or 'none'}")
+          print(f"Force rebuild:  {force}")
+          print("Rebuild required." if changed else "Upstream is unchanged; skipping rebuild.")
+          PY
+
+      - name: Discover Sukka List source files
+        if: steps.upstream.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          from collections import Counter
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import unquote, urlsplit
+          import os
+          import re
+
+          root = Path(os.environ["WORK_ROOT"])
+          source_base = root.joinpath("source_base.txt").read_text().strip()
+          source_host = urlsplit(source_base).netloc.casefold()
+          rule_path = re.compile(r"^List/(domainset|non_ip|ip)/[^/]+\.conf$")
+
+
+          class RuleIndexParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.files = set()
+
+              def handle_starttag(self, tag, attrs):
+                  if tag.casefold() != "a":
+                      return
+
+                  href = dict(attrs).get("href", "").strip()
+                  parsed = urlsplit(href)
+
+                  if parsed.netloc and parsed.netloc.casefold() != source_host:
+                      return
+
+                  path = unquote(parsed.path).lstrip("/")
+                  if rule_path.fullmatch(path):
+                      self.files.add(path)
+
+
+          parser = RuleIndexParser()
+          html = root.joinpath("index.html").read_text(
+              encoding="utf-8", errors="replace"
+          )
+          parser.feed(html)
+
+          # Fallback for future HTML renderers that do not use normal anchors.
+          if not parser.files:
+              parser.files.update(
+                  re.findall(r"List/(?:domainset|non_ip|ip)/[^\"<>\s]+\.conf", html)
+              )
+
+          files = sorted(parser.files)
+          counts = Counter(path.split("/", 2)[1] for path in files)
+          root.joinpath("files.txt").write_text(
+              "".join(f"{item}\n" for item in files), encoding="utf-8"
+          )
+
+          print("Sukka List source files:")
+          for category in ("domainset", "non_ip", "ip"):
+              print(f"  {category:10s} {counts[category]}")
+          print(f"  {'total':10s} {len(files)}")
+
+          if len(files) < int(os.environ["MIN_TOTAL_RULES"]):
+              raise SystemExit("ERROR: Too few upstream source files were found.")
+
+          if any(counts[category] == 0 for category in ("domainset", "non_ip", "ip")):
+              raise SystemExit("ERROR: At least one upstream category is missing.")
+          PY
+
+      - name: Download source rules concurrently and atomically
+        if: steps.upstream.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          from concurrent.futures import ThreadPoolExecutor, as_completed
+          from pathlib import Path
+          from urllib.error import HTTPError
+          from urllib.request import Request, urlopen
+          import os
+          import time
+
+          root = Path(os.environ["WORK_ROOT"])
+          source_base = root.joinpath("source_base.txt").read_text().strip()
+          files = root.joinpath("files.txt").read_text().splitlines()
+          workers = max(1, min(int(os.environ["DOWNLOAD_WORKERS"]), 12))
+          max_bytes = int(os.environ.get("MAX_SOURCE_FILE_MB", "40")) * 1024 * 1024
+
+
+          def download(relative):
+              destination = root / "source" / relative.removeprefix("List/")
+              temporary = destination.with_suffix(destination.suffix + ".part")
+              destination.parent.mkdir(parents=True, exist_ok=True)
+              request = Request(
+                  f"{source_base}/{relative}",
+                  headers={"User-Agent": "Egern-Sukka-Sync/1.3.0"},
+              )
+              last_error = None
+
+              for attempt in range(1, 6):
+                  try:
+                      with urlopen(request, timeout=90) as response:
+                          content_type = response.headers.get("Content-Type", "").casefold()
+                          if "text/html" in content_type:
+                              raise ValueError("upstream returned HTML instead of a rule file")
+
+                          content_length = response.headers.get("Content-Length", "")
+                          if content_length.isdigit() and int(content_length) > max_bytes:
+                              raise ValueError("upstream file exceeds the configured size limit")
+
+                          content = response.read(max_bytes + 1)
+
+                      if not content:
+                          raise ValueError("upstream file is empty")
+                      if len(content) > max_bytes:
+                          raise ValueError("upstream file exceeds the configured size limit")
+
+                      prefix = content[:1024].lstrip().lower()
+                      if prefix.startswith((b"<!doctype html", b"<html")):
+                          raise ValueError("upstream response contains an HTML error page")
+
+                      temporary.write_bytes(content)
+                      temporary.replace(destination)
+                      return relative, len(content)
+                  except Exception as exc:
+                      temporary.unlink(missing_ok=True)
+                      last_error = exc
+                      if isinstance(exc, HTTPError) and exc.code not in {
+                          408, 425, 429, 500, 502, 503, 504
+                      }:
+                          break
+                      if attempt < 5:
+                          time.sleep(min(2 ** attempt, 12))
+
+              raise RuntimeError(f"{relative}: {last_error}")
+
+
+          failures = []
+          total_bytes = 0
+
+          with ThreadPoolExecutor(max_workers=workers) as executor:
+              tasks = {executor.submit(download, item): item for item in files}
+
+              for task in as_completed(tasks):
+                  try:
+                      name, size = task.result()
+                      total_bytes += size
+                      print(f"OK {name} ({size:,} bytes)")
+                  except Exception as exc:
+                      failures.append(str(exc))
+                      print(f"ERROR {exc}")
+
+          if failures:
+              raise SystemExit(
+                  "ERROR: One or more upstream files could not be downloaded:\n"
+                  + "\n".join(failures)
+              )
+
+          print(f"Downloaded {len(files)} files; {total_bytes:,} bytes.")
+          PY
+
+      - name: Remove Sukka markers before rule conversion
+        if: steps.upstream.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          from collections import Counter
+          from pathlib import Path
+          import hashlib
+          import json
+          import os
+          import re
+
+          root = Path(os.environ["WORK_ROOT"])
+          source_root = root / "source"
+          clean_root = root / "clean"
+
+          marker_domain = "7h15.ru1353t.1s.m4d3.by.5ukk4w.skk.moe"
+          marker_keyword = re.compile(
+              r"^this[_-]?rule[_-]?set[_-]?is[_-]?made[_-]?by[_-]?sukkaw?$",
+              flags=re.IGNORECASE,
+          )
+          domain_rule_types = {
+              "DOMAIN", "DOMAIN-SUFFIX", "DOMAIN-KEYWORD", "DOMAIN-WILDCARD"
+          }
+          removed_by_category = Counter()
+          removed_by_kind = Counter()
+          records = []
+          missing_markers = []
+          source_manifest = []
+
+
+          def classify_marker(raw_line):
+              line = raw_line.lstrip("\ufeff").strip()
+              if not line or line.startswith(("#", ";", "//")):
+                  return None
+
+              parts = line.split(",", 2)
+              if len(parts) == 1:
+                  candidate = parts[0].strip().strip("\"'")
+              else:
+                  rule_type = parts[0].strip().upper()
+                  if rule_type not in domain_rule_types:
+                      return None
+                  candidate = parts[1].strip().strip("\"'")
+
+              normalized = candidate.casefold().rstrip(".")
+              while normalized.startswith((".", "*.", "+.")):
+                  if normalized.startswith(("*.", "+.")):
+                      normalized = normalized[2:]
+                  else:
+                      normalized = normalized[1:]
+
+              if normalized == marker_domain or normalized.endswith("." + marker_domain):
+                  return "domain_marker"
+
+              if marker_keyword.fullmatch(normalized):
+                  return "keyword_marker"
+
+              return None
+
+
+          for source in sorted(source_root.rglob("*.conf")):
+              relative = source.relative_to(source_root)
+              category = relative.parts[0]
+              raw_content = source.read_bytes()
+              text = raw_content.decode("utf-8-sig", errors="replace")
+              upstream_hash_match = re.search(
+                  r"\$content-hash-v1\$\s*:\s*([^\s$]+)", text
+              )
+              source_manifest.append(
+                  {
+                      "source": f"List/{relative.as_posix()}",
+                      "bytes": len(raw_content),
+                      "sha256": hashlib.sha256(raw_content).hexdigest(),
+                      "upstream_content_hash": (
+                          upstream_hash_match.group(1) if upstream_hash_match else None
+                      ),
+                  }
+              )
+              clean_lines = []
+              file_records = []
+
+              for line_number, line in enumerate(text.splitlines(), start=1):
+                  kind = classify_marker(line)
+                  if kind is None:
+                      clean_lines.append(line)
+                      continue
+
+                  removed_by_category[category] += 1
+                  removed_by_kind[kind] += 1
+                  file_records.append({"line": line_number, "kind": kind})
+                  # Preserve original line numbers for later audit diagnostics.
+                  clean_lines.append("")
+
+              destination = clean_root / relative
+              destination.parent.mkdir(parents=True, exist_ok=True)
+              destination.write_text(
+                  "\n".join(clean_lines) + "\n", encoding="utf-8"
+              )
+
+              if file_records:
+                  records.append(
+                      {
+                          "file": relative.as_posix(),
+                          "removed": len(file_records),
+                          "markers": file_records,
+                      }
+                  )
+              else:
+                  active_lines = [
+                      line.strip()
+                      for line in clean_lines
+                      if line.strip() and not line.strip().startswith(("#", ";", "//"))
+                  ]
+                  if active_lines:
+                      missing_markers.append(relative.as_posix())
+
+          audit = {
+              "domain_marker": marker_domain,
+              "keyword_marker_pattern": marker_keyword.pattern,
+              "source_files": len(list(source_root.rglob("*.conf"))),
+              "marker_files": len(records),
+              "removed_total": sum(removed_by_category.values()),
+              "removed_by_category": dict(sorted(removed_by_category.items())),
+              "removed_by_kind": dict(sorted(removed_by_kind.items())),
+              "files_without_marker": missing_markers,
+              "records": records,
+          }
+          root.joinpath("marker_audit.json").write_text(
+              json.dumps(audit, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          build_path = root / "index_build.txt"
+          manifest = {
+              "converter_version": "V1.3.0",
+              "upstream_build": (
+                  build_path.read_text(encoding="utf-8").strip()
+                  if build_path.is_file()
+                  else ""
+              ),
+              "upstream_url": (
+                  root.joinpath("source_base.txt").read_text().strip()
+                  if root.joinpath("source_base.txt").is_file()
+                  else "https://ruleset.skk.moe"
+              ),
+              "source_files": sorted(source_manifest, key=lambda item: item["source"]),
+          }
+          root.joinpath("SOURCE_MANIFEST.json").write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          print(f"Marker-bearing files: {audit['marker_files']}")
+          print(f"Removed marker rules: {audit['removed_total']}")
+          for category, count in audit["removed_by_category"].items():
+              print(f"  {category:10s} {count}")
+          for kind, count in audit["removed_by_kind"].items():
+              print(f"  {kind:16s} {count}")
+
+          if missing_markers:
+              print("Active files without a known marker: " + ", ".join(missing_markers))
+          PY
+
+      - name: Convert clean List rules to native Egern YAML
+        if: steps.upstream.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          from collections import Counter
+          from pathlib import Path
+          import ipaddress
+          import json
+          import os
+          import re
+
+          VERSION = "V1.3.0"
+          root = Path(os.environ["WORK_ROOT"])
+          source_root = root / "clean"
+          output_root = root / "output"
+          marker_domain = "7h15.ru1353t.1s.m4d3.by.5ukk4w.skk.moe"
+          domain_compression = (
+              os.environ.get("ENABLE_DOMAIN_SEMANTIC_COMPRESSION", "true").casefold()
+              == "true"
+          )
+          cidr_compression = (
+              os.environ.get("ENABLE_CIDR_SEMANTIC_COMPRESSION", "true").casefold()
+              == "true"
+          )
 
           TYPE_MAP = {
               "DOMAIN": "domain_set",
@@ -238,1372 +567,1603 @@ jobs:
               "DOMAIN-KEYWORD": "domain_keyword_set",
               "DOMAIN-REGEX": "domain_regex_set",
               "DOMAIN-WILDCARD": "domain_wildcard_set",
-
               "IP-CIDR": "ip_cidr_set",
               "IP-CIDR6": "ip_cidr6_set",
               "IP-ASN": "asn_set",
               "ASN": "asn_set",
               "GEOIP": "geoip_set",
-
               "URL-REGEX": "url_regex_set",
               "USER-AGENT": "user_agent_set",
               "DEST-PORT": "dest_port_set",
               "DST-PORT": "dest_port_set",
               "PROTOCOL": "protocol_set",
+              "SSID": "ssid_set",
+              "BSSID": "bssid_set",
+              "CELLULAR": "cellular_set",
           }
-
-          OUTPUT_ORDER = [
+          OUTPUT_ORDER = (
               "domain_set",
               "domain_suffix_set",
               "domain_keyword_set",
               "domain_regex_set",
               "domain_wildcard_set",
-
               "geoip_set",
               "ip_cidr_set",
               "ip_cidr6_set",
               "asn_set",
-
               "url_regex_set",
               "user_agent_set",
               "dest_port_set",
               "protocol_set",
-          ]
+              "ssid_set",
+              "bssid_set",
+              "cellular_set",
+          )
+          IP_TYPES = {"IP-CIDR", "IP-CIDR6", "IP-ASN", "ASN", "GEOIP"}
+          DOMAIN_KEYS = {"domain_set", "domain_suffix_set", "domain_wildcard_set"}
+          IP_KEYS = {"geoip_set", "ip_cidr_set", "ip_cidr6_set", "asn_set"}
 
-          IP_TYPES = {
-              "IP-CIDR",
-              "IP-CIDR6",
-              "IP-ASN",
-              "ASN",
-              "GEOIP",
-          }
-
-          stats = {
-              "generated": 0,
-              "deprecated": 0,
-              "empty": 0,
-              "unsupported": 0,
-              "no_resolve_files": 0,
-          }
-
+          stats = Counter()
+          generated_by_category = Counter()
           skipped_files = []
           unsupported_rules = []
+          invalid_rules = []
           no_resolve_files = []
+          mixed_files = []
+          category_warnings = []
 
 
-          # ------------------------------------------------------
-          # 所有值统一输出为安全双引号
-          # ------------------------------------------------------
-
-          def yaml_quote(value: str) -> str:
-              return json.dumps(
-                  value.strip(),
-                  ensure_ascii=False
+          def is_deprecated(text):
+              comments = [
+                  line.lstrip("# ").strip().casefold()
+                  for line in text.splitlines()
+                  if line.lstrip().startswith("#")
+              ]
+              has_deprecated_title = any(
+                  re.search(r"(?:ruleset|rule\s*set)\s*-\s*deprecated\b", line)
+                  for line in comments
               )
+              has_merge_notice = any(
+                  re.search(r"\b(?:this\s+file\s+)?has\s+been\s+merged\s+(?:with|into)\b", line)
+                  for line in comments
+              )
+              has_active_rule = any(
+                  line.strip() and not line.strip().startswith(("#", ";", "//"))
+                  for line in text.splitlines()
+              )
+              return (has_deprecated_title or has_merge_notice) and not has_active_rule
 
 
-          def add_value(groups, key, value):
+          def normalize_value(field, value):
               value = value.strip()
+              if not value:
+                  raise ValueError("empty rule value")
+
+              if field == "domain_suffix_set":
+                  value = value.lstrip(".").rstrip(".").casefold()
+              elif field in {"domain_set", "domain_wildcard_set"}:
+                  value = value.rstrip(".").casefold()
+              elif field == "geoip_set":
+                  value = value.upper()
+              elif field == "protocol_set":
+                  value = value.casefold()
+              elif field in {"ip_cidr_set", "ip_cidr6_set"}:
+                  network = ipaddress.ip_network(value, strict=False)
+                  expected = 4 if field == "ip_cidr_set" else 6
+                  if network.version != expected:
+                      raise ValueError(f"expected IPv{expected} CIDR")
+                  value = str(network)
 
               if not value:
-                  return
+                  raise ValueError("empty normalized rule value")
 
-              if key not in groups:
-                  groups[key] = []
-
-              if value not in groups[key]:
-                  groups[key].append(value)
+              return value
 
 
-          def is_deprecated(text: str) -> bool:
-              lower = text.lower()
+          def dedup_key(field, value):
+              if field in DOMAIN_KEYS or field in {"geoip_set", "protocol_set"}:
+                  return value.casefold()
+              if field == "asn_set":
+                  match = re.fullmatch(r"(?:AS)?(\d+)", value, re.IGNORECASE)
+                  return match.group(1) if match else value.casefold()
+              return value
 
-              return (
-                  "deprecated" in lower
-                  or "has been merged with" in lower
-                  or "has been merged into" in lower
-              )
 
-
-          # ------------------------------------------------------
-          # 写 Egern YAML
-          #
-          # no_resolve=True 时放在文件最前面
-          # ------------------------------------------------------
-
-          def write_yaml(
-              dst: Path,
-              groups,
-              no_resolve: bool = False
-          ) -> bool:
-
-              has_rules = any(
-                  groups.get(key)
-                  for key in OUTPUT_ORDER
-              )
-
-              if not has_rules:
+          def add_rule(groups, field, value, *, count_duplicates=True):
+              bucket = groups.setdefault(field, {})
+              key = dedup_key(field, value)
+              if key in bucket:
+                  if count_duplicates:
+                      stats["duplicates_removed"] += 1
                   return False
-
-              dst.parent.mkdir(
-                  parents=True,
-                  exist_ok=True
-              )
-
-              with dst.open(
-                  "w",
-                  encoding="utf-8"
-              ) as f:
-
-                  if no_resolve:
-                      f.write("no_resolve: true\n")
-
-                      # 分隔一下，便于阅读
-                      if has_rules:
-                          f.write("\n")
-
-                  for key in OUTPUT_ORDER:
-
-                      values = groups.get(key)
-
-                      if not values:
-                          continue
-
-                      f.write(f"{key}:\n")
-
-                      for value in values:
-                          f.write(
-                              f"  - {yaml_quote(value)}\n"
-                          )
-
-                      f.write("\n")
-
+              bucket[key] = value
               return True
 
 
-          # ------------------------------------------------------
-          # domainset
-          # ------------------------------------------------------
+          def domain_covered_by_suffix(domain, suffixes):
+              labels = domain.casefold().rstrip(".").split(".")
+              return any(".".join(labels[index:]) in suffixes for index in range(len(labels)))
 
-          def convert_domainset(src: Path, dst: Path):
 
-              text = src.read_text(
-                  encoding="utf-8",
-                  errors="ignore"
-              )
-
-              if is_deprecated(text):
-
-                  stats["deprecated"] += 1
-
-                  skipped_files.append(
-                      f"DEPRECATED: domainset/{src.name}"
-                  )
-
+          def optimize_domain_rules(groups):
+              if not domain_compression:
                   return
 
-              groups = OrderedDict()
+              suffix_bucket = groups.get("domain_suffix_set", {})
+              if not suffix_bucket:
+                  return
 
-              for raw in text.splitlines():
+              candidates = sorted(
+                  suffix_bucket.values(),
+                  key=lambda value: (value.count("."), value),
+              )
+              kept_suffixes = set()
 
-                  line = raw.strip()
-
-                  if not line:
-                      continue
-
-                  if line.startswith("#"):
-                      continue
-
-                  if line.startswith("."):
-
-                      add_value(
-                          groups,
-                          "domain_suffix_set",
-                          line[1:]
-                      )
-
+              for value in candidates:
+                  if domain_covered_by_suffix(value, kept_suffixes):
+                      stats["domain_suffixes_pruned"] += 1
                   else:
+                      kept_suffixes.add(value)
 
-                      add_value(
-                          groups,
-                          "domain_set",
-                          line
-                      )
+              groups["domain_suffix_set"] = {
+                  key: value
+                  for key, value in suffix_bucket.items()
+                  if value in kept_suffixes
+              }
 
-
-              if write_yaml(
-                  dst,
-                  groups,
-                  no_resolve=False
-              ):
-
-                  stats["generated"] += 1
-
-              else:
-
-                  stats["empty"] += 1
-
-                  skipped_files.append(
-                      f"EMPTY: domainset/{src.name}"
-                  )
+              exact_bucket = groups.get("domain_set", {})
+              if exact_bucket:
+                  optimized = {}
+                  for key, value in exact_bucket.items():
+                      if domain_covered_by_suffix(value, kept_suffixes):
+                          stats["exact_domains_pruned"] += 1
+                      else:
+                          optimized[key] = value
+                  if optimized:
+                      groups["domain_set"] = optimized
+                  else:
+                      groups.pop("domain_set", None)
 
 
-          # ------------------------------------------------------
-          # non_ip / ip
-          # ------------------------------------------------------
-
-          def convert_standard(src: Path, dst: Path, category: str):
-
-              text = src.read_text(
-                  encoding="utf-8",
-                  errors="ignore"
-              )
-
-              if is_deprecated(text):
-
-                  stats["deprecated"] += 1
-
-                  skipped_files.append(
-                      f"DEPRECATED: {category}/{src.name}"
-                  )
-
+          def optimize_ip_rules(groups):
+              if not cidr_compression:
                   return
 
-              groups = OrderedDict()
+              for field, counter_key in (
+                  ("ip_cidr_set", "ipv4_networks_pruned"),
+                  ("ip_cidr6_set", "ipv6_networks_pruned"),
+              ):
+                  bucket = groups.get(field, {})
+                  if len(bucket) < 2:
+                      continue
 
-              file_no_resolve = False
+                  networks = [ipaddress.ip_network(value) for value in bucket.values()]
+                  collapsed = list(ipaddress.collapse_addresses(networks))
+                  removed = len(networks) - len(collapsed)
+
+                  if removed > 0:
+                      stats[counter_key] += removed
+                      groups[field] = {
+                          str(network): str(network) for network in collapsed
+                      }
 
 
-              for raw in text.splitlines():
+          def rebuild_combined_ip_rules(combined, no_resolve_ip, resolving_ip):
+              for field in IP_KEYS:
+                  combined.pop(field, None)
 
+              for group in (no_resolve_ip, resolving_ip):
+                  for field, values in group.items():
+                      for value in values.values():
+                          add_rule(combined, field, value, count_duplicates=False)
+
+
+          def copy_non_ip_rules(source, destination):
+              for field, values in source.items():
+                  if field not in IP_KEYS:
+                      for value in values.values():
+                          add_rule(destination, field, value, count_duplicates=False)
+
+
+          def write_yaml(destination, groups, source_relative, *, no_resolve=False):
+              if not any(groups.get(field) for field in OUTPUT_ORDER):
+                  return False
+
+              destination.parent.mkdir(parents=True, exist_ok=True)
+              upstream_path = f"List/{source_relative.as_posix()}"
+              license_name = (
+                  "CC BY-SA 2.0"
+                  if upstream_path == "List/ip/china_ip.conf"
+                  else "AGPL-3.0"
+              )
+
+              with destination.open("w", encoding="utf-8", newline="\n") as handle:
+                  handle.write("# Upstream: Sukka Ruleset by Sukka (@SukkaW)\n")
+                  handle.write(f"# Source: https://ruleset.skk.moe/{upstream_path}\n")
+                  handle.write(f"# Upstream license: {license_name}\n\n")
+
+                  if no_resolve:
+                      handle.write("no_resolve: true\n\n")
+
+                  for field in OUTPUT_ORDER:
+                      values = groups.get(field)
+                      if not values:
+                          continue
+
+                      handle.write(f"{field}:\n")
+                      for value in values.values():
+                          quoted = json.dumps(value, ensure_ascii=False)
+                          handle.write(f"  - {quoted}\n")
+                      handle.write("\n")
+
+              stats["generated"] += 1
+              generated_by_category[destination.relative_to(output_root).parts[0]] += 1
+              return True
+
+
+          def register_empty(category, source):
+              stats["empty"] += 1
+              skipped_files.append(f"EMPTY: {category}/{source.name}")
+
+
+          def active_lines(text):
+              for line_number, raw in enumerate(text.splitlines(), start=1):
                   line = raw.strip()
+                  if line and not line.startswith(("#", ";", "//")):
+                      yield line_number, line
 
-                  if not line:
-                      continue
 
-                  if line.startswith("#"):
-                      continue
+          def convert_domainset(source):
+              relative = source.relative_to(source_root)
+              destination = output_root / "domain" / f"{source.stem}.yaml"
+              text = source.read_text(encoding="utf-8", errors="replace")
 
-                  if "," not in line:
+              if is_deprecated(text):
+                  stats["deprecated"] += 1
+                  skipped_files.append(f"DEPRECATED: {relative.as_posix()}")
+                  return
 
+              groups = {}
+              for line_number, line in active_lines(text):
+                  if "," in line:
                       stats["unsupported"] += 1
-
                       unsupported_rules.append(
-                          f"{category}/{src.name}: {line}"
+                          f"{relative.as_posix()}:{line_number}: {line}"
                       )
-
                       continue
 
+                  field = "domain_suffix_set" if line.startswith(".") else "domain_set"
+                  try:
+                      value = normalize_value(field, line)
+                  except ValueError as exc:
+                      stats["invalid"] += 1
+                      invalid_rules.append(
+                          f"{relative.as_posix()}:{line_number}: {exc}: {line}"
+                      )
+                      continue
 
-                  # 只拆第一个逗号
-                  rule_type, value = line.split(",", 1)
+                  add_rule(groups, field, value)
+                  stats["source_rule_lines"] += 1
 
+              optimize_domain_rules(groups)
+
+              if not write_yaml(destination, groups, relative):
+                  register_empty("domainset", source)
+
+
+          def convert_standard(source, category):
+              relative = source.relative_to(source_root)
+              destination = output_root / category / f"{source.stem}.yaml"
+              text = source.read_text(encoding="utf-8", errors="replace")
+
+              if is_deprecated(text):
+                  stats["deprecated"] += 1
+                  skipped_files.append(f"DEPRECATED: {relative.as_posix()}")
+                  return
+
+              combined = {}
+              resolving_ip = {}
+              no_resolve_ip = {}
+
+              for line_number, line in active_lines(text):
+                  if "," not in line:
+                      stats["unsupported"] += 1
+                      unsupported_rules.append(
+                          f"{relative.as_posix()}:{line_number}: {line}"
+                      )
+                      continue
+
+                  rule_type, raw_value = line.split(",", 1)
                   rule_type = rule_type.strip().upper()
-
-                  value = value.strip()
-
-
-                  # ----------------------------------------------
-                  # 先找对应 Egern field
-                  # ----------------------------------------------
-
                   field = TYPE_MAP.get(rule_type)
 
-                  if not field:
-
+                  if field is None:
                       stats["unsupported"] += 1
-
                       unsupported_rules.append(
-                          f"{category}/{src.name}: {line}"
+                          f"{relative.as_posix()}:{line_number}: {line}"
                       )
-
                       continue
 
-
-                  # ----------------------------------------------
-                  # no-resolve 语义转换
-                  #
-                  # Sukka:
-                  #
-                  # IP-CIDR,1.1.1.0/24,no-resolve
-                  #
-                  # Egern:
-                  #
-                  # no_resolve: true
-                  #
-                  # ip_cidr_set:
-                  #   - "1.1.1.0/24"
-                  # ----------------------------------------------
+                  flags = []
+                  value = raw_value.strip()
 
                   if rule_type in IP_TYPES:
+                      parts = [item.strip() for item in raw_value.split(",")]
+                      value = parts[0]
+                      flags = [item.casefold().replace("_", "-") for item in parts[1:]]
+                      unknown_flags = [item for item in flags if item != "no-resolve"]
 
-                      suffix = ",no-resolve"
+                      if unknown_flags:
+                          stats["unsupported"] += 1
+                          unsupported_rules.append(
+                              f"{relative.as_posix()}:{line_number}: "
+                              f"unsupported flags {unknown_flags}: {line}"
+                          )
+                          continue
 
-                      if value.lower().endswith(suffix):
-
-                          file_no_resolve = True
-
-                          value = value[
-                              :-len(suffix)
-                          ].strip()
-
-
-                  if not value:
-
-                      stats["unsupported"] += 1
-
-                      unsupported_rules.append(
-                          f"{category}/{src.name}: {line}"
+                  try:
+                      value = normalize_value(field, value)
+                  except ValueError as exc:
+                      stats["invalid"] += 1
+                      invalid_rules.append(
+                          f"{relative.as_posix()}:{line_number}: {exc}: {line}"
                       )
-
                       continue
 
-
-                  add_value(
-                      groups,
-                      field,
-                      value
-                  )
-
-
-              if write_yaml(
-                  dst,
-                  groups,
-                  no_resolve=file_no_resolve
-              ):
-
-                  stats["generated"] += 1
-
-
-                  if file_no_resolve:
-
-                      stats["no_resolve_files"] += 1
-
-                      no_resolve_files.append(
-                          f"{category}/{src.name}"
+                  if marker_domain in value.casefold():
+                      raise RuntimeError(
+                          f"Marker survived pre-conversion cleaning: "
+                          f"{relative.as_posix()}:{line_number}"
                       )
 
-              else:
+                  add_rule(combined, field, value)
+                  stats["source_rule_lines"] += 1
 
-                  stats["empty"] += 1
+                  if rule_type in IP_TYPES:
+                      target = no_resolve_ip if "no-resolve" in flags else resolving_ip
+                      add_rule(target, field, value, count_duplicates=False)
 
-                  skipped_files.append(
-                      f"EMPTY: {category}/{src.name}"
+              optimize_domain_rules(combined)
+              optimize_ip_rules(no_resolve_ip)
+              optimize_ip_rules(resolving_ip)
+              rebuild_combined_ip_rules(combined, no_resolve_ip, resolving_ip)
+
+              has_real_domains = any(
+                  combined.get(field)
+                  for field in (
+                      "domain_set",
+                      "domain_suffix_set",
+                      "domain_keyword_set",
+                      "domain_regex_set",
+                      "domain_wildcard_set",
+                  )
+              )
+              has_ip_rules = any(combined.get(field) for field in IP_KEYS)
+
+              if category == "non_ip" and has_ip_rules:
+                  category_warnings.append(
+                      f"NON_IP_CONTAINS_IP: {relative.as_posix()}"
+                  )
+              if category == "ip" and has_real_domains:
+                  category_warnings.append(
+                      f"IP_CONTAINS_DOMAIN: {relative.as_posix()}"
+                  )
+
+              has_no_resolve_ip = any(no_resolve_ip.values())
+              has_resolving_ip = any(resolving_ip.values())
+
+              # The historical filename remains compatible with V1.1.3.
+              # Egern applies no_resolve to every IP rule in one ruleset.
+              if not write_yaml(
+                  destination,
+                  combined,
+                  relative,
+                  no_resolve=has_no_resolve_ip,
+              ):
+                  register_empty(category, source)
+                  return
+
+              if has_no_resolve_ip:
+                  no_resolve_files.append(destination.relative_to(output_root).as_posix())
+
+              if has_no_resolve_ip and has_resolving_ip:
+                  # Companion files preserve per-rule DNS semantics exactly.
+                  # Place optional non-IP rules before all strict IP companions.
+                  resolve_groups = {}
+                  for field, values in resolving_ip.items():
+                      for value in values.values():
+                          add_rule(resolve_groups, field, value, count_duplicates=False)
+
+                  non_ip_groups = {}
+                  copy_non_ip_rules(combined, non_ip_groups)
+                  strict_non_ip = None
+                  if any(non_ip_groups.values()):
+                      strict_non_ip = destination.with_name(
+                          f"{source.stem}.non_ip.yaml"
+                      )
+                      write_yaml(strict_non_ip, non_ip_groups, relative, no_resolve=False)
+
+                  strict_no_resolve = destination.with_name(
+                      f"{source.stem}.no_resolve.yaml"
+                  )
+                  strict_resolve = destination.with_name(f"{source.stem}.resolve.yaml")
+
+                  write_yaml(
+                      strict_no_resolve,
+                      no_resolve_ip,
+                      relative,
+                      no_resolve=True,
+                  )
+                  write_yaml(strict_resolve, resolve_groups, relative, no_resolve=False)
+                  no_resolve_files.append(
+                      strict_no_resolve.relative_to(output_root).as_posix()
+                  )
+                  stats["mixed_no_resolve_files"] += 1
+                  stats["strict_companion_files"] += 2 + (1 if strict_non_ip else 0)
+                  mixed_files.append(
+                      {
+                          "source": relative.as_posix(),
+                          "compatibility": destination.relative_to(output_root).as_posix(),
+                          "strict_non_ip": (
+                              strict_non_ip.relative_to(output_root).as_posix()
+                              if strict_non_ip
+                              else None
+                          ),
+                          "strict_no_resolve": strict_no_resolve.relative_to(
+                              output_root
+                          ).as_posix(),
+                          "strict_resolve": strict_resolve.relative_to(output_root).as_posix(),
+                          "no_resolve_rules": sum(
+                              len(values) for values in no_resolve_ip.values()
+                          ),
+                          "resolve_rules": sum(
+                              len(values) for values in resolving_ip.values()
+                          ),
+                      }
                   )
 
 
-          # ------------------------------------------------------
-          # Convert domainset
-          # ------------------------------------------------------
+          for source in sorted((source_root / "domainset").glob("*.conf")):
+              convert_domainset(source)
 
-          for src in sorted(
-              (SOURCE_ROOT / "domainset").glob("*.conf")
+          for category in ("non_ip", "ip"):
+              for source in sorted((source_root / category).glob("*.conf")):
+                  convert_standard(source, category)
+
+          stats["no_resolve_files"] = len(no_resolve_files)
+          total_active_rules = (
+              stats["source_rule_lines"] + stats["unsupported"] + stats["invalid"]
+          )
+          conversion_coverage = (
+              stats["source_rule_lines"] * 100.0 / total_active_rules
+              if total_active_rules
+              else 0.0
+          )
+
+          if stats["invalid"] and (
+              os.environ.get("FAIL_ON_INVALID_RULES", "true").casefold() == "true"
           ):
-
-              dst = (
-                  OUTPUT_ROOT
-                  / "domain"
-                  / f"{src.stem}.yaml"
+              raise SystemExit(
+                  "ERROR: Invalid source rules detected:\n" + "\n".join(invalid_rules[:20])
               )
 
-              convert_domainset(
-                  src,
-                  dst
-              )
-
-
-          # ------------------------------------------------------
-          # Convert non_ip
-          # ------------------------------------------------------
-
-          for src in sorted(
-              (SOURCE_ROOT / "non_ip").glob("*.conf")
+          if stats["unsupported"] and (
+              os.environ.get("FAIL_ON_UNSUPPORTED_RULES", "false").casefold() == "true"
           ):
-
-              dst = (
-                  OUTPUT_ROOT
-                  / "non_ip"
-                  / f"{src.stem}.yaml"
+              raise SystemExit(
+                  "ERROR: Unsupported source rules detected:\n"
+                  + "\n".join(unsupported_rules[:20])
               )
 
-              convert_standard(
-                  src,
-                  dst,
-                  "non_ip"
-              )
-
-
-          # ------------------------------------------------------
-          # Convert ip
-          # ------------------------------------------------------
-
-          for src in sorted(
-              (SOURCE_ROOT / "ip").glob("*.conf")
+          if conversion_coverage < float(
+              os.environ.get("MIN_CONVERSION_COVERAGE", "99.0")
           ):
-
-              dst = (
-                  OUTPUT_ROOT
-                  / "ip"
-                  / f"{src.stem}.yaml"
+              raise SystemExit(
+                  f"ERROR: Conversion coverage too low: {conversion_coverage:.4f}%"
               )
 
-              convert_standard(
-                  src,
-                  dst,
-                  "ip"
+          if category_warnings and (
+              os.environ.get("STRICT_CATEGORY_VALIDATION", "false").casefold() == "true"
+          ):
+              raise SystemExit(
+                  "ERROR: Rule category violations:\n" + "\n".join(category_warnings)
               )
-
-
-          # ------------------------------------------------------
-          # Statistics
-          # ------------------------------------------------------
-
-          print("")
-          print("====================================")
-          print(" Sukka -> Egern V1.1.3")
-          print("====================================")
-          print(f" Generated        : {stats['generated']}")
-          print(f" no_resolve files : {stats['no_resolve_files']}")
-          print(f" Deprecated       : {stats['deprecated']}")
-          print(f" Empty            : {stats['empty']}")
-          print(f" Unsupported      : {stats['unsupported']}")
-          print("====================================")
-
-
-          # ------------------------------------------------------
-          # Reports
-          # ------------------------------------------------------
-
-          if skipped_files:
-
-              Path(
-                  "/tmp/sukka-egern/skipped.txt"
-              ).write_text(
-                  "\n".join(skipped_files),
-                  encoding="utf-8"
-              )
-
-
-          if unsupported_rules:
-
-              Path(
-                  "/tmp/sukka-egern/unsupported.txt"
-              ).write_text(
-                  "\n".join(unsupported_rules),
-                  encoding="utf-8"
-              )
-
-
-          if no_resolve_files:
-
-              Path(
-                  "/tmp/sukka-egern/no_resolve.txt"
-              ).write_text(
-                  "\n".join(no_resolve_files),
-                  encoding="utf-8"
-              )
-
-              print("")
-              print("no_resolve enabled:")
-
-              for item in no_resolve_files:
-                  print(f"  {item}")
-
 
           if stats["generated"] == 0:
+              raise SystemExit("ERROR: No Egern rulesets were generated.")
 
-              raise SystemExit(
-                  "ERROR: No Egern rules generated."
+          marker_audit = json.loads(root.joinpath("marker_audit.json").read_text())
+          report = {
+              "version": VERSION,
+              "stats": dict(stats),
+              "conversion_coverage_percent": round(conversion_coverage, 6),
+              "generated_by_category": dict(sorted(generated_by_category.items())),
+              "marker_audit": marker_audit,
+              "no_resolve_files": sorted(no_resolve_files),
+              "mixed_no_resolve_files": mixed_files,
+              "skipped_files": skipped_files,
+              "unsupported_rules": unsupported_rules,
+              "invalid_rules": invalid_rules,
+              "category_warnings": category_warnings,
+          }
+          root.joinpath("conversion_audit.json").write_text(
+              json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          print(f"Sukka -> Egern {VERSION}")
+          print(f"  Generated rulesets:    {stats['generated']}")
+          print(f"  Clean source rules:    {stats['source_rule_lines']}")
+          print(f"  Removed markers:       {marker_audit['removed_total']}")
+          print(f"  Removed duplicates:    {stats['duplicates_removed']}")
+          print(f"  Covered domain suffix: {stats['domain_suffixes_pruned']}")
+          print(f"  Covered exact domains: {stats['exact_domains_pruned']}")
+          print(f"  Merged IPv4 networks:  {stats['ipv4_networks_pruned']}")
+          print(f"  Merged IPv6 networks:  {stats['ipv6_networks_pruned']}")
+          print(f"  Conversion coverage:   {conversion_coverage:.4f}%")
+          print(f"  no_resolve files:      {stats['no_resolve_files']}")
+          print(f"  Mixed semantic files:  {stats['mixed_no_resolve_files']}")
+          print(f"  Strict companion files:{stats['strict_companion_files']}")
+          print(f"  Deprecated files:      {stats['deprecated']}")
+          print(f"  Empty files:           {stats['empty']}")
+          print(f"  Unsupported lines:     {stats['unsupported']}")
+          print(f"  Invalid lines:         {stats['invalid']}")
+          print(f"  Category warnings:     {len(category_warnings)}")
+
+          for item in mixed_files:
+              print(
+                  f"MIXED {item['source']}: "
+                  f"{item['no_resolve_rules']} no-resolve / "
+                  f"{item['resolve_rules']} normal"
               )
-
           PY
 
-
-      # ==========================================================
-      # 8. Basic output validation
-      # ==========================================================
-
-      - name: Validate Egern output
-        run: |
-          set -euo pipefail
-
-          DOMAIN=$(
-            find /tmp/sukka-egern/output/domain \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
-
-          NON_IP=$(
-            find /tmp/sukka-egern/output/non_ip \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
-
-          IP=$(
-            find /tmp/sukka-egern/output/ip \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
-
-          TOTAL=$((DOMAIN + NON_IP + IP))
-
-
-          echo ""
-          echo "===================================="
-          echo " Egern Rule Sets"
-          echo "===================================="
-          echo " domain : ${DOMAIN}"
-          echo " non_ip : ${NON_IP}"
-          echo " ip     : ${IP}"
-          echo "------------------------------------"
-          echo " TOTAL  : ${TOTAL}"
-          echo "===================================="
-
-
-          if [ "${TOTAL}" -lt "${MIN_TOTAL_RULES}" ]; then
-
-            echo "ERROR: Too few Egern rule sets."
-
-            exit 1
-          fi
-
-
-          if [ "${DOMAIN}" -eq 0 ] || \
-             [ "${NON_IP}" -eq 0 ] || \
-             [ "${IP}" -eq 0 ]; then
-
-            echo "ERROR: One or more categories are empty."
-
-            exit 1
-          fi
-
-
-          EMPTY=0
-
-
-          while IFS= read -r FILE; do
-
-            if [ ! -s "${FILE}" ]; then
-
-              echo "ERROR: Empty YAML:"
-              echo "${FILE}"
-
-              EMPTY=$((EMPTY + 1))
-
-            fi
-
-          done < <(
-            find /tmp/sukka-egern/output \
-              -type f \
-              -name "*.yaml"
-          )
-
-
-          if [ "${EMPTY}" -ne 0 ]; then
-            exit 1
-          fi
-
-
-      # ==========================================================
-      # 9. Install PyYAML
-      # ==========================================================
-
       - name: Install YAML validator
+        if: steps.upstream.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet 'PyYAML>=6,<7'
+
+      - name: Build iOS Lite rules and strict Egern configuration fragments
+        if: steps.upstream.outputs.changed == 'true'
         run: |
           set -euo pipefail
 
-          python3 -m pip install \
-            --quiet \
-            pyyaml
+          python3 <<'PY'
+          from collections import Counter
+          from pathlib import Path
+          import json
+          import os
+          import yaml
+
+          root = Path(os.environ["WORK_ROOT"])
+          output = root / "output"
+          lite_root = output / "lite"
+          fragments_root = root / "fragments"
+          audit_path = root / "conversion_audit.json"
+          audit = json.loads(audit_path.read_text(encoding="utf-8"))
+          loader = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+          enabled = os.environ.get("ENABLE_IOS_LITE", "true").casefold() == "true"
+          max_rules = int(os.environ.get("IOS_MAX_RULES_PER_SET", "25000"))
+          exclude_large = (
+              os.environ.get("IOS_EXCLUDE_LARGE_REJECT", "true").casefold() == "true"
+          )
+          exclude_extra = (
+              os.environ.get("IOS_EXCLUDE_REJECT_EXTRA", "true").casefold() == "true"
+          )
+          exclude_phishing = (
+              os.environ.get("IOS_EXCLUDE_REJECT_PHISHING", "true").casefold() == "true"
+          )
+          exclude_url_regex = (
+              os.environ.get("IOS_EXCLUDE_URL_REGEX", "true").casefold() == "true"
+          )
+          repository = os.environ.get(
+              "GITHUB_REPOSITORY", "locksherneo/egern-sukka-rules"
+          )
+          default_branch = os.environ.get("DEFAULT_BRANCH", "main") or "main"
+          raw_base = (
+              f"https://raw.githubusercontent.com/{repository}/{default_branch}"
+          )
+          excluded_files = []
+          modified_files = []
+          lite_counts = Counter()
+          lite_total_rules = 0
 
 
-      # ==========================================================
-      # 10. Parse + semantic validation
-      # ==========================================================
+          def exclusion_reason(relative):
+              path = relative.as_posix()
+              if exclude_large and path == "domain/reject.yaml":
+                  return "large_base_ad_block_list"
+              if exclude_extra and path == "domain/reject_extra.yaml":
+                  return "large_extra_ad_block_list"
+              if exclude_phishing and path == "domain/reject_phishing.yaml":
+                  return "large_phishing_list"
+              if exclude_url_regex and path == "non_ip/reject-url-regex.yaml":
+                  return "high_cost_url_regex_ruleset"
+              return None
 
-      - name: Parse Egern YAML
+
+          def write_lite_yaml(destination, source, data):
+              destination.parent.mkdir(parents=True, exist_ok=True)
+              original_lines = source.read_text(encoding="utf-8").splitlines()
+              headers = []
+              for line in original_lines:
+                  if line.startswith("#"):
+                      headers.append(line)
+                  elif line.strip():
+                      break
+
+              with destination.open("w", encoding="utf-8", newline="\n") as handle:
+                  for header in headers:
+                      handle.write(header + "\n")
+                  handle.write("# Profile: Egern iOS Lite\n\n")
+
+                  if data.get("no_resolve") is True:
+                      handle.write("no_resolve: true\n\n")
+
+                  for field, values in data.items():
+                      if field == "no_resolve":
+                          continue
+                      handle.write(f"{field}:\n")
+                      for value in values:
+                          handle.write(
+                              f"  - {json.dumps(value, ensure_ascii=False)}\n"
+                          )
+                      handle.write("\n")
+
+
+          if enabled:
+              for category in ("domain", "non_ip", "ip"):
+                  for source in sorted((output / category).glob("*.yaml")):
+                      relative = source.relative_to(output)
+                      reason = exclusion_reason(relative)
+                      if reason:
+                          excluded_files.append(
+                              {"file": relative.as_posix(), "reason": reason}
+                          )
+                          continue
+
+                      data = yaml.load(
+                          source.read_text(encoding="utf-8"), Loader=loader
+                      )
+                      if exclude_url_regex and "url_regex_set" in data:
+                          removed = len(data.pop("url_regex_set"))
+                          modified_files.append(
+                              {
+                                  "file": relative.as_posix(),
+                                  "reason": "url_regex_removed",
+                                  "removed_rules": removed,
+                              }
+                          )
+
+                      rule_count = sum(
+                          len(values)
+                          for field, values in data.items()
+                          if field != "no_resolve"
+                      )
+
+                      if rule_count == 0:
+                          excluded_files.append(
+                              {
+                                  "file": relative.as_posix(),
+                                  "reason": "empty_after_ios_filtering",
+                              }
+                          )
+                          continue
+
+                      if rule_count > max_rules:
+                          excluded_files.append(
+                              {
+                                  "file": relative.as_posix(),
+                                  "reason": "exceeds_ios_rule_count_limit",
+                                  "rule_count": rule_count,
+                              }
+                          )
+                          continue
+
+                      destination = lite_root / relative
+                      write_lite_yaml(destination, source, data)
+                      lite_counts[category] += 1
+                      lite_total_rules += rule_count
+
+
+          def infer_policy(relative):
+              stem = Path(relative).name.split(".", 1)[0].casefold()
+              if stem.startswith("reject"):
+                  return "REJECT"
+              if stem in {"apple_cdn", "china_ip", "china_ip_ipv6", "direct", "domestic", "lan"}:
+                  return "DIRECT"
+              return "YOUR_POLICY"
+
+
+          def append_rule(lines, relative, policy):
+              lines.extend(
+                  [
+                      "  - rule_set:",
+                      f'      match: "{raw_base}/{relative}"',
+                      f'      policy: "{policy}"',
+                      "      update_interval: 86400",
+                  ]
+              )
+
+
+          strict_lines = [
+              "# Egern strict DNS semantics fragment; replace YOUR_POLICY as needed.",
+              "rules:",
+          ]
+          for mixed in audit["mixed_no_resolve_files"]:
+              policy = infer_policy(mixed["compatibility"])
+              if mixed.get("strict_non_ip"):
+                  append_rule(strict_lines, mixed["strict_non_ip"], policy)
+              append_rule(strict_lines, mixed["strict_no_resolve"], policy)
+              append_rule(strict_lines, mixed["strict_resolve"], policy)
+
+          if len(strict_lines) == 2:
+              strict_lines = [
+                  "# No mixed no_resolve rulesets were found in this upstream build.",
+                  "rules: []",
+              ]
+
+          lite_lines = [
+              "# Egern iOS Lite fragment; replace YOUR_POLICY with an existing group.",
+              "# Order: domain rules, non-IP rules, then IP rules.",
+              "rules:",
+          ]
+          featured_non_ip = (
+              "domain/apple_cdn.yaml",
+              "domain/cdn.yaml",
+              "domain/reject_sukka.yaml",
+              "non_ip/reject.yaml",
+              "non_ip/ai.yaml",
+              "non_ip/apple_services.yaml",
+              "non_ip/microsoft.yaml",
+              "non_ip/stream.yaml",
+              "non_ip/telegram.yaml",
+          )
+          featured_ip = (
+              "ip/ai.yaml",
+              "ip/apple_services.yaml",
+              "ip/telegram.yaml",
+              "ip/lan.yaml",
+          )
+
+          for relative in featured_non_ip:
+              if (lite_root / relative).is_file():
+                  append_rule(lite_lines, f"lite/{relative}", infer_policy(relative))
+
+          for mixed in audit["mixed_no_resolve_files"]:
+              shared_non_ip = mixed.get("strict_non_ip")
+              if shared_non_ip and (lite_root / shared_non_ip).is_file():
+                  append_rule(
+                      lite_lines,
+                      f"lite/{shared_non_ip}",
+                      infer_policy(mixed["compatibility"]),
+                  )
+
+          for relative in featured_ip:
+              if (lite_root / relative).is_file():
+                  append_rule(lite_lines, f"lite/{relative}", infer_policy(relative))
+
+          for mixed in audit["mixed_no_resolve_files"]:
+              no_resolve = mixed["strict_no_resolve"]
+              resolving = mixed["strict_resolve"]
+              if (lite_root / no_resolve).is_file() and (lite_root / resolving).is_file():
+                  policy = infer_policy(mixed["compatibility"])
+                  append_rule(lite_lines, f"lite/{no_resolve}", policy)
+                  append_rule(lite_lines, f"lite/{resolving}", policy)
+
+          if len(lite_lines) == 3:
+              lite_lines = ["# No eligible iOS Lite rules were generated.", "rules: []"]
+
+          fragments_root.joinpath("EGERN_RULES_STRICT.yaml").write_text(
+              "\n".join(strict_lines) + "\n", encoding="utf-8"
+          )
+          fragments_root.joinpath("EGERN_RULES_IOS_LITE.yaml").write_text(
+              "\n".join(lite_lines) + "\n", encoding="utf-8"
+          )
+
+          audit["ios_lite"] = {
+              "enabled": enabled,
+              "generated_rulesets": sum(lite_counts.values()),
+              "generated_by_category": dict(sorted(lite_counts.items())),
+              "total_rules": lite_total_rules,
+              "max_rules_per_set": max_rules,
+              "excluded_files": excluded_files,
+              "modified_files": modified_files,
+          }
+          audit["default_branch"] = default_branch
+          audit_path.write_text(
+              json.dumps(audit, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          print(f"iOS Lite enabled: {enabled}")
+          print(f"iOS Lite rulesets: {sum(lite_counts.values())}")
+          print(f"iOS Lite total rules: {lite_total_rules}")
+          print(f"iOS Lite exclusions: {len(excluded_files)}")
+          print(f"iOS Lite regex-filtered files: {len(modified_files)}")
+          print(f"Repository default branch: {default_branch}")
+          PY
+
+      - name: Validate YAML, markers, deduplication and DNS semantics
+        if: steps.upstream.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          from collections import Counter
+          from pathlib import Path
+          import ipaddress
+          import json
+          import os
+          import re
+          import yaml
+
+          root = Path(os.environ["WORK_ROOT"])
+          output = root / "output"
+          audit = json.loads(root.joinpath("conversion_audit.json").read_text())
+          yaml_loader = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+          marker = audit["marker_audit"]["domain_marker"].casefold()
+          marker_keyword = re.compile(
+              audit["marker_audit"]["keyword_marker_pattern"], re.IGNORECASE
+          )
+
+          allowed_keys = {
+              "domain_set", "domain_suffix_set", "domain_keyword_set",
+              "domain_regex_set", "domain_wildcard_set", "geoip_set",
+              "ip_cidr_set", "ip_cidr6_set", "asn_set", "url_regex_set",
+              "user_agent_set", "dest_port_set", "protocol_set", "ssid_set",
+              "bssid_set", "cellular_set", "no_resolve",
+          }
+          ip_keys = {"geoip_set", "ip_cidr_set", "ip_cidr6_set", "asn_set"}
+          full_counts = Counter()
+          lite_counts = Counter()
+          full_no_resolve_count = 0
+          lite_no_resolve_count = 0
+
+          for file in sorted(output.rglob("*.yaml")):
+              relative = file.relative_to(output)
+              is_lite = relative.parts[0] == "lite"
+              category = relative.parts[1] if is_lite else relative.parts[0]
+              data = yaml.load(file.read_text(encoding="utf-8"), Loader=yaml_loader)
+
+              if not isinstance(data, dict) or not data:
+                  raise RuntimeError(f"Invalid or empty YAML mapping: {file}")
+
+              unknown = set(data) - allowed_keys
+              if unknown:
+                  raise RuntimeError(f"Unknown Egern fields in {file}: {sorted(unknown)}")
+
+              if "no_resolve" in data:
+                  if not isinstance(data["no_resolve"], bool):
+                      raise RuntimeError(f"{file}: no_resolve must be a boolean")
+                  if not any(data.get(key) for key in ip_keys):
+                      raise RuntimeError(f"{file}: no_resolve exists without IP rules")
+                  if data["no_resolve"]:
+                      if is_lite:
+                          lite_no_resolve_count += 1
+                      else:
+                          full_no_resolve_count += 1
+
+              if is_lite and (
+                  os.environ.get("IOS_EXCLUDE_URL_REGEX", "true").casefold() == "true"
+              ) and "url_regex_set" in data:
+                  raise RuntimeError(f"{file}: iOS Lite unexpectedly contains URL regex rules")
+
+              for key, values in data.items():
+                  if key == "no_resolve":
+                      continue
+
+                  if not isinstance(values, list) or not values:
+                      raise RuntimeError(f"{file}: {key} must be a nonempty list")
+
+                  seen = set()
+                  for value in values:
+                      if not isinstance(value, str) or not value.strip():
+                          raise RuntimeError(f"{file}: {key} contains an invalid value")
+
+                      folded = value.casefold()
+                      if marker in folded or marker_keyword.fullmatch(folded):
+                          raise RuntimeError(f"{file}: Sukka marker survived conversion")
+
+                      dedup_value = folded if key in {
+                          "domain_set", "domain_suffix_set", "domain_wildcard_set",
+                          "geoip_set", "protocol_set",
+                      } else value
+
+                      if key == "asn_set":
+                          match = re.fullmatch(r"(?:AS)?(\d+)", value, re.IGNORECASE)
+                          dedup_value = match.group(1) if match else folded
+
+                      if dedup_value in seen:
+                          raise RuntimeError(f"{file}: duplicate in {key}: {value}")
+                      seen.add(dedup_value)
+
+                      if key in {"ip_cidr_set", "ip_cidr6_set"}:
+                          network = ipaddress.ip_network(value, strict=True)
+                          expected = 4 if key == "ip_cidr_set" else 6
+                          if network.version != expected:
+                              raise RuntimeError(f"{file}: {key} contains wrong IP version")
+
+              if is_lite:
+                  lite_counts[category] += 1
+              else:
+                  full_counts[category] += 1
+
+          full_total = sum(full_counts.values())
+          lite_total = sum(lite_counts.values())
+          if full_total < int(os.environ["MIN_TOTAL_RULES"]):
+              raise RuntimeError(f"Too few validated full Egern rulesets: {full_total}")
+
+          if any(full_counts[category] == 0 for category in ("domain", "non_ip", "ip")):
+              raise RuntimeError(
+                  f"One or more full output categories are empty: {dict(full_counts)}"
+              )
+
+          if full_total != audit["stats"]["generated"]:
+              raise RuntimeError("Generated ruleset count does not match the audit report")
+
+          if full_no_resolve_count != audit["stats"]["no_resolve_files"]:
+              raise RuntimeError("no_resolve file count does not match the audit report")
+
+          if lite_total != audit["ios_lite"]["generated_rulesets"]:
+              raise RuntimeError("iOS Lite ruleset count does not match the audit report")
+
+          if audit["ios_lite"]["enabled"] and any(
+              lite_counts[category] == 0 for category in ("domain", "non_ip", "ip")
+          ):
+              raise RuntimeError(
+                  f"One or more iOS Lite categories are empty: {dict(lite_counts)}"
+              )
+
+          for mixed in audit["mixed_no_resolve_files"]:
+              if mixed.get("strict_non_ip"):
+                  strict_non_ip = yaml.load(
+                      (output / mixed["strict_non_ip"]).read_text(encoding="utf-8"),
+                      Loader=yaml_loader,
+                  )
+                  if "no_resolve" in strict_non_ip or any(
+                      strict_non_ip.get(key) for key in ip_keys
+                  ):
+                      raise RuntimeError(
+                          "Strict non-IP companion unexpectedly contains IP semantics"
+                      )
+
+              strict_no_resolve = yaml.load(
+                  (output / mixed["strict_no_resolve"]).read_text(encoding="utf-8"),
+                  Loader=yaml_loader,
+              )
+              strict_resolve = yaml.load(
+                  (output / mixed["strict_resolve"]).read_text(encoding="utf-8"),
+                  Loader=yaml_loader,
+              )
+
+              if strict_no_resolve.get("no_resolve") is not True:
+                  raise RuntimeError("Strict no_resolve companion has incorrect DNS semantics")
+              if "no_resolve" in strict_resolve:
+                  raise RuntimeError("Strict resolving companion unexpectedly disables DNS")
+
+          for fragment_name in ("EGERN_RULES_STRICT.yaml", "EGERN_RULES_IOS_LITE.yaml"):
+              fragment = yaml.load(
+                  (root / "fragments" / fragment_name).read_text(encoding="utf-8"),
+                  Loader=yaml_loader,
+              )
+              if not isinstance(fragment, dict) or not isinstance(fragment.get("rules"), list):
+                  raise RuntimeError(f"Invalid generated Egern configuration fragment: {fragment_name}")
+
+          print(f"Validated {full_total} full native Egern YAML rulesets.")
+          print(f"Validated {lite_total} iOS Lite Egern YAML rulesets.")
+          print(f"Full categories: {dict(full_counts)}")
+          print(f"iOS Lite categories: {dict(lite_counts)}")
+          print(f"Full no_resolve=true files: {full_no_resolve_count}")
+          print(f"iOS Lite no_resolve=true files: {lite_no_resolve_count}")
+          print("Marker residue: 0; duplicate residue: 0.")
+          PY
+
+      - name: Prevent suspicious upstream shrinkage and critical rule loss
+        if: steps.upstream.outputs.changed == 'true'
         run: |
           set -euo pipefail
 
           python3 <<'PY'
           from pathlib import Path
-          import yaml
+          import json
+          import os
 
-          ROOT = Path(
-              "/tmp/sukka-egern/output"
+          root = Path(os.environ["WORK_ROOT"])
+          output = root / "output"
+          current = json.loads(
+              root.joinpath("conversion_audit.json").read_text(encoding="utf-8")
           )
-
-          ALLOWED_KEYS = {
-              "domain_set",
-              "domain_suffix_set",
-              "domain_keyword_set",
-              "domain_regex_set",
-              "domain_wildcard_set",
-
-              "geoip_set",
-              "ip_cidr_set",
-              "ip_cidr6_set",
-              "asn_set",
-
-              "url_regex_set",
-              "user_agent_set",
-              "dest_port_set",
-              "protocol_set",
-
-              "no_resolve",
-          }
-
-          IP_KEYS = {
-              "geoip_set",
-              "ip_cidr_set",
-              "ip_cidr6_set",
-              "asn_set",
-          }
-
-          count = 0
-          no_resolve_count = 0
-
-          for file in sorted(
-              ROOT.rglob("*.yaml")
-          ):
-
+          previous_path = Path("CONVERSION_AUDIT.json")
+          previous = {}
+          if previous_path.is_file():
               try:
+                  previous = json.loads(previous_path.read_text(encoding="utf-8"))
+              except (ValueError, OSError) as exc:
+                  raise SystemExit(f"ERROR: Existing conversion baseline is invalid: {exc}")
 
-                  with file.open(
-                      "r",
-                      encoding="utf-8"
-                  ) as f:
-
-                      data = yaml.safe_load(f)
-
-              except Exception as exc:
-
-                  raise RuntimeError(
-                      f"YAML parse failed: {file}: {exc}"
-                  ) from exc
-
-
-              if not isinstance(data, dict):
-
-                  raise RuntimeError(
-                      f"Invalid YAML object: {file}"
-                  )
+          old_files = int(previous.get("stats", {}).get("generated", 0))
+          old_rules = int(previous.get("stats", {}).get("source_rule_lines", 0))
+          new_files = int(current["stats"].get("generated", 0))
+          new_rules = int(current["stats"].get("source_rule_lines", 0))
+          max_file_drop = float(os.environ.get("MAX_FILE_DROP_PERCENT", "20"))
+          max_rule_drop = float(os.environ.get("MAX_RULE_DROP_PERCENT", "25"))
+          allow = os.environ.get("ALLOW_LARGE_CHANGES", "false").casefold() == "true"
+          issues = []
 
 
-              unknown = (
-                  set(data.keys())
-                  - ALLOWED_KEYS
+          def drop_percent(previous_count, current_count):
+              if previous_count <= 0:
+                  return 0.0
+              return max(0.0, (previous_count - current_count) * 100.0 / previous_count)
+
+
+          file_drop = drop_percent(old_files, new_files)
+          rule_drop = drop_percent(old_rules, new_rules)
+
+          if old_files and file_drop > max_file_drop:
+              issues.append(
+                  f"Ruleset file count dropped {file_drop:.2f}% "
+                  f"({old_files} -> {new_files}; limit {max_file_drop:.2f}%)"
               )
 
-              if unknown:
-
-                  raise RuntimeError(
-                      f"Unknown keys in {file}: "
-                      f"{sorted(unknown)}"
-                  )
-
-
-              for key, value in data.items():
-
-                  if key == "no_resolve":
-
-                      if not isinstance(value, bool):
-
-                          raise RuntimeError(
-                              f"{file}: "
-                              f"no_resolve must be boolean"
-                          )
-
-                      if value is True:
-
-                          no_resolve_count += 1
-
-                          # no_resolve 没有 IP 类规则就没有意义
-                          if not any(
-                              ip_key in data
-                              for ip_key in IP_KEYS
-                          ):
-
-                              raise RuntimeError(
-                                  f"{file}: "
-                                  f"no_resolve=true but no "
-                                  f"IP-related rule set exists"
-                              )
-
-                      continue
-
-
-                  if not isinstance(value, list):
-
-                      raise RuntimeError(
-                          f"{file}: {key} is not a list"
-                      )
-
-
-                  if not value:
-
-                      raise RuntimeError(
-                          f"{file}: {key} is empty"
-                      )
-
-
-              count += 1
-
-
-          if count == 0:
-
-              raise RuntimeError(
-                  "No YAML files validated."
+          if old_rules and rule_drop > max_rule_drop:
+              issues.append(
+                  f"Source rule count dropped {rule_drop:.2f}% "
+                  f"({old_rules} -> {new_rules}; limit {max_rule_drop:.2f}%)"
               )
 
+          previous_categories = previous.get("generated_by_category", {})
+          current_categories = current.get("generated_by_category", {})
+          for category in ("domain", "non_ip", "ip"):
+              category_old = int(previous_categories.get(category, 0))
+              category_new = int(current_categories.get(category, 0))
+              category_drop = drop_percent(category_old, category_new)
+              if category_old and category_drop > max_file_drop:
+                  issues.append(
+                      f"Category {category} dropped {category_drop:.2f}% "
+                      f"({category_old} -> {category_new})"
+                  )
 
-          print("")
-          print(
-              f"Validated {count} "
-              f"Egern YAML files."
+          required = [
+              item.strip()
+              for item in os.environ.get("REQUIRED_RULESETS", "").split(",")
+              if item.strip()
+          ]
+          missing = [item for item in required if not (output / item).is_file()]
+          if missing:
+              issues.append("Required rulesets are missing: " + ", ".join(missing))
+
+          current["safety_guard"] = {
+              "previous_files": old_files,
+              "current_files": new_files,
+              "previous_source_rules": old_rules,
+              "current_source_rules": new_rules,
+              "file_drop_percent": round(file_drop, 6),
+              "rule_drop_percent": round(rule_drop, 6),
+              "required_rulesets": required,
+              "missing_rulesets": missing,
+              "issues": issues,
+              "manual_override": allow,
+          }
+          root.joinpath("conversion_audit.json").write_text(
+              json.dumps(current, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
           )
 
-          print(
-              f"no_resolve=true files: "
-              f"{no_resolve_count}"
-          )
+          print(f"Full rulesets: {old_files or 'no baseline'} -> {new_files}")
+          print(f"Source rules:  {old_rules or 'no baseline'} -> {new_rules}")
+          print(f"Ruleset drop:  {file_drop:.2f}%")
+          print(f"Source drop:   {rule_drop:.2f}%")
+          print(f"Critical files checked: {len(required)}")
 
+          if issues and not allow:
+              raise SystemExit(
+                  "ERROR: Safety guard blocked the update:\n"
+                  + "\n".join(f"- {issue}" for issue in issues)
+                  + "\nUse allow_large_changes only after reviewing the upstream changes."
+              )
+
+          if issues and allow:
+              print("WARNING: Manual override accepted the following safety issues:")
+              for issue in issues:
+                  print(f"- {issue}")
           PY
 
-
-      # ==========================================================
-      # 11. Generate conversion report
-      # ==========================================================
-
-      - name: Generate conversion report
+      - name: Generate human-readable conversion report
+        if: steps.upstream.outputs.changed == 'true'
         run: |
           set -euo pipefail
 
-          {
-            echo "# Sukka -> Egern Conversion Report"
-            echo ""
-            echo "Source:"
-            echo ""
-            echo "https://ruleset.skk.moe/"
-            echo ""
+          python3 <<'PY'
+          from pathlib import Path
+          import json
+          import os
 
+          root = Path(os.environ["WORK_ROOT"])
+          data = json.loads(root.joinpath("conversion_audit.json").read_text())
+          stats = data["stats"]
+          marker = data["marker_audit"]
+          lite = data["ios_lite"]
+          guard = data.get("safety_guard", {})
 
-            echo "## no_resolve enabled"
-            echo ""
+          lines = [
+              "# Sukka → Egern Conversion Report",
+              "",
+              f"Converter: **{data['version']} iOS Lite & Semantic Compression**",
+              "",
+              "Upstream: https://ruleset.skk.moe/",
+              "",
+              "## Conversion totals",
+              "",
+              "| Item | Count |",
+              "|---|---:|",
+              f"| Generated Egern rulesets | {stats.get('generated', 0)} |",
+              f"| Clean source rules | {stats.get('source_rule_lines', 0)} |",
+              f"| Removed Sukka markers | {marker['removed_total']} |",
+              f"| Removed duplicate rules | {stats.get('duplicates_removed', 0)} |",
+              f"| Covered domain suffixes removed | {stats.get('domain_suffixes_pruned', 0)} |",
+              f"| Covered exact domains removed | {stats.get('exact_domains_pruned', 0)} |",
+              f"| IPv4 CIDR networks compressed | {stats.get('ipv4_networks_pruned', 0)} |",
+              f"| IPv6 CIDR networks compressed | {stats.get('ipv6_networks_pruned', 0)} |",
+              f"| Conversion coverage | {data['conversion_coverage_percent']:.4f}% |",
+              f"| no_resolve rulesets | {stats.get('no_resolve_files', 0)} |",
+              f"| Mixed no_resolve source files | {stats.get('mixed_no_resolve_files', 0)} |",
+              f"| Strict semantic companion files | {stats.get('strict_companion_files', 0)} |",
+              f"| Deprecated source files | {stats.get('deprecated', 0)} |",
+              f"| Empty source files | {stats.get('empty', 0)} |",
+              f"| Unsupported source rules | {stats.get('unsupported', 0)} |",
+              f"| Invalid source rules | {stats.get('invalid', 0)} |",
+              f"| iOS Lite rulesets | {lite['generated_rulesets']} |",
+              f"| iOS Lite total rules | {lite['total_rules']} |",
+              f"| iOS Lite excluded files | {len(lite['excluded_files'])} |",
+              "",
+              "## Marker cleanup by category",
+              "",
+          ]
 
-            if [ -s /tmp/sukka-egern/no_resolve.txt ]; then
+          for category, count in marker["removed_by_category"].items():
+              lines.append(f"- `{category}`: {count}")
 
-              sed 's/^/- /' \
-                /tmp/sukka-egern/no_resolve.txt
+          lines.extend(["", "## Marker cleanup by type", ""])
+          for kind, count in marker["removed_by_kind"].items():
+              lines.append(f"- `{kind}`: {count}")
 
-            else
+          lines.extend(["", "## iOS Lite output", ""])
+          for category, count in lite["generated_by_category"].items():
+              lines.append(f"- `lite/{category}`: {count}")
 
-              echo "- None"
+          lines.extend(["", "## iOS Lite excluded rulesets", ""])
+          if lite["excluded_files"]:
+              for item in lite["excluded_files"]:
+                  lines.append(f"- `{item['file']}`: {item['reason']}")
+          else:
+              lines.append("- None")
 
-            fi
+          lines.extend(["", "## iOS Lite URL regex removals", ""])
+          if lite["modified_files"]:
+              for item in lite["modified_files"]:
+                  lines.append(
+                      f"- `{item['file']}`: removed {item['removed_rules']} URL regex rules"
+                  )
+          else:
+              lines.append("- None")
 
+          lines.extend(
+              [
+                  "",
+                  "## Upstream safety guard",
+                  "",
+                  f"- Previous full rulesets: {guard.get('previous_files', 0)}",
+                  f"- Current full rulesets: {guard.get('current_files', 0)}",
+                  f"- Ruleset decrease: {guard.get('file_drop_percent', 0):.2f}%",
+                  f"- Source rule decrease: {guard.get('rule_drop_percent', 0):.2f}%",
+                  f"- Manual override: {guard.get('manual_override', False)}",
+              ]
+          )
 
-            echo ""
-            echo "## Skipped source files"
-            echo ""
+          lines.extend(["", "## Mixed no_resolve semantics", ""])
+          if data["mixed_no_resolve_files"]:
+              lines.extend(
+                  [
+                      "The original filename remains compatible with V1.1.3.",
+                      "For exact DNS behavior, reference the following companion files",
+                      "in the displayed order and assign all of them the same policy:",
+                      "",
+                  ]
+              )
+              for item in data["mixed_no_resolve_files"]:
+                  lines.append(f"- Source: `{item['source']}`")
+                  position = 1
+                  if item.get("strict_non_ip"):
+                      lines.append(
+                          f"  {position}. `{item['strict_non_ip']}` "
+                          "(domain and other non-IP rules)"
+                      )
+                      position += 1
+                  lines.append(
+                      f"  {position}. `{item['strict_no_resolve']}` "
+                      f"({item['no_resolve_rules']} rules; DNS resolution disabled)"
+                  )
+                  lines.append(
+                      f"  {position + 1}. `{item['strict_resolve']}` "
+                      f"({item['resolve_rules']} rules; normal DNS behavior)"
+                  )
+                  lines.append(
+                      f"  - Compatibility filename: `{item['compatibility']}`"
+                  )
+          else:
+              lines.append("- None")
 
-            if [ -s /tmp/sukka-egern/skipped.txt ]; then
+          sections = (
+              ("Rulesets with no_resolve", data["no_resolve_files"]),
+              ("Active files without a known marker", marker["files_without_marker"]),
+              ("Skipped source files", data["skipped_files"]),
+              ("Unsupported source rules", data["unsupported_rules"]),
+              ("Invalid source rules", data["invalid_rules"]),
+              ("Category warnings", data["category_warnings"]),
+          )
 
-              sed 's/^/- /' \
-                /tmp/sukka-egern/skipped.txt
+          for title, entries in sections:
+              lines.extend(["", f"## {title}", ""])
+              if entries:
+                  lines.extend(f"- `{entry}`" for entry in entries)
+              else:
+                  lines.append("- None")
 
-            else
+          root.joinpath("REPORT.md").write_text(
+              "\n".join(lines) + "\n", encoding="utf-8"
+          )
+          PY
 
-              echo "- None"
-
-            fi
-
-
-            echo ""
-            echo "## Unsupported rule lines"
-            echo ""
-
-            if [ -s /tmp/sukka-egern/unsupported.txt ]; then
-
-              echo '```text'
-
-              cat /tmp/sukka-egern/unsupported.txt
-
-              echo '```'
-
-            else
-
-              echo "None"
-
-            fi
-
-
-          } > /tmp/sukka-egern/REPORT.md
-
-
-      # ==========================================================
-      # 12. Generate new checksum
-      # ==========================================================
-
-      - name: Generate new checksum
+      - name: Generate deterministic ruleset checksums
+        if: steps.upstream.outputs.changed == 'true'
         run: |
           set -euo pipefail
 
-          cd /tmp/sukka-egern/output
+          python3 <<'PY'
+          from pathlib import Path
+          import hashlib
+          import os
 
-          find domain non_ip ip \
-            -type f \
-            -name "*.yaml" \
-            -print0 \
-            | sort -z \
-            | xargs -0 sha256sum \
-            > /tmp/sukka-egern/new.sha256
-
-          sha256sum \
-            /tmp/sukka-egern/new.sha256 \
-            | awk '{print $1}' \
-            > /tmp/sukka-egern/new.master
-
-          echo ""
-          echo "New version:"
-
-          cat /tmp/sukka-egern/new.master
+          root = Path(os.environ["WORK_ROOT"])
+          output = root / "output"
+          fragments = root / "fragments"
+          fragment_names = ("EGERN_RULES_STRICT.yaml", "EGERN_RULES_IOS_LITE.yaml")
 
 
-      # ==========================================================
-      # 13. Generate current checksum
-      # ==========================================================
-
-      - name: Generate current checksum
-        run: |
-          set -euo pipefail
-
-          if [ -d domain ] && \
-             [ -d non_ip ] && \
-             [ -d ip ] && \
-             find domain non_ip ip \
-               -type f \
-               -name "*.yaml" \
-               | grep -q .; then
-
-            find domain non_ip ip \
-              -type f \
-              -name "*.yaml" \
-              -print0 \
-              | sort -z \
-              | xargs -0 sha256sum \
-              > /tmp/sukka-egern/current.sha256
-
-            sha256sum \
-              /tmp/sukka-egern/current.sha256 \
-              | awk '{print $1}' \
-              > /tmp/sukka-egern/current.master
-
-          else
-
-            echo "none" \
-              > /tmp/sukka-egern/current.master
-
-          fi
+          def sha256_file(path):
+              digest = hashlib.sha256()
+              with path.open("rb") as handle:
+                  for block in iter(lambda: handle.read(1024 * 1024), b""):
+                      digest.update(block)
+              return digest.hexdigest()
 
 
-      # ==========================================================
-      # 14. Compare rule versions
-      # ==========================================================
+          def manifest(entries):
+              return "".join(
+                  f"{sha256_file(path)}  {relative}\n"
+                  for relative, path in sorted(entries, key=lambda item: item[0])
+              )
 
-      - name: Compare rule versions
+
+          new_entries = [
+              (file.relative_to(output).as_posix(), file)
+              for file in output.rglob("*.yaml")
+          ]
+          new_entries.extend((name, fragments / name) for name in fragment_names)
+          new_manifest = manifest(new_entries)
+          root.joinpath("new.sha256").write_text(new_manifest, encoding="utf-8")
+          root.joinpath("new.master").write_text(
+              hashlib.sha256(new_manifest.encode("utf-8")).hexdigest() + "\n",
+              encoding="utf-8",
+          )
+
+          current_entries = []
+          for category in ("domain", "non_ip", "ip", "lite"):
+              directory = Path(category)
+              if directory.is_dir():
+                  current_entries.extend(
+                      (file.as_posix(), file) for file in directory.rglob("*.yaml")
+                  )
+          for name in fragment_names:
+              file = Path(name)
+              if file.is_file():
+                  current_entries.append((name, file))
+
+          if current_entries:
+              current_manifest = manifest(current_entries)
+              root.joinpath("current.sha256").write_text(
+                  current_manifest, encoding="utf-8"
+              )
+              root.joinpath("current.master").write_text(
+                  hashlib.sha256(current_manifest.encode("utf-8")).hexdigest() + "\n",
+                  encoding="utf-8",
+              )
+          else:
+              root.joinpath("current.master").write_text("none\n", encoding="utf-8")
+
+          print(f"Checksum covers {len(new_entries)} full, iOS Lite, and fragment files.")
+          PY
+
+      - name: Compare converted rules against repository
         id: compare
+        if: steps.upstream.outputs.changed == 'true'
         run: |
           set -euo pipefail
 
-          NEW=$(cat /tmp/sukka-egern/new.master)
-          OLD=$(cat /tmp/sukka-egern/current.master)
+          OLD="$(cat "${WORK_ROOT}/current.master")"
+          NEW="$(cat "${WORK_ROOT}/new.master")"
+          echo "Current: ${OLD}"
+          echo "New:     ${NEW}"
 
-          echo "Old: ${OLD}"
-          echo "New: ${NEW}"
-
-
-          if [ "${NEW}" = "${OLD}" ]; then
-
-            echo "changed=false" \
-              >> "$GITHUB_OUTPUT"
-
-            echo "Rules are already up to date."
-
+          if [ "${OLD}" = "${NEW}" ]; then
+            printf '%s\n' "changed=false" >> "${GITHUB_OUTPUT}"
+            echo "Converted rules are already current."
           else
-
-            echo "changed=true" \
-              >> "$GITHUB_OUTPUT"
-
-            echo "Rule update detected."
-
+            printf '%s\n' "changed=true" >> "${GITHUB_OUTPUT}"
+            echo "A validated ruleset update is available."
           fi
 
-
-      # ==========================================================
-      # 15. No update
-      # ==========================================================
-
-      - name: No update required
-        if: steps.compare.outputs.changed == 'false'
-        run: |
-          echo ""
-          echo "===================================="
-          echo " Sukka List -> Egern V1.1.3"
-          echo "===================================="
-          echo " STATUS : UP TO DATE"
-          echo " COMMIT : NO"
-          echo "===================================="
-
-
-      # ==========================================================
-      # 16. Replace Egern rules
-      # ==========================================================
-
-      - name: Replace Egern rules
-        if: steps.compare.outputs.changed == 'true'
+      - name: Replace rules only after all validation passes
+        if: steps.upstream.outputs.changed == 'true' && steps.compare.outputs.changed == 'true'
         run: |
           set -euo pipefail
 
-          rm -rf domain.new
-          rm -rf non_ip.new
-          rm -rf ip.new
+          for CATEGORY in domain non_ip ip; do
+            rm -rf "${CATEGORY}.new"
+            cp -a "${WORK_ROOT}/output/${CATEGORY}" "${CATEGORY}.new"
 
+            if [ -z "$(find "${CATEGORY}.new" -type f -name '*.yaml' -print -quit)" ]; then
+              echo "ERROR: Empty staged ruleset category: ${CATEGORY}"
+              rm -rf domain.new non_ip.new ip.new
+              exit 1
+            fi
+          done
 
-          cp -a \
-            /tmp/sukka-egern/output/domain \
-            domain.new
+          rm -rf lite.new
+          cp -a "${WORK_ROOT}/output/lite" lite.new
 
-          cp -a \
-            /tmp/sukka-egern/output/non_ip \
-            non_ip.new
+          for CATEGORY in domain non_ip ip; do
+            rm -rf "${CATEGORY}"
+            mv "${CATEGORY}.new" "${CATEGORY}"
+          done
 
-          cp -a \
-            /tmp/sukka-egern/output/ip \
-            ip.new
+          rm -rf lite
+          mv lite.new lite
 
+          cp "${WORK_ROOT}/new.sha256" RULES_SHA256SUMS.txt
+          cp "${WORK_ROOT}/new.master" RULES_VERSION.sha256
+          cp "${WORK_ROOT}/REPORT.md" CONVERSION_REPORT.md
+          cp "${WORK_ROOT}/conversion_audit.json" CONVERSION_AUDIT.json
+          cp "${WORK_ROOT}/SOURCE_MANIFEST.json" SOURCE_MANIFEST.json
+          cp "${WORK_ROOT}/fragments/EGERN_RULES_STRICT.yaml" EGERN_RULES_STRICT.yaml
+          cp "${WORK_ROOT}/fragments/EGERN_RULES_IOS_LITE.yaml" EGERN_RULES_IOS_LITE.yaml
 
-          NEW_DOMAIN=$(
-            find domain.new \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
+      - name: Update repository README
+        if: steps.upstream.outputs.changed == 'true' && steps.compare.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
 
-          NEW_NON_IP=$(
-            find non_ip.new \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
+          python3 <<'PY'
+          from pathlib import Path
+          import json
+          import os
 
-          NEW_IP=$(
-            find ip.new \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
+          root = Path(os.environ["WORK_ROOT"])
+          audit = json.loads(root.joinpath("conversion_audit.json").read_text())
+          stats = audit["stats"]
+          counts = audit["generated_by_category"]
+          lite = audit["ios_lite"]
+          repository = os.environ.get("GITHUB_REPOSITORY", "locksherneo/egern-sukka-rules")
+          default_branch = os.environ.get("DEFAULT_BRANCH", "main") or "main"
+          raw_base = f"https://raw.githubusercontent.com/{repository}/{default_branch}"
+          version = Path("RULES_VERSION.sha256").read_text().strip()
 
+          lines = [
+              "# Sukka Rules for Egern",
+              "",
+              "自动将 Sukka 通用 List 规则转换为 Egern 原生 YAML Rule Set，并提供 iOS Lite 精简版本。",
+              "",
+              "## 上游来源与许可证",
+              "",
+              "- 原作者：Sukka (@SukkaW)",
+              "- 上游规则：https://ruleset.skk.moe/",
+              "- 上游源码：https://github.com/SukkaW/Surge",
+              "- 默认许可证：AGPL-3.0。",
+              "- `List/ip/china_ip.conf` 单独采用 CC BY-SA 2.0。",
+              "",
+              "## 自动转换流程",
+              "",
+              "1. 自动发现 `List/domainset`、`List/non_ip` 和 `List/ip`。",
+              "2. 并发下载上游规则，并在完整下载后原子写入。",
+              "3. 自动识别并删除 Sukka 域名 Marker 与关键词 Marker。",
+              "4. 转换为 Egern 官方规则集字段，并删除被上级域名覆盖的条目。",
+              "5. 在相同 no_resolve 语义分区内合并 IPv4 / IPv6 网段。",
+              "6. 检查混合 `no-resolve` 规则并输出严格语义拆分版本。",
+              "7. 生成排除大型广告列表和 URL 正则的 iOS Lite 规则。",
+              "8. 检查关键规则、历史数量下降和转换覆盖率。",
+              "9. 通过 YAML、Marker 残留、重复值、CIDR 和分类完整性校验。",
+              "10. 仅在 SHA256 发生变化时替换旧规则并提交。",
+              "",
+              "## 规则统计",
+              "",
+              "| 分类 | 数量 |",
+              "|---|---:|",
+              f"| domain | {counts.get('domain', 0)} |",
+              f"| non_ip | {counts.get('non_ip', 0)} |",
+              f"| ip | {counts.get('ip', 0)} |",
+              f"| 总规则文件 | {stats.get('generated', 0)} |",
+              f"| 已清除 Marker | {audit['marker_audit']['removed_total']} |",
+              f"| 已去除重复规则 | {stats.get('duplicates_removed', 0)} |",
+              f"| 上级域名覆盖压缩 | {stats.get('domain_suffixes_pruned', 0)} |",
+              f"| 精确域名覆盖压缩 | {stats.get('exact_domains_pruned', 0)} |",
+              f"| IPv4 网段压缩 | {stats.get('ipv4_networks_pruned', 0)} |",
+              f"| IPv6 网段压缩 | {stats.get('ipv6_networks_pruned', 0)} |",
+              f"| 转换覆盖率 | {audit['conversion_coverage_percent']:.4f}% |",
+              f"| no_resolve 文件 | {stats.get('no_resolve_files', 0)} |",
+              f"| 混合语义源文件 | {stats.get('mixed_no_resolve_files', 0)} |",
+              f"| iOS Lite 规则文件 | {lite['generated_rulesets']} |",
+              f"| iOS Lite 规则条目 | {lite['total_rules']} |",
+              "",
+              "## 普通 Egern 引用示例",
+              "",
+              "```yaml",
+              "rules:",
+              "  - rule_set:",
+              f"      match: \"{raw_base}/domain/apple_cdn.yaml\"",
+              "      policy: DIRECT",
+              "      update_interval: 86400",
+              "",
+              "  - rule_set:",
+              f"      match: \"{raw_base}/non_ip/ai.yaml\"",
+              "      policy: 🤖 AI",
+              "      update_interval: 86400",
+              "",
+              "  - rule_set:",
+              f"      match: \"{raw_base}/ip/ai.yaml\"",
+              "      policy: 🤖 AI",
+              "      update_interval: 86400",
+              "",
+              "  - default:",
+              "      policy: DIRECT",
+              "```",
+              "",
+              "## iOS Lite 轻量引用示例",
+              "",
+              "```yaml",
+              "rules:",
+              "  - rule_set:",
+              f"      match: \"{raw_base}/lite/domain/apple_cdn.yaml\"",
+              "      policy: DIRECT",
+              "      update_interval: 86400",
+              "",
+              "  - rule_set:",
+              f"      match: \"{raw_base}/lite/non_ip/ai.yaml\"",
+              "      policy: 🤖 AI",
+              "      update_interval: 86400",
+              "",
+              "  - rule_set:",
+              f"      match: \"{raw_base}/lite/ip/ai.yaml\"",
+              "      policy: 🤖 AI",
+              "      update_interval: 86400",
+              "```",
+              "",
+              "自动生成的完整引用片段：`EGERN_RULES_IOS_LITE.yaml`。",
+              "其中 `YOUR_POLICY` 需要替换成你配置中真实存在的策略组名称。",
+              "",
+              "## 混合 no_resolve 规则的严格用法",
+              "",
+              "Egern 的 `no_resolve` 是规则集级别开关，无法在同一个规则文件中",
+              "同时精确表达需要解析与禁止解析的 IP 条目。原文件名继续兼容旧配置；",
+              "如果需要严格保留上游语义，改为按以下顺序引用两个拆分文件。",
+              "若混合源文件还包含真实域名规则，则会额外生成 `.non_ip.yaml`，",
+              "应先引用该域名文件，再引用 `.no_resolve.yaml` 和 `.resolve.yaml`。",
+              "",
+              "```yaml",
+              "rules:",
+              "  - rule_set:",
+              f"      match: \"{raw_base}/ip/reject.no_resolve.yaml\"",
+              "      policy: REJECT",
+              "      update_interval: 86400",
+              "",
+              "  - rule_set:",
+              f"      match: \"{raw_base}/ip/reject.resolve.yaml\"",
+              "      policy: REJECT",
+              "      update_interval: 86400",
+              "```",
+              "",
+              "仅对实际包含混合 `no-resolve` 语义的源文件生成拆分版本。",
+              "具体名单参见 `CONVERSION_REPORT.md` 与 `CONVERSION_AUDIT.json`。",
+              "完整严格语义引用片段见 `EGERN_RULES_STRICT.yaml`。",
+              "",
+              "## 分类与建议顺序",
+              "",
+              "1. `domain/`：纯域名规则。",
+              "2. `non_ip/`：域名、通配符、关键字和 URL 等非 IP 规则。",
+              "3. `ip/`：IPv4、IPv6、ASN 和 GeoIP 规则。",
+              "4. `lite/domain/`、`lite/non_ip/`、`lite/ip/`：iOS 轻量规则。",
+              "",
+              "建议先放 `domain/` 和 `non_ip/`，最后放 `ip/`，减少提前 DNS 查询。",
+              "",
+              "## 当前规则版本",
+              "",
+              "```text",
+              version,
+              "```",
+              "",
+              "Generated by Sukka List → Egern V1.3.0 iOS Lite & Semantic Compression.",
+          ]
 
-          TOTAL=$((NEW_DOMAIN + NEW_NON_IP + NEW_IP))
+          Path("README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
 
+      - name: Verify final staged repository output
+        if: steps.upstream.outputs.changed == 'true' && steps.compare.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
 
-          echo ""
-          echo "===================================="
-          echo " New Egern Rules"
-          echo "===================================="
-          echo " domain : ${NEW_DOMAIN}"
-          echo " non_ip : ${NEW_NON_IP}"
-          echo " ip     : ${NEW_IP}"
-          echo "------------------------------------"
-          echo " TOTAL  : ${TOTAL}"
-          echo "===================================="
+          for REQUIRED in \
+            RULES_SHA256SUMS.txt \
+            RULES_VERSION.sha256 \
+            CONVERSION_REPORT.md \
+            CONVERSION_AUDIT.json \
+            SOURCE_MANIFEST.json \
+            EGERN_RULES_STRICT.yaml \
+            EGERN_RULES_IOS_LITE.yaml \
+            README.md; do
 
+            if [ ! -s "${REQUIRED}" ]; then
+              echo "ERROR: Required repository artifact missing: ${REQUIRED}"
+              exit 1
+            fi
+          done
 
-          if [ "${TOTAL}" \
-            -lt "${MIN_TOTAL_RULES}" ]; then
+          sha256sum --check RULES_SHA256SUMS.txt --status
 
-            echo "ERROR:"
-            echo "Pre-replacement validation failed."
+          if grep -ril \
+            '7h15\.ru1353t\.1s\.m4d3\.by\.5ukk4w\.skk\.moe' \
+            domain non_ip ip lite \
+            --include='*.yaml'; then
 
-            rm -rf \
-              domain.new \
-              non_ip.new \
-              ip.new
-
+            echo "ERROR: Marker residue detected in final Egern YAML files."
             exit 1
           fi
 
+      - name: Commit validated Egern rules
+        if: steps.upstream.outputs.changed == 'true' && steps.compare.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
 
-          if [ "${NEW_DOMAIN}" -eq 0 ] || \
-             [ "${NEW_NON_IP}" -eq 0 ] || \
-             [ "${NEW_IP}" -eq 0 ]; then
-
-            echo "ERROR:"
-            echo "One or more rule categories are empty."
-
-            rm -rf \
-              domain.new \
-              non_ip.new \
-              ip.new
-
-            exit 1
-          fi
-
-
-          rm -rf \
+          git add -A -- \
             domain \
             non_ip \
-            ip
-
-
-          mv domain.new domain
-          mv non_ip.new non_ip
-          mv ip.new ip
-
-
-          echo ""
-          echo "Egern rules replaced successfully."
-
-
-      # ==========================================================
-      # 17. Save checksums
-      # ==========================================================
-
-      - name: Save checksums
-        if: steps.compare.outputs.changed == 'true'
-        run: |
-          set -euo pipefail
-
-          cp \
-            /tmp/sukka-egern/new.sha256 \
-            RULES_SHA256SUMS.txt
-
-          cp \
-            /tmp/sukka-egern/new.master \
-            RULES_VERSION.sha256
-
-
-      # ==========================================================
-      # 18. Save conversion report
-      # ==========================================================
-
-      - name: Save conversion report
-        if: steps.compare.outputs.changed == 'true'
-        run: |
-          set -euo pipefail
-
-          cp \
-            /tmp/sukka-egern/REPORT.md \
-            CONVERSION_REPORT.md
-
-
-      # ==========================================================
-      # 19. Update README
-      # ==========================================================
-
-      - name: Update README
-        if: steps.compare.outputs.changed == 'true'
-        run: |
-          set -euo pipefail
-
-          DOMAIN=$(
-            find domain \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
-
-          NON_IP=$(
-            find non_ip \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
-
-          IP=$(
-            find ip \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
-
-          TOTAL=$((DOMAIN + NON_IP + IP))
-
-
-          NO_RESOLVE=$(
-            grep -rl '^no_resolve: true$' \
-              domain non_ip ip \
-              --include="*.yaml" \
-              2>/dev/null \
-              | wc -l
-          )
-
-
-          VERSION=$(cat RULES_VERSION.sha256)
-
-
-          cat > README.md <<EOF
-          # Sukka Rules for Egern
-
-          自动将 Sukka Ruleset Server 的通用 List 规则转换为 Egern Rule Set。
-
-          ## Upstream
-
-          https://ruleset.skk.moe/
-
-          ## Source
-
-          \`\`\`text
-          List/domainset
-          List/non_ip
-          List/ip
-          \`\`\`
-
-          ## Output
-
-          \`\`\`text
-          domain/
-          non_ip/
-          ip/
-          \`\`\`
-
-          ## Rule Count
-
-          | Type | Count |
-          |---|---:|
-          | domain | ${DOMAIN} |
-          | non_ip | ${NON_IP} |
-          | ip | ${IP} |
-          | Total | ${TOTAL} |
-          | no_resolve enabled | ${NO_RESOLVE} |
-
-          ## Current Version
-
-          \`\`\`
-          ${VERSION}
-          \`\`\`
-
-          ## no_resolve
-
-          Sukka 源规则中的：
-
-          \`\`\`text
-          IP-CIDR,...,no-resolve
-          IP-CIDR6,...,no-resolve
-          IP-ASN,...,no-resolve
-          GEOIP,...,no-resolve
-          \`\`\`
-
-          会自动转换为 Egern Rule Set 顶层：
-
-          \`\`\`yaml
-          no_resolve: true
-          \`\`\`
-
-          只有源规则实际包含 \`no-resolve\` 时才会添加。
-
-          ## Raw URL Examples
-
-          \`\`\`text
-          https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/domain/apple_cdn.yaml
-
-          https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/non_ip/ai.yaml
-
-          https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/ip/telegram.yaml
-          \`\`\`
-
-          ## Egern Example
-
-          \`\`\`yaml
-          rules:
-
-            - rule_set:
-                match: "https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/non_ip/ai.yaml"
-                policy: 🤖 AI
-                update_interval: 86400
-
-            - rule_set:
-                match: "https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/ip/ai.yaml"
-                policy: 🤖 AI
-                update_interval: 86400
-
-            - default:
-                policy: DIRECT
-          \`\`\`
-
-          ## Features
-
-          - 每 24 小时自动同步
-          - 直接读取 Sukka List
-          - 自动转换为 Egern YAML
-          - 精确保留 no-resolve 语义
-          - 所有规则值安全双引号
-          - 支持 DOMAIN-WILDCARD
-          - 支持 IP-ASN
-          - 支持 IPv6、百分号、正则
-          - 自动跳过 Deprecated 文件
-          - 自动跳过纯注释规则
-          - YAML 自动解析验证
-          - SHA256 版本校验
-          - 无变化不 Commit
-          - 转换失败不覆盖旧规则
-          - 自动生成转换报告
-
-          ---
-
-          Generated by Sukka List -> Egern V1.1.3.
-          EOF
-
-
-      # ==========================================================
-      # 20. Final validation
-      # ==========================================================
-
-      - name: Final validation
-        if: steps.compare.outputs.changed == 'true'
-        run: |
-          set -euo pipefail
-
-          DOMAIN=$(
-            find domain \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
-
-          NON_IP=$(
-            find non_ip \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
-
-          IP=$(
-            find ip \
-              -type f \
-              -name "*.yaml" \
-              | wc -l
-          )
-
-          TOTAL=$((DOMAIN + NON_IP + IP))
-
-
-          NO_RESOLVE=$(
-            grep -rl '^no_resolve: true$' \
-              domain non_ip ip \
-              --include="*.yaml" \
-              2>/dev/null \
-              | wc -l
-          )
-
-
-          echo ""
-          echo "===================================="
-          echo " Final Validation"
-          echo "===================================="
-          echo " domain     : ${DOMAIN}"
-          echo " non_ip     : ${NON_IP}"
-          echo " ip         : ${IP}"
-          echo " no_resolve : ${NO_RESOLVE}"
-          echo "------------------------------------"
-          echo " TOTAL      : ${TOTAL}"
-          echo "===================================="
-
-
-          if [ "${TOTAL}" \
-            -lt "${MIN_TOTAL_RULES}" ]; then
-
-            echo "ERROR:"
-            echo "Final rule count too low."
-
-            exit 1
-          fi
-
-
-          if [ "${DOMAIN}" -eq 0 ] || \
-             [ "${NON_IP}" -eq 0 ] || \
-             [ "${IP}" -eq 0 ]; then
-
-            echo "ERROR:"
-            echo "Final category validation failed."
-
-            exit 1
-          fi
-
-
-          if [ ! -s RULES_SHA256SUMS.txt ]; then
-
-            echo "ERROR:"
-            echo "RULES_SHA256SUMS.txt missing."
-
-            exit 1
-          fi
-
-
-          if [ ! -s RULES_VERSION.sha256 ]; then
-
-            echo "ERROR:"
-            echo "RULES_VERSION.sha256 missing."
-
-            exit 1
-          fi
-
-
-          if [ ! -s CONVERSION_REPORT.md ]; then
-
-            echo "ERROR:"
-            echo "CONVERSION_REPORT.md missing."
-
-            exit 1
-          fi
-
-
-      # ==========================================================
-      # 21. Commit
-      # ==========================================================
-
-      - name: Commit changes
-        if: steps.compare.outputs.changed == 'true'
-        run: |
-          set -euo pipefail
-
-          git add -A
-
-
-          if git diff \
-            --cached \
-            --quiet; then
-
-            echo "No effective changes."
-
+            ip \
+            lite \
+            RULES_SHA256SUMS.txt \
+            RULES_VERSION.sha256 \
+            CONVERSION_REPORT.md \
+            CONVERSION_AUDIT.json \
+            SOURCE_MANIFEST.json \
+            EGERN_RULES_STRICT.yaml \
+            EGERN_RULES_IOS_LITE.yaml \
+            README.md
+
+          if git diff --cached --quiet; then
+            echo "No effective repository changes remain."
             exit 0
           fi
 
-
-          git commit \
-            -m "chore: sync Sukka List rules for Egern"
-
-
+          git commit -m "chore: sync optimized Egern and iOS Lite Sukka rules"
           git push
 
-
-      # ==========================================================
-      # 22. Completed
-      # ==========================================================
-
-      - name: Completed
+      - name: Publish GitHub Actions run summary
+        if: always()
         run: |
-          echo ""
-          echo "===================================="
-          echo " Sukka List -> Egern V1.1.3"
-          echo "===================================="
-          echo " SOURCE     : Sukka List"
-          echo " FORMAT     : Egern YAML"
-          echo " no_resolve : preserved"
-          echo " SYNC       : 24 hours"
-          echo " STATUS     : SUCCESS"
-          echo "===================================="
+          if [ -s "${WORK_ROOT}/REPORT.md" ] && [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+            cat "${WORK_ROOT}/REPORT.md" >> "${GITHUB_STEP_SUMMARY}"
+          elif [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+            printf '%s\n' 'Upstream unchanged or no conversion report available.' \
+              >> "${GITHUB_STEP_SUMMARY}"
+          fi

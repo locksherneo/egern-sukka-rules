@@ -1,6 +1,6 @@
 {
   "converter_version": "V1.3.0",
-  "upstream_build": "2026-08-22T05:44:10.125Z",
+  "upstream_build": "2026-08-23T05:46:53.887Z",
   "upstream_url": "https://ruleset.skk.moe",
   "source_files": [
     {
@@ -11,9 +11,9 @@
     },
     {
       "source": "List/domainset/cdn.conf",
-      "bytes": 88617,
-      "sha256": "f3355de355c1fe667b82e0e224b4c1c3932cf2b24b7fabe151ef0dc3ba051a63",
-      "upstream_content_hash": "vPt48rBk3C59Lt3QBDMf4FOhk1MyTVblsGr5YoXOlNM"
+      "bytes": 88747,
+      "sha256": "62c6d1295bb3c3c4143656470e93a9cf31e1e9b2284149793d573029577e2710",
+      "upstream_content_hash": "YUjobn8edA9hIFPvsn2uR7Bz8PorZFdNnYhPOmjpOxc"
     },
     {
       "source": "List/domainset/download.conf",
@@ -35,21 +35,21 @@
     },
     {
       "source": "List/domainset/reject.conf",
-      "bytes": 3013170,
-      "sha256": "0a54351734a43fadd79da2c6e342f1780c4b940303d744b37ebfd1342eefb9b9",
-      "upstream_content_hash": "TPW54A8y47gK3A0QfAk029kDfBD6ICMG2LXIL__PkNo"
+      "bytes": 3014836,
+      "sha256": "3fef3dd30906cb27b81c8d4ca3321674b0948012b3eb02eb3a455d7dc066dc34",
+      "upstream_content_hash": "wW_ZaRJY-B2YvEjlhe7YdL6Udya1u2bHdpvQt_kPUYI"
     },
     {
       "source": "List/domainset/reject_extra.conf",
-      "bytes": 1472223,
-      "sha256": "4cd9ed6a548aade28ffa4cbbdd8902768bbbb5f8544f65c22f4059122768852a",
-      "upstream_content_hash": "ilgWBJnUYOSXEJeUW0A1HvX7JtF8KPREKp_3zIm3zsU"
+      "bytes": 1476448,
+      "sha256": "d831d8a44a8fef516e1d555f4ea61fe9623dcefeabcd2c7970b16aacd1fe77ef",
+      "upstream_content_hash": "wq_lxQtiKFsHqnecqIf-ZU08TdyU2Dr-Ngutv1n7m4o"
     },
     {
       "source": "List/domainset/reject_phishing.conf",
-      "bytes": 3146152,
-      "sha256": "af98d97b599b621f58cd3d53909bc2f0bab2a14fd5de2a2eb5b5b62f58fb54fe",
-      "upstream_content_hash": "CGYug0hEq-wQPcfeXZPOgPDZo31Nq7BzfiGzK3R12eo"
+      "bytes": 3149107,
+      "sha256": "48fdce7d84c32e78956047c3e1fa6deffded1cee45930a9b9a08d90af0991728",
+      "upstream_content_hash": "u9Lti5OGUymTsSorkztQtX4E3aHB3AOHbtSGvp6nvwo"
     },
     {
       "source": "List/domainset/reject_sukka.conf",
@@ -59,9 +59,9 @@
     },
     {
       "source": "List/domainset/speedtest.conf",
-      "bytes": 85817,
-      "sha256": "03758ca1693e5d168fe968fc70a08ff532b774921fbf1d1c6a40a9d1fa9faec3",
-      "upstream_content_hash": "X6B4M5iB5DmSBxIWqxtVUshC6n7c06BUsgRS2d5tNXM"
+      "bytes": 85870,
+      "sha256": "e38fe882f4b3abeb3eebf53e7383beeae24dbba175fc9eab98fa0065412be4e4",
+      "upstream_content_hash": "LsyUHs6fVb2KDxxbY93ry10SNmlvjq1nRkch-gXEohI"
     },
     {
       "source": "List/ip/ai.conf",
@@ -83,15 +83,15 @@
     },
     {
       "source": "List/ip/china_ip.conf",
-      "bytes": 92816,
-      "sha256": "f3b52dae7a56d00b1a698ce9b706b6458e387c3a0b7b9ea8d91a62c83f1f97bf",
-      "upstream_content_hash": "TtaFcqJ9rhRYI3bYNnKTtA-lHzV6OWSEmHrdzsL5aEU"
+      "bytes": 92792,
+      "sha256": "43bcdfac23578ee39ac400b0e47c245ed6a01612fd1c34f1bc835ee1d2a5ac08",
+      "upstream_content_hash": "6wihqEN94hV6aQp921AvRQJV_OsKcZgl6aDcjx55mCg"
     },
     {
       "source": "List/ip/china_ip_ipv6.conf",
-      "bytes": 33647,
-      "sha256": "8f24839e2a68c7b417927c7b119c2bc2a83b52b736fe06c567d7b335622b20ad",
-      "upstream_content_hash": "j_SK0TRnTS0PScztR62dPqvA5eO3nnYhlx4vwgnHOo4"
+      "bytes": 33623,
+      "sha256": "f50480d0a19e2c188b049ae6670cc7c57ca27d8bd7606096661a71ae370b3d7f",
+      "upstream_content_hash": "B06wFmOpQE0e3PKR-kAle5OQ9DE2iwDxtdzxQlBK6jw"
     },
     {
       "source": "List/ip/domestic.conf",
@@ -221,9 +221,9 @@
     },
     {
       "source": "List/non_ip/cloudmounter.conf",
-      "bytes": 2701,
-      "sha256": "5f9e21b4b504848020e402f01da3b9decdc4d55fd0a75d2d3cf28afc5d269301",
-      "upstream_content_hash": "NtbqvgEh-dwABrU7fAsrILFNyrQZpiKnLFAquPMoyGo"
+      "bytes": 2961,
+      "sha256": "20fb69d5969601b9ba4078fdc78faf0b1306d4fdd4e94c75ca3c40e500bc8186",
+      "upstream_content_hash": "F6FLVmlt8rpYAey4P7B4KdnYXjs5NYvYd-v5GzyQhjI"
     },
     {
       "source": "List/non_ip/direct.conf",

@@ -1,17 +1,17 @@
 {
   "version": "V1.3.0",
   "stats": {
-    "source_rule_lines": 378326,
+    "source_rule_lines": 378735,
     "generated": 60,
     "deprecated": 3,
-    "unsupported": 113,
+    "unsupported": 117,
     "empty": 7,
     "mixed_no_resolve_files": 1,
     "strict_companion_files": 2,
     "ipv6_networks_pruned": 1,
     "no_resolve_files": 11
   },
-  "conversion_coverage_percent": 99.97014,
+  "conversion_coverage_percent": 99.969117,
   "generated_by_category": {
     "domain": 9,
     "ip": 16,
@@ -126,7 +126,7 @@
             "kind": "domain_marker"
           },
           {
-            "line": 3293,
+            "line": 3295,
             "kind": "domain_marker"
           }
         ]
@@ -758,6 +758,10 @@
     "non_ip/cloudmounter.conf:45: AND,((DOMAIN-SUFFIX,upload.box.com),(SRC-IP,10.0.0.0/8))",
     "non_ip/cloudmounter.conf:46: AND,((DOMAIN-SUFFIX,upload.box.com),(SRC-IP,172.16.0.0/12))",
     "non_ip/cloudmounter.conf:47: AND,((DOMAIN-SUFFIX,upload.box.com),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:48: AND,((DOMAIN-SUFFIX,upload.app.box.com),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:49: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:50: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:51: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,192.168.0.0/16))",
     "non_ip/direct.conf:196: PROCESS-NAME,v2ray",
     "non_ip/direct.conf:197: PROCESS-NAME,xray",
     "non_ip/direct.conf:198: PROCESS-NAME,ss-local",
@@ -842,7 +846,7 @@
       "ip": 16,
       "non_ip": 34
     },
-    "total_rules": 20694,
+    "total_rules": 20699,
     "max_rules_per_set": 25000,
     "excluded_files": [
       {
@@ -887,10 +891,10 @@
   },
   "default_branch": "main",
   "safety_guard": {
-    "previous_files": 0,
+    "previous_files": 60,
     "current_files": 60,
-    "previous_source_rules": 0,
-    "current_source_rules": 378326,
+    "previous_source_rules": 378326,
+    "current_source_rules": 378735,
     "file_drop_percent": 0.0,
     "rule_drop_percent": 0.0,
     "required_rulesets": [

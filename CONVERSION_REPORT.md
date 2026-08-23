@@ -9,23 +9,23 @@ Upstream: https://ruleset.skk.moe/
 | Item | Count |
 |---|---:|
 | Generated Egern rulesets | 60 |
-| Clean source rules | 378326 |
+| Clean source rules | 378735 |
 | Removed Sukka markers | 65 |
 | Removed duplicate rules | 0 |
 | Covered domain suffixes removed | 0 |
 | Covered exact domains removed | 0 |
 | IPv4 CIDR networks compressed | 0 |
 | IPv6 CIDR networks compressed | 1 |
-| Conversion coverage | 99.9701% |
+| Conversion coverage | 99.9691% |
 | no_resolve rulesets | 11 |
 | Mixed no_resolve source files | 1 |
 | Strict semantic companion files | 2 |
 | Deprecated source files | 3 |
 | Empty source files | 7 |
-| Unsupported source rules | 113 |
+| Unsupported source rules | 117 |
 | Invalid source rules | 0 |
 | iOS Lite rulesets | 56 |
-| iOS Lite total rules | 20694 |
+| iOS Lite total rules | 20699 |
 | iOS Lite excluded files | 4 |
 
 ## Marker cleanup by category
@@ -61,7 +61,7 @@ Upstream: https://ruleset.skk.moe/
 
 ## Upstream safety guard
 
-- Previous full rulesets: 0
+- Previous full rulesets: 60
 - Current full rulesets: 60
 - Ruleset decrease: 0.00%
 - Source rule decrease: 0.00%
@@ -156,6 +156,10 @@ in the displayed order and assign all of them the same policy:
 - `non_ip/cloudmounter.conf:45: AND,((DOMAIN-SUFFIX,upload.box.com),(SRC-IP,10.0.0.0/8))`
 - `non_ip/cloudmounter.conf:46: AND,((DOMAIN-SUFFIX,upload.box.com),(SRC-IP,172.16.0.0/12))`
 - `non_ip/cloudmounter.conf:47: AND,((DOMAIN-SUFFIX,upload.box.com),(SRC-IP,192.168.0.0/16))`
+- `non_ip/cloudmounter.conf:48: AND,((DOMAIN-SUFFIX,upload.app.box.com),(PROCESS-NAME,*CloudMounter))`
+- `non_ip/cloudmounter.conf:49: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,10.0.0.0/8))`
+- `non_ip/cloudmounter.conf:50: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,172.16.0.0/12))`
+- `non_ip/cloudmounter.conf:51: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,192.168.0.0/16))`
 - `non_ip/direct.conf:196: PROCESS-NAME,v2ray`
 - `non_ip/direct.conf:197: PROCESS-NAME,xray`
 - `non_ip/direct.conf:198: PROCESS-NAME,ss-local`

@@ -9,14 +9,14 @@ Upstream: https://ruleset.skk.moe/
 | Item | Count |
 |---|---:|
 | Generated Egern rulesets | 60 |
-| Clean source rules | 378806 |
+| Clean source rules | 380315 |
 | Removed Sukka markers | 65 |
 | Removed duplicate rules | 0 |
 | Covered domain suffixes removed | 0 |
 | Covered exact domains removed | 0 |
 | IPv4 CIDR networks compressed | 0 |
 | IPv6 CIDR networks compressed | 1 |
-| Conversion coverage | 99.9691% |
+| Conversion coverage | 99.9692% |
 | no_resolve rulesets | 11 |
 | Mixed no_resolve source files | 1 |
 | Strict semantic companion files | 2 |
@@ -25,7 +25,7 @@ Upstream: https://ruleset.skk.moe/
 | Unsupported source rules | 117 |
 | Invalid source rules | 0 |
 | iOS Lite rulesets | 56 |
-| iOS Lite total rules | 20711 |
+| iOS Lite total rules | 22908 |
 | iOS Lite excluded files | 4 |
 
 ## Marker cleanup by category

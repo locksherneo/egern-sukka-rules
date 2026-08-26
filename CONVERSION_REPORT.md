@@ -9,14 +9,14 @@ Upstream: https://ruleset.skk.moe/
 | Item | Count |
 |---|---:|
 | Generated Egern rulesets | 60 |
-| Clean source rules | 380315 |
+| Clean source rules | 380654 |
 | Removed Sukka markers | 65 |
 | Removed duplicate rules | 0 |
 | Covered domain suffixes removed | 0 |
 | Covered exact domains removed | 0 |
 | IPv4 CIDR networks compressed | 0 |
 | IPv6 CIDR networks compressed | 1 |
-| Conversion coverage | 99.9692% |
+| Conversion coverage | 99.9693% |
 | no_resolve rulesets | 11 |
 | Mixed no_resolve source files | 1 |
 | Strict semantic companion files | 2 |

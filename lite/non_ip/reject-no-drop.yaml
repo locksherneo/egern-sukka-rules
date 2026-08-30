@@ -53,4 +53,5 @@ domain_wildcard_set:
   - "dyp2p-*.douyucdn.cn"
   - "p2plive-*.douyucdn.cn"
   - "stun*.douyucdn.cn"
+  - "upos-sz-302*.bilivideo.com"
 

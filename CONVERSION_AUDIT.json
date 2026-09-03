@@ -1,7 +1,7 @@
 {
   "version": "V1.3.0",
   "stats": {
-    "source_rule_lines": 385029,
+    "source_rule_lines": 384919,
     "generated": 60,
     "deprecated": 3,
     "unsupported": 117,
@@ -11,7 +11,7 @@
     "ipv6_networks_pruned": 1,
     "no_resolve_files": 11
   },
-  "conversion_coverage_percent": 99.969622,
+  "conversion_coverage_percent": 99.969613,
   "generated_by_category": {
     "domain": 9,
     "ip": 16,
@@ -846,7 +846,7 @@
       "ip": 16,
       "non_ip": 34
     },
-    "total_rules": 22897,
+    "total_rules": 22899,
     "max_rules_per_set": 25000,
     "excluded_files": [
       {
@@ -893,10 +893,10 @@
   "safety_guard": {
     "previous_files": 60,
     "current_files": 60,
-    "previous_source_rules": 384032,
-    "current_source_rules": 385029,
+    "previous_source_rules": 385029,
+    "current_source_rules": 384919,
     "file_drop_percent": 0.0,
-    "rule_drop_percent": 0.0,
+    "rule_drop_percent": 0.028569,
     "required_rulesets": [
       "domain/apple_cdn.yaml",
       "domain/cdn.yaml",

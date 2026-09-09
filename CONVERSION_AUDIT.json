@@ -1,7 +1,7 @@
 {
   "version": "V1.3.0",
   "stats": {
-    "source_rule_lines": 381174,
+    "source_rule_lines": 381796,
     "generated": 60,
     "deprecated": 3,
     "unsupported": 117,
@@ -11,7 +11,7 @@
     "ipv6_networks_pruned": 1,
     "no_resolve_files": 11
   },
-  "conversion_coverage_percent": 99.969315,
+  "conversion_coverage_percent": 99.969365,
   "generated_by_category": {
     "domain": 9,
     "ip": 16,
@@ -893,8 +893,8 @@
   "safety_guard": {
     "previous_files": 60,
     "current_files": 60,
-    "previous_source_rules": 380392,
-    "current_source_rules": 381174,
+    "previous_source_rules": 381174,
+    "current_source_rules": 381796,
     "file_drop_percent": 0.0,
     "rule_drop_percent": 0.0,
     "required_rulesets": [

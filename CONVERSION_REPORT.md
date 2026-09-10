@@ -8,41 +8,41 @@ Upstream: https://ruleset.skk.moe/
 
 | Item | Count |
 |---|---:|
-| Generated Egern rulesets | 60 |
-| Clean source rules | 381796 |
-| Removed Sukka markers | 65 |
+| Generated Egern rulesets | 61 |
+| Clean source rules | 381813 |
+| Removed Sukka markers | 66 |
 | Removed duplicate rules | 0 |
 | Covered domain suffixes removed | 0 |
 | Covered exact domains removed | 0 |
 | IPv4 CIDR networks compressed | 0 |
-| IPv6 CIDR networks compressed | 1 |
+| IPv6 CIDR networks compressed | 2 |
 | Conversion coverage | 99.9694% |
-| no_resolve rulesets | 11 |
+| no_resolve rulesets | 12 |
 | Mixed no_resolve source files | 1 |
 | Strict semantic companion files | 2 |
 | Deprecated source files | 3 |
 | Empty source files | 7 |
 | Unsupported source rules | 117 |
 | Invalid source rules | 0 |
-| iOS Lite rulesets | 56 |
-| iOS Lite total rules | 22915 |
+| iOS Lite rulesets | 57 |
+| iOS Lite total rules | 22991 |
 | iOS Lite excluded files | 4 |
 
 ## Marker cleanup by category
 
 - `domainset`: 10
-- `ip`: 19
+- `ip`: 20
 - `non_ip`: 36
 
 ## Marker cleanup by type
 
-- `domain_marker`: 64
+- `domain_marker`: 65
 - `keyword_marker`: 1
 
 ## iOS Lite output
 
 - `lite/domain`: 6
-- `lite/ip`: 16
+- `lite/ip`: 17
 - `lite/non_ip`: 34
 
 ## iOS Lite excluded rulesets
@@ -62,7 +62,7 @@ Upstream: https://ruleset.skk.moe/
 ## Upstream safety guard
 
 - Previous full rulesets: 60
-- Current full rulesets: 60
+- Current full rulesets: 61
 - Ruleset decrease: 0.00%
 - Source rule decrease: 0.00%
 - Manual override: False
@@ -89,6 +89,7 @@ in the displayed order and assign all of them the same policy:
 - `ip/reject.yaml`
 - `ip/stream.yaml`
 - `ip/telegram.yaml`
+- `ip/teleproto.yaml`
 - `non_ip/apple_services.yaml`
 - `non_ip/reject.yaml`
 

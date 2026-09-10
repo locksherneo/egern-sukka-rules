@@ -3,6 +3,7 @@
 # Upstream license: AGPL-3.0
 
 domain_set:
+  - "hanime1.me"
   - "simpcraft.com"
   - "api.wakatime.com"
   - "hv-monster-submit.skk.moe"

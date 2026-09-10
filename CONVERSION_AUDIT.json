@@ -1,35 +1,35 @@
 {
   "version": "V1.3.0",
   "stats": {
-    "source_rule_lines": 381796,
-    "generated": 60,
+    "source_rule_lines": 381813,
+    "generated": 61,
     "deprecated": 3,
     "unsupported": 117,
     "empty": 7,
     "mixed_no_resolve_files": 1,
     "strict_companion_files": 2,
-    "ipv6_networks_pruned": 1,
-    "no_resolve_files": 11
+    "ipv6_networks_pruned": 2,
+    "no_resolve_files": 12
   },
-  "conversion_coverage_percent": 99.969365,
+  "conversion_coverage_percent": 99.969366,
   "generated_by_category": {
     "domain": 9,
-    "ip": 16,
+    "ip": 17,
     "non_ip": 35
   },
   "marker_audit": {
     "domain_marker": "7h15.ru1353t.1s.m4d3.by.5ukk4w.skk.moe",
     "keyword_marker_pattern": "^this[_-]?rule[_-]?set[_-]?is[_-]?made[_-]?by[_-]?sukkaw?$",
-    "source_files": 68,
-    "marker_files": 63,
-    "removed_total": 65,
+    "source_files": 69,
+    "marker_files": 64,
+    "removed_total": 66,
     "removed_by_category": {
       "domainset": 10,
-      "ip": 19,
+      "ip": 20,
       "non_ip": 36
     },
     "removed_by_kind": {
-      "domain_marker": 64,
+      "domain_marker": 65,
       "keyword_marker": 1
     },
     "files_without_marker": [
@@ -126,7 +126,7 @@
             "kind": "domain_marker"
           },
           {
-            "line": 3328,
+            "line": 3331,
             "kind": "domain_marker"
           }
         ]
@@ -317,6 +317,16 @@
         "markers": [
           {
             "line": 14,
+            "kind": "domain_marker"
+          }
+        ]
+      },
+      {
+        "file": "ip/teleproto.conf",
+        "removed": 1,
+        "markers": [
+          {
+            "line": 16,
             "kind": "domain_marker"
           }
         ]
@@ -687,6 +697,7 @@
     "ip/reject.yaml",
     "ip/stream.yaml",
     "ip/telegram.yaml",
+    "ip/teleproto.yaml",
     "non_ip/apple_services.yaml",
     "non_ip/reject.yaml"
   ],
@@ -840,13 +851,13 @@
   ],
   "ios_lite": {
     "enabled": true,
-    "generated_rulesets": 56,
+    "generated_rulesets": 57,
     "generated_by_category": {
       "domain": 6,
-      "ip": 16,
+      "ip": 17,
       "non_ip": 34
     },
-    "total_rules": 22915,
+    "total_rules": 22991,
     "max_rules_per_set": 25000,
     "excluded_files": [
       {
@@ -892,9 +903,9 @@
   "default_branch": "main",
   "safety_guard": {
     "previous_files": 60,
-    "current_files": 60,
-    "previous_source_rules": 381174,
-    "current_source_rules": 381796,
+    "current_files": 61,
+    "previous_source_rules": 381796,
+    "current_source_rules": 381813,
     "file_drop_percent": 0.0,
     "rule_drop_percent": 0.0,
     "required_rulesets": [

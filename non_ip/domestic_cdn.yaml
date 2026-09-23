@@ -1,0 +1,15 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/non_ip/domestic_cdn.conf
+# Upstream license: AGPL-3.0
+
+domain_suffix_set:
+  - "hdslb.com"
+  - "qhimg.com"
+  - "qhres.com"
+  - "qhimgs.com"
+  - "qhres2.com"
+  - "music.126.net"
+
+domain_wildcard_set:
+  - "qhimgs?.com"
+

@@ -1,6 +1,6 @@
 {
   "converter_version": "V1.3.0",
-  "upstream_build": "2026-09-24T10:04:30.707Z",
+  "upstream_build": "2026-09-25T10:13:41.513Z",
   "upstream_url": "https://ruleset.skk.moe",
   "source_files": [
     {
@@ -35,21 +35,21 @@
     },
     {
       "source": "List/domainset/reject.conf",
-      "bytes": 3008943,
-      "sha256": "c5e4feae7cc45b903756140bae4398b1903898b398191198376cbddf79799543",
-      "upstream_content_hash": "8vPD4AHWv3NXKYDox5mkNXvfnFum1jBZoONdhmoec28"
+      "bytes": 3010419,
+      "sha256": "d5f9467547902b5678b2e63e42438bc67b2a51d845e7b2edbb3140824b9ee2fe",
+      "upstream_content_hash": "0TDfGkYQMF2BZgxvlobv4C8WWAcFUyjk6HupQN7cSag"
     },
     {
       "source": "List/domainset/reject_extra.conf",
-      "bytes": 1577129,
-      "sha256": "12ffc6dd24c46d8553eeb1e5f76b14ad12f22a0e8224ac710789e6296f2b04b4",
-      "upstream_content_hash": "hPdgJ2wG3BGt6p42YpnEkluyyMuyy3Ex1_cowOKlqVk"
+      "bytes": 1582187,
+      "sha256": "13875884be17b893d2c391f46606b8f30ba6543cb28d51a3cb9c0604f3596033",
+      "upstream_content_hash": "OmEsGBTfzQZEVbfJ8cJ1grJrhD9FpTE-XTmgQuCmPOg"
     },
     {
       "source": "List/domainset/reject_phishing.conf",
-      "bytes": 3098159,
-      "sha256": "834fdc86513d8f826bd2f6a03b14c57684c0b6987b0398ad97ecee622fe7f943",
-      "upstream_content_hash": "iHYVmdFmeGKKCZBSmMYgk2KwpXHO61Ez4FioG8KRIRM"
+      "bytes": 3094378,
+      "sha256": "abb8c15bc68ad21eddc9644c6fc46b562efe377a84d2e4f4a1bbc9c7a4e5147a",
+      "upstream_content_hash": "zaav0DYXnbviearPuMXOnDMr4Z-woaSHP-jIpKC8Nhg"
     },
     {
       "source": "List/domainset/reject_sukka.conf",
@@ -89,9 +89,9 @@
     },
     {
       "source": "List/ip/china_ip_ipv6.conf",
-      "bytes": 87896,
-      "sha256": "1c45891b780ae78c63f609c2f813b8ebdafa98de609352b10c964b91fb72b044",
-      "upstream_content_hash": "3qwkqXcJ-MJ_fNrjFNEYFBNxa2GdyG_zHQVgihBHD30"
+      "bytes": 87949,
+      "sha256": "0b77e54b543df0ef368c14cda0d44a3be25495e6bab848370eeb11a40939145a",
+      "upstream_content_hash": "9zuonBHLrSIqer6vjJ953PTU5x0hrxTS0ChjEaYN4xQ"
     },
     {
       "source": "List/ip/domestic.conf",

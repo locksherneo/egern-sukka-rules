@@ -4,6 +4,7 @@
 # Profile: Egern iOS Lite
 
 domain_set:
+  - "time.xtracloud.net"
   - "registry.npmmirror.com"
 
 domain_suffix_set:

@@ -9,7 +9,7 @@ Upstream: https://ruleset.skk.moe/
 | Item | Count |
 |---|---:|
 | Generated Egern rulesets | 62 |
-| Clean source rules | 375060 |
+| Clean source rules | 374421 |
 | Removed Sukka markers | 67 |
 | Removed duplicate rules | 0 |
 | Covered domain suffixes removed | 0 |
@@ -64,7 +64,7 @@ Upstream: https://ruleset.skk.moe/
 - Previous full rulesets: 62
 - Current full rulesets: 62
 - Ruleset decrease: 0.00%
-- Source rule decrease: 0.00%
+- Source rule decrease: 0.17%
 - Manual override: False
 
 ## Mixed no_resolve semantics

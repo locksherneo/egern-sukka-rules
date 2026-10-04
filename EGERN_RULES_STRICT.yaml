@@ -1,6 +1,14 @@
 # Egern strict DNS semantics fragment; replace YOUR_POLICY as needed.
 rules:
   - rule_set:
+      match: "https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/ip/ai.no_resolve.yaml"
+      policy: "YOUR_POLICY"
+      update_interval: 86400
+  - rule_set:
+      match: "https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/ip/ai.resolve.yaml"
+      policy: "YOUR_POLICY"
+      update_interval: 86400
+  - rule_set:
       match: "https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/ip/reject.no_resolve.yaml"
       policy: "REJECT"
       update_interval: 86400

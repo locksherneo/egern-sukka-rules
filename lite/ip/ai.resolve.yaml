@@ -1,0 +1,8 @@
+# Upstream: Sukka Ruleset by Sukka (@SukkaW)
+# Source: https://ruleset.skk.moe/List/ip/ai.conf
+# Upstream license: AGPL-3.0
+# Profile: Egern iOS Lite
+
+asn_set:
+  - "399358"
+

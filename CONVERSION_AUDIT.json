@@ -1,20 +1,20 @@
 {
   "version": "V1.3.0",
   "stats": {
-    "source_rule_lines": 373131,
-    "generated": 62,
+    "source_rule_lines": 372653,
+    "generated": 64,
     "deprecated": 3,
     "unsupported": 117,
     "empty": 7,
-    "mixed_no_resolve_files": 1,
-    "strict_companion_files": 2,
+    "mixed_no_resolve_files": 2,
+    "strict_companion_files": 4,
     "ipv6_networks_pruned": 2,
-    "no_resolve_files": 12
+    "no_resolve_files": 13
   },
-  "conversion_coverage_percent": 99.968654,
+  "conversion_coverage_percent": 99.968613,
   "generated_by_category": {
     "domain": 9,
-    "ip": 17,
+    "ip": 19,
     "non_ip": 36
   },
   "marker_audit": {
@@ -126,7 +126,7 @@
             "kind": "domain_marker"
           },
           {
-            "line": 3369,
+            "line": 3370,
             "kind": "domain_marker"
           }
         ]
@@ -698,6 +698,7 @@
     ]
   },
   "no_resolve_files": [
+    "ip/ai.no_resolve.yaml",
     "ip/ai.yaml",
     "ip/apple_services.yaml",
     "ip/domestic.yaml",
@@ -712,6 +713,15 @@
     "non_ip/reject.yaml"
   ],
   "mixed_no_resolve_files": [
+    {
+      "source": "ip/ai.conf",
+      "compatibility": "ip/ai.yaml",
+      "strict_non_ip": null,
+      "strict_no_resolve": "ip/ai.no_resolve.yaml",
+      "strict_resolve": "ip/ai.resolve.yaml",
+      "no_resolve_rules": 23,
+      "resolve_rules": 1
+    },
     {
       "source": "ip/reject.conf",
       "compatibility": "ip/reject.yaml",
@@ -861,13 +871,13 @@
   ],
   "ios_lite": {
     "enabled": true,
-    "generated_rulesets": 58,
+    "generated_rulesets": 60,
     "generated_by_category": {
       "domain": 6,
-      "ip": 17,
+      "ip": 19,
       "non_ip": 35
     },
-    "total_rules": 23073,
+    "total_rules": 23100,
     "max_rules_per_set": 25000,
     "excluded_files": [
       {
@@ -913,11 +923,11 @@
   "default_branch": "main",
   "safety_guard": {
     "previous_files": 62,
-    "current_files": 62,
-    "previous_source_rules": 373756,
-    "current_source_rules": 373131,
+    "current_files": 64,
+    "previous_source_rules": 373131,
+    "current_source_rules": 372653,
     "file_drop_percent": 0.0,
-    "rule_drop_percent": 0.167221,
+    "rule_drop_percent": 0.128105,
     "required_rulesets": [
       "domain/apple_cdn.yaml",
       "domain/cdn.yaml",

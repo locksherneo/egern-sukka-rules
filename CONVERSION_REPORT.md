@@ -8,24 +8,24 @@ Upstream: https://ruleset.skk.moe/
 
 | Item | Count |
 |---|---:|
-| Generated Egern rulesets | 62 |
-| Clean source rules | 373131 |
+| Generated Egern rulesets | 64 |
+| Clean source rules | 372653 |
 | Removed Sukka markers | 67 |
 | Removed duplicate rules | 0 |
 | Covered domain suffixes removed | 0 |
 | Covered exact domains removed | 0 |
 | IPv4 CIDR networks compressed | 0 |
 | IPv6 CIDR networks compressed | 2 |
-| Conversion coverage | 99.9687% |
-| no_resolve rulesets | 12 |
-| Mixed no_resolve source files | 1 |
-| Strict semantic companion files | 2 |
+| Conversion coverage | 99.9686% |
+| no_resolve rulesets | 13 |
+| Mixed no_resolve source files | 2 |
+| Strict semantic companion files | 4 |
 | Deprecated source files | 3 |
 | Empty source files | 7 |
 | Unsupported source rules | 117 |
 | Invalid source rules | 0 |
-| iOS Lite rulesets | 58 |
-| iOS Lite total rules | 23073 |
+| iOS Lite rulesets | 60 |
+| iOS Lite total rules | 23100 |
 | iOS Lite excluded files | 4 |
 
 ## Marker cleanup by category
@@ -42,7 +42,7 @@ Upstream: https://ruleset.skk.moe/
 ## iOS Lite output
 
 - `lite/domain`: 6
-- `lite/ip`: 17
+- `lite/ip`: 19
 - `lite/non_ip`: 35
 
 ## iOS Lite excluded rulesets
@@ -62,9 +62,9 @@ Upstream: https://ruleset.skk.moe/
 ## Upstream safety guard
 
 - Previous full rulesets: 62
-- Current full rulesets: 62
+- Current full rulesets: 64
 - Ruleset decrease: 0.00%
-- Source rule decrease: 0.17%
+- Source rule decrease: 0.13%
 - Manual override: False
 
 ## Mixed no_resolve semantics
@@ -73,6 +73,10 @@ The original filename remains compatible with V1.1.3.
 For exact DNS behavior, reference the following companion files
 in the displayed order and assign all of them the same policy:
 
+- Source: `ip/ai.conf`
+  1. `ip/ai.no_resolve.yaml` (23 rules; DNS resolution disabled)
+  2. `ip/ai.resolve.yaml` (1 rules; normal DNS behavior)
+  - Compatibility filename: `ip/ai.yaml`
 - Source: `ip/reject.conf`
   1. `ip/reject.no_resolve.yaml` (42 rules; DNS resolution disabled)
   2. `ip/reject.resolve.yaml` (736 rules; normal DNS behavior)
@@ -80,6 +84,7 @@ in the displayed order and assign all of them the same policy:
 
 ## Rulesets with no_resolve
 
+- `ip/ai.no_resolve.yaml`
 - `ip/ai.yaml`
 - `ip/apple_services.yaml`
 - `ip/domestic.yaml`

@@ -50,6 +50,14 @@ rules:
       policy: "DIRECT"
       update_interval: 86400
   - rule_set:
+      match: "https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/lite/ip/ai.no_resolve.yaml"
+      policy: "YOUR_POLICY"
+      update_interval: 86400
+  - rule_set:
+      match: "https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/lite/ip/ai.resolve.yaml"
+      policy: "YOUR_POLICY"
+      update_interval: 86400
+  - rule_set:
       match: "https://raw.githubusercontent.com/locksherneo/egern-sukka-rules/main/lite/ip/reject.no_resolve.yaml"
       policy: "REJECT"
       update_interval: 86400

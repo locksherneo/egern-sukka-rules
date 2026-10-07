@@ -1,6 +1,6 @@
 {
   "converter_version": "V1.3.0",
-  "upstream_build": "2026-10-06T12:03:11.398Z",
+  "upstream_build": "2026-10-07T11:48:42.642Z",
   "upstream_url": "https://ruleset.skk.moe",
   "source_files": [
     {
@@ -35,21 +35,21 @@
     },
     {
       "source": "List/domainset/reject.conf",
-      "bytes": 3011159,
-      "sha256": "de9205dab6bfba2050b5e37e3e6fb7f4684fda68d068e4253ab2c8355af914c4",
-      "upstream_content_hash": "W4-62XeLjXDhV32ehutkNVS84PCw_lJID-RCE2c1SfU"
+      "bytes": 3013887,
+      "sha256": "5f277e396469a34d3424110f21613ed68652a4aa1045bb4d4354a7cef1f70e4e",
+      "upstream_content_hash": "y6XKH9TaeIy2ubPW6oS0VI1SpUzC4fy9gmQTWNpKpd0"
     },
     {
       "source": "List/domainset/reject_extra.conf",
-      "bytes": 1501191,
-      "sha256": "685521401f9a1855eb391d1fd19a5ae5bddaacfbe06dd790e9f1b614b0de74a3",
-      "upstream_content_hash": "RP9BkiQH6bvkQOphNqjYAa0grjdumnG3-tgKl448KIc"
+      "bytes": 1504554,
+      "sha256": "c3f768f75ccabb7421be1451552990f5882dea02bf0b345e05a91e27b39f5f3f",
+      "upstream_content_hash": "WdtsriT4XmN6o1cznjL51mtlXBMWGnSlKUmUWI4Mwcg"
     },
     {
       "source": "List/domainset/reject_phishing.conf",
-      "bytes": 2961179,
-      "sha256": "d4a410ca2ce36a6d185bd8d0ff2b11c0f182dbac3eb8e79626f588ca6246679d",
-      "upstream_content_hash": "76g5owo2q2jEf-Tx03Qk5N8qQRYJh3q_uE3ZQFyMSZo"
+      "bytes": 2943449,
+      "sha256": "8cc5930148caca979304f1bc2e467530f6071a8ecc912524ee41764958f18896",
+      "upstream_content_hash": "jROeN4pzM3eLF6Cce9IOV1p8u_m3kqvekfU2uyQtg2k"
     },
     {
       "source": "List/domainset/reject_sukka.conf",
@@ -83,9 +83,9 @@
     },
     {
       "source": "List/ip/china_ip.conf",
-      "bytes": 92489,
-      "sha256": "fd1512190c9989fca85adb1b91bf5156778b0d2182732ce23dab20755a2af6e7",
-      "upstream_content_hash": "TIyQuKPZb-ruaf6YfoRAQbCMMs_yFLrvGbKNOUuAtOM"
+      "bytes": 92513,
+      "sha256": "e866b40b0195efc3f644b34899a653c75615b118035bf8f8277ca05deeeb30fc",
+      "upstream_content_hash": "7YTA3jUMndLI32Cz9zJQx44CkPWDAxKHAS-5AcjwwfI"
     },
     {
       "source": "List/ip/china_ip_ipv6.conf",

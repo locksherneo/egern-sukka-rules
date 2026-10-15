@@ -1,6 +1,6 @@
 {
   "converter_version": "V1.3.0",
-  "upstream_build": "2026-10-14T10:15:50.674Z",
+  "upstream_build": "2026-10-15T09:58:31.717Z",
   "upstream_url": "https://ruleset.skk.moe",
   "source_files": [
     {
@@ -11,15 +11,15 @@
     },
     {
       "source": "List/domainset/cdn.conf",
-      "bytes": 89831,
-      "sha256": "aeaa1b2612fce7c7048f5f14f3e132abdfc52d9b8cb0d28a6d52d9dcd7b53657",
-      "upstream_content_hash": "HZCOGfjsUyXS7VqzCOyV_yuAC7DM_ndoE8hp1pNF2pc"
+      "bytes": 89894,
+      "sha256": "e44a67807f871ca9ed0b6b95005eddb7a5d753c7ad41f349144b73e5c9e940d1",
+      "upstream_content_hash": "Qh0liooNfW_tCnI4oWGDYvoc9dnOM2_GjRM-2Ja0uLY"
     },
     {
       "source": "List/domainset/download.conf",
-      "bytes": 45768,
-      "sha256": "03ddc1a27a996d35f682000c4c7940e03d435c32651f5dd02cbfe2f34402a128",
-      "upstream_content_hash": "HUfLr3eJFgcp-wTAltvg0bhAOuKe_B2vC4hsBsCSHbc"
+      "bytes": 45788,
+      "sha256": "0855cb9678a67207eb29f11577e6d7681c80dbca25670275c9704fc5759e1261",
+      "upstream_content_hash": "X92uOnDHzwLcLZKBQUtcMkxNNcWfyULuRsZ1GsLieLk"
     },
     {
       "source": "List/domainset/game-download.conf",
@@ -35,21 +35,21 @@
     },
     {
       "source": "List/domainset/reject.conf",
-      "bytes": 3122392,
-      "sha256": "00115dfafc5b1c1e8eca0240f4d8b2956988c4999f3631673663e37ea2c3a3e9",
-      "upstream_content_hash": "-0BVgV7U2oIKh1x7NQ5u_DIDIcb3ZX4ZRSKx6DDsenA"
+      "bytes": 3124671,
+      "sha256": "3e5d39e1babd8ebfa577d1b3cfa45a621638fac25a1821559b74fc1ab8cded0b",
+      "upstream_content_hash": "RTt74fOErcCVP9wysllXjoUCLFblx3SZBMyixBI11sg"
     },
     {
       "source": "List/domainset/reject_extra.conf",
-      "bytes": 1528379,
-      "sha256": "1b42d5dab4c5001dda05c7865c6c9ab6c84a8bff7c42441cf7e5f2fded314fbf",
-      "upstream_content_hash": "PTq9C76jLbvPz9HEs9rVM4B8ZSMUCsPuRinjDPoVO8A"
+      "bytes": 1532509,
+      "sha256": "dacf55968f88ad7cadd229a48f287296639370908b5f20038839a342022e6b7b",
+      "upstream_content_hash": "SwOQb2uHSMYphaG4DdHwzTVKhhW_hHn2UPK0Bj4zHOs"
     },
     {
       "source": "List/domainset/reject_phishing.conf",
-      "bytes": 3081002,
-      "sha256": "9abbb7014bad33a22d829d2ef2dfe683d108f70119aedb7156faa67034fe125d",
-      "upstream_content_hash": "E1UpFSuwutC5f7qSZv3emK_p6JWsh35uuGrZQu2vrlI"
+      "bytes": 3085379,
+      "sha256": "26569a1693cb4801b9e414032ed1ecbd07076c93fa429c2ae7fd4e5075d40a78",
+      "upstream_content_hash": "uSiPVo-ghBHNZX-udzKBV511fPdmyGeonw9gccBvitc"
     },
     {
       "source": "List/domainset/reject_sukka.conf",
@@ -59,9 +59,9 @@
     },
     {
       "source": "List/domainset/speedtest.conf",
-      "bytes": 88146,
-      "sha256": "1f408bd0e233b4816948b95519aa99e345a3210cf54a837211a7843e570e7e53",
-      "upstream_content_hash": "BMT8LC8qwk_P5HpndVd5vuBDUbaRDATIj0Z8xkmjVMk"
+      "bytes": 88165,
+      "sha256": "31cf5016f3c249606eb19f556b52cb47bfbafe26cd33d4822c90e51d06f438b7",
+      "upstream_content_hash": "7IXEFVKCTvm_gbLVe2bDL9lHGRHiBwuaf0sHfW7-0x8"
     },
     {
       "source": "List/ip/ai.conf",
@@ -83,15 +83,15 @@
     },
     {
       "source": "List/ip/china_ip.conf",
-      "bytes": 92482,
-      "sha256": "ed4644015488a6565eb34ee36c5bae9c9494d82a408649b52318bab9c1d09ec0",
-      "upstream_content_hash": "9h8xK9AG5nrLmJ20y7XU-KBEYyQ37kYxEdnb6nb4D1w"
+      "bytes": 92501,
+      "sha256": "a136257422be36b57ad2a4574701d649d629d842b1e6d668f85ef346dca27767",
+      "upstream_content_hash": "YpvcYAMSI5q39wCQJ9krcR76QZePqSCk_WUnO1IjLL8"
     },
     {
       "source": "List/ip/china_ip_ipv6.conf",
-      "bytes": 89952,
-      "sha256": "ca1554d03ed78dfe2edfd3cb1298faf181d500f01c237a47f87103d08aa3279c",
-      "upstream_content_hash": "UYCbQttaZr-NaV89ZmtiIIXWcP5phoICrgOvMYAia14"
+      "bytes": 89978,
+      "sha256": "e4d74ae1baad074259175e349a2889ec53c93a286827c035ff04e646536d9258",
+      "upstream_content_hash": "rgn2myaJazfG5cdLcJ9Sg1bNVOhhf_d-65MrpNV2X4U"
     },
     {
       "source": "List/ip/domestic.conf",
@@ -287,9 +287,9 @@
     },
     {
       "source": "List/non_ip/microsoft_cdn.conf",
-      "bytes": 3113,
-      "sha256": "c2efcfedd34fdedfeb16460dc7fd6a1842cd5230d31cd57a702194d1c8eeb6bd",
-      "upstream_content_hash": "2Y8AoGQYN7r-o7fPEQte6ir_rx66vg2Uh1F2NwsWu_0"
+      "bytes": 3076,
+      "sha256": "9cc652e595d6782cae91b3960306777934ae8609b46d474e452c3e9099bcef7f",
+      "upstream_content_hash": "K4RzL6JCO8505qjgAo7UXMOgd0_ar8hN8OC2pLZUhX0"
     },
     {
       "source": "List/non_ip/my_direct.conf",

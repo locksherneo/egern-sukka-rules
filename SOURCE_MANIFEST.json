@@ -1,6 +1,6 @@
 {
   "converter_version": "V1.3.0",
-  "upstream_build": "2026-10-18T09:39:27.415Z",
+  "upstream_build": "2026-10-19T10:48:33.092Z",
   "upstream_url": "https://ruleset.skk.moe",
   "source_files": [
     {
@@ -11,9 +11,9 @@
     },
     {
       "source": "List/domainset/cdn.conf",
-      "bytes": 89939,
-      "sha256": "a45f84f1d34420f134bef22f1188786d3ad1ceb8f717f2c223a79b58abb52893",
-      "upstream_content_hash": "vBOH2cyIIxh4cbJ1ZH-FaLVxixpkOwDuUsFypRXBy0s"
+      "bytes": 90000,
+      "sha256": "a91403d4fbc736b3d0eabf78d2a7ed7b64fa47b28a5874e79a1c8d18f7f7bbdb",
+      "upstream_content_hash": "H3gONQNoDjU99BRyHnZGZMI638YWNDtF0lFZv7rqQk0"
     },
     {
       "source": "List/domainset/download.conf",
@@ -35,21 +35,21 @@
     },
     {
       "source": "List/domainset/reject.conf",
-      "bytes": 3136417,
-      "sha256": "ee157a23a2aeae01f4f2329972e52d669b5b132019a3a584d6746fc8bf14bec4",
-      "upstream_content_hash": "9khiJabvXt3BY8b59hcdUBdPVQOBoNmXx_uYk1ubBqg"
+      "bytes": 3138582,
+      "sha256": "b39fe1b838e6fcf8369513d2fdffaac96adf7d11906d4acb14f861e048a5b058",
+      "upstream_content_hash": "1cydMBJoaKc773d0Ygq1scD5lt-4OYNIgS6ZdX0u8eQ"
     },
     {
       "source": "List/domainset/reject_extra.conf",
-      "bytes": 1549939,
-      "sha256": "57d1c0e47452cfefb7c987ee62de2533e2628806130c728cb74abed4e051b862",
-      "upstream_content_hash": "3vLlsqhUqQDFM6zLyUWOVHsX8ltT2ODUGlvGPFeRTXg"
+      "bytes": 1555650,
+      "sha256": "974c247c6aeb509e2c3beaa0a07d13fa095570af1363dace4870def41b411549",
+      "upstream_content_hash": "fkxpWC7BJN9V2eXxf5Ta9cgxzyjvObKjXNixDpm1soU"
     },
     {
       "source": "List/domainset/reject_phishing.conf",
-      "bytes": 3078786,
-      "sha256": "079d3cef84235108ee765332559885c4ce3cbabfc3e29799ddb8a485b09cc5d0",
-      "upstream_content_hash": "FB9HDjdLTGIhnvCN6MBTUpknMPDVvhCWZAyrJmtB8N8"
+      "bytes": 3084004,
+      "sha256": "27b2e038a6f73678d895d369413839bc784cf18c9e94a137c499d39dbee5346d",
+      "upstream_content_hash": "shtGfQ66L0755wj0bsC6Gi6Cw2-eI0rXPNrDKjsnpls"
     },
     {
       "source": "List/domainset/reject_sukka.conf",
@@ -59,9 +59,9 @@
     },
     {
       "source": "List/domainset/speedtest.conf",
-      "bytes": 88481,
-      "sha256": "8e3774df860c4a85c99d270f9f5fc84b5622232912ab031e42e5eea42f742ebe",
-      "upstream_content_hash": "pkcW_9rqHUspaHAVdK4TvJgFcqVZar4EvXIxZxToSZo"
+      "bytes": 88518,
+      "sha256": "4f2096f7cefa9ba99df5fd6cb9d77a3320fa635fc00ace5028f1188e1913312a",
+      "upstream_content_hash": "79FlFW9mS1MxMqiC9RGuCnifDc72yoixKQWto-PuG0M"
     },
     {
       "source": "List/ip/ai.conf",
@@ -83,15 +83,15 @@
     },
     {
       "source": "List/ip/china_ip.conf",
-      "bytes": 91999,
-      "sha256": "edb7ac08d31f4800157da254f13f23c514564d4bb22b07e0c215193bc2e6bfea",
-      "upstream_content_hash": "85ochbfzPoPx6ISmoFyrLIDC5Cnq0KHC0dQewtd4KQA"
+      "bytes": 91899,
+      "sha256": "043cee1c3d94daf2ca39df74e6ae630bb3ee168cf1340d24aebc041bcb916aaf",
+      "upstream_content_hash": "r2D2EW5Wc493d9JB3-WIpqmUyl5fPAepCG5ImOEB_8E"
     },
     {
       "source": "List/ip/china_ip_ipv6.conf",
-      "bytes": 90060,
-      "sha256": "3d84328772998680589ca87e707051a6e95f360f46a17b35bcc5fdf0caa38d40",
-      "upstream_content_hash": "efITh5SDxPSF-jO7CB89fvWkJaJqtUJDQQpER5HYnQo"
+      "bytes": 90115,
+      "sha256": "639b7450adac78d5ad3d6b164b2712d9b2f7f678bd0f413a5309e9ee0e99c95b",
+      "upstream_content_hash": "a7ilaEwmRSTY-7kXKh6_TqmC6pgW95MH29q4erggGVI"
     },
     {
       "source": "List/ip/domestic.conf",
@@ -263,9 +263,9 @@
     },
     {
       "source": "List/non_ip/global.conf",
-      "bytes": 33374,
-      "sha256": "5e0c7e212fe4e8dab6aa6082133346f05ac30a007c429bc983ae2c5a2535a0a9",
-      "upstream_content_hash": "74H1YSMmm9aphi-MX6BibJOJpPr0kX3SxWRjt_E9hIE"
+      "bytes": 33399,
+      "sha256": "3976b64a75d0f5a81aad95e4d525a90cd79e1a996d32796e55395cfb4158c8c3",
+      "upstream_content_hash": "zX5qzOCxIHFOzFwYUEoeqHmfcDZG-3k6Rn7MHyJVEZY"
     },
     {
       "source": "List/non_ip/global_plus.conf",

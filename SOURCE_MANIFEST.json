@@ -1,6 +1,6 @@
 {
   "converter_version": "V1.3.0",
-  "upstream_build": "2026-10-22T10:14:17.502Z",
+  "upstream_build": "2026-10-23T10:38:10.317Z",
   "upstream_url": "https://ruleset.skk.moe",
   "source_files": [
     {
@@ -11,9 +11,9 @@
     },
     {
       "source": "List/domainset/cdn.conf",
-      "bytes": 90076,
-      "sha256": "5e44e0195fd0e4175caa27e3427183cfe43abefa60bfa6fb42a867503cca54c0",
-      "upstream_content_hash": "VwTPhNRsGl9sbhi1_2HCuPkkfBy3K8BNp9Uaa5V07Zs"
+      "bytes": 90233,
+      "sha256": "690549d9d19fdb674c0cb449d060952ab7df0acbb24b4f5a3d2485326a709073",
+      "upstream_content_hash": "2ztnRBSvmcH9SeasY43C-XIPzviIfsRILVDHqGpqe2E"
     },
     {
       "source": "List/domainset/download.conf",
@@ -35,21 +35,21 @@
     },
     {
       "source": "List/domainset/reject.conf",
-      "bytes": 3221452,
-      "sha256": "b87dde20e31499b0b67acf2e1eb896fa443a9e9e393ecb70ae7a91d9dcd10788",
-      "upstream_content_hash": "BBHvpIA9eQwUkrzK07UvT3VmoDRuskDjiD3l14p26jg"
+      "bytes": 3223118,
+      "sha256": "5a1645b96270321c1fd43fe9129cac2ed1ccf8187f49fe59aab2e44c0b1f3679",
+      "upstream_content_hash": "zszWtmdTGZEGlPyuCKhdQGuoe5x0awpCP7TPAFf2jG0"
     },
     {
       "source": "List/domainset/reject_extra.conf",
-      "bytes": 1590700,
-      "sha256": "4b708fffda513e05f29377d14198606414dfd90882fcd7557b76fc350cb8d083",
-      "upstream_content_hash": "TW2SuTKFXtyfL7jYTUys_9OxQxW2ctzwmnTcKcPWHKI"
+      "bytes": 1596839,
+      "sha256": "b532c19f7b9938f0d49c0ba4409be52529e9a8fc75a9185c6472973f21a6a4e6",
+      "upstream_content_hash": "_QChRcpa6YJjpkbctsnWRj_ybKs_wAHByyCr0k5MHmU"
     },
     {
       "source": "List/domainset/reject_phishing.conf",
-      "bytes": 3100861,
-      "sha256": "cfd4e38eb9e077be30f270d6c27d4e708504c9a0eddc3b582f0dbc617131891c",
-      "upstream_content_hash": "Kg2ysjEk57pvamS8zhVpMiREdLlFtq7bUD6glpLw-aQ"
+      "bytes": 3110329,
+      "sha256": "7d7f612ee02b9b0f14f8cd4790fe8e6a902627393459054fc8de0bc03269fb8b",
+      "upstream_content_hash": "Cgrhat8ZFFzeowAguvtJvrl3G3_5eZ6odE3HH1ZKUmU"
     },
     {
       "source": "List/domainset/reject_sukka.conf",
@@ -59,9 +59,9 @@
     },
     {
       "source": "List/domainset/speedtest.conf",
-      "bytes": 88601,
-      "sha256": "3957811946fe20f8baf3c5d81533a4902c1523bf60578ff1fe73db85d4a4a9f7",
-      "upstream_content_hash": "HIUzyb7bszHkvksZp6lnxrPEH_YtRA1AunoxN1FcXx4"
+      "bytes": 88690,
+      "sha256": "7911879b9f6fdbf7faa78e021b2e3de5bc036e94c40c7569c6c6830fde3c3e0f",
+      "upstream_content_hash": "mSxyjP132h4pT5tL8ah39ljvFk1z7FE-AQLOWCXYpWc"
     },
     {
       "source": "List/ip/ai.conf",
@@ -83,9 +83,9 @@
     },
     {
       "source": "List/ip/china_ip.conf",
-      "bytes": 91948,
-      "sha256": "a7c7c4ee38d09517323d13a6be365480d00e4532071d37f23c135915b3d819af",
-      "upstream_content_hash": "A8WtJEkX-02zCLJ9GqS4N5_xpEkv7GpEStzOZsdOtVY"
+      "bytes": 92040,
+      "sha256": "a1381f90354ad4a2f2ef23d13a9ec192beadc1e24b425d46530270a8fdda3c81",
+      "upstream_content_hash": "4emPXzskFQxU2IbteI_KR0nt9MMFA_uTpLLLf7SFSFQ"
     },
     {
       "source": "List/ip/china_ip_ipv6.conf",
@@ -221,9 +221,9 @@
     },
     {
       "source": "List/non_ip/cdn.conf",
-      "bytes": 3489,
-      "sha256": "57df4d858a615a2f1c8654264e1cf7f60da32f4cde983476a9cd94610ce618a0",
-      "upstream_content_hash": "Te3I2rxqrVemcH37iZZ1K1_wCy3mbYzhccHQyzHX8Hk"
+      "bytes": 3534,
+      "sha256": "e942b399dcd6c636e620322b56ecb0deec09d61287b93ae60406f5c6e973a5ec",
+      "upstream_content_hash": "2-A-ua7q9c1-wq44SGiChuwVtDSUsjXRsN7wZJVQiU4"
     },
     {
       "source": "List/non_ip/cloudmounter.conf",
@@ -359,9 +359,9 @@
     },
     {
       "source": "List/non_ip/reject.conf",
-      "bytes": 13524,
-      "sha256": "0620fd54346f03eb1a17cb18aeff45423cb801845aaa7a0eb7486277a1bff91a",
-      "upstream_content_hash": "TI2f7_KaaHNeBF_3PqL1Z5Exu2XSI0LIXSmVngobkfM"
+      "bytes": 13667,
+      "sha256": "a20731d45036217728e6324ac46acc34cf1b0ab077b63424c24fc500aa7a7d12",
+      "upstream_content_hash": "INrGk-ezCTScFnqNxL7XBzfCDbushJo09K91o1iOpjc"
     },
     {
       "source": "List/non_ip/sogouinput.conf",

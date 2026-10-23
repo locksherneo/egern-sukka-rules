@@ -92,4 +92,5 @@ domain_wildcard_set:
   - "cdn*.pornhost.com"
   - "cdn*.boysfood.com"
   - "rum-ingest.*.signalfx.com"
+  - "cf-images.*.prod.boltdns.net"
 

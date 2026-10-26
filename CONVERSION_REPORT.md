@@ -9,14 +9,14 @@ Upstream: https://ruleset.skk.moe/
 | Item | Count |
 |---|---:|
 | Generated Egern rulesets | 64 |
-| Clean source rules | 389930 |
+| Clean source rules | 379195 |
 | Removed Sukka markers | 67 |
 | Removed duplicate rules | 0 |
 | Covered domain suffixes removed | 0 |
 | Covered exact domains removed | 0 |
 | IPv4 CIDR networks compressed | 0 |
 | IPv6 CIDR networks compressed | 2 |
-| Conversion coverage | 99.9700% |
+| Conversion coverage | 99.9692% |
 | no_resolve rulesets | 13 |
 | Mixed no_resolve source files | 2 |
 | Strict semantic companion files | 4 |
@@ -25,7 +25,7 @@ Upstream: https://ruleset.skk.moe/
 | Unsupported source rules | 117 |
 | Invalid source rules | 0 |
 | iOS Lite rulesets | 60 |
-| iOS Lite total rules | 23212 |
+| iOS Lite total rules | 23451 |
 | iOS Lite excluded files | 4 |
 
 ## Marker cleanup by category
@@ -64,7 +64,7 @@ Upstream: https://ruleset.skk.moe/
 - Previous full rulesets: 64
 - Current full rulesets: 64
 - Ruleset decrease: 0.00%
-- Source rule decrease: 0.07%
+- Source rule decrease: 2.75%
 - Manual override: False
 
 ## Mixed no_resolve semantics
@@ -74,7 +74,7 @@ For exact DNS behavior, reference the following companion files
 in the displayed order and assign all of them the same policy:
 
 - Source: `ip/ai.conf`
-  1. `ip/ai.no_resolve.yaml` (23 rules; DNS resolution disabled)
+  1. `ip/ai.no_resolve.yaml` (150 rules; DNS resolution disabled)
   2. `ip/ai.resolve.yaml` (1 rules; normal DNS behavior)
   - Compatibility filename: `ip/ai.yaml`
 - Source: `ip/reject.conf`
@@ -203,12 +203,12 @@ in the displayed order and assign all of them the same policy:
 - `non_ip/direct.conf:231: PROCESS-NAME,Logi Options`
 - `non_ip/direct.conf:232: PROCESS-NAME,Logi Options Daemon`
 - `non_ip/my_direct.conf:13: PROCESS-NAME,nmap`
-- `non_ip/my_reject.conf:59: PROCESS-NAME,Tencent Lemon`
-- `non_ip/my_reject.conf:60: PROCESS-NAME,LemonMonitor`
-- `non_ip/my_reject.conf:61: PROCESS-NAME,LemonDaemon`
-- `non_ip/my_reject.conf:62: PROCESS-NAME,LemonAgent`
-- `non_ip/my_reject.conf:63: PROCESS-NAME,LemonService`
-- `non_ip/my_reject.conf:65: AND,((DOMAIN-KEYWORD,genuine), (DOMAIN-KEYWORD,autodesk))`
+- `non_ip/my_reject.conf:60: PROCESS-NAME,Tencent Lemon`
+- `non_ip/my_reject.conf:61: PROCESS-NAME,LemonMonitor`
+- `non_ip/my_reject.conf:62: PROCESS-NAME,LemonDaemon`
+- `non_ip/my_reject.conf:63: PROCESS-NAME,LemonAgent`
+- `non_ip/my_reject.conf:64: PROCESS-NAME,LemonService`
+- `non_ip/my_reject.conf:66: AND,((DOMAIN-KEYWORD,genuine), (DOMAIN-KEYWORD,autodesk))`
 - `non_ip/reject-no-drop.conf:58: AND,((PROTOCOL,UDP), (DOMAIN-SUFFIX,googlevideo.com))`
 - `non_ip/sogouinput.conf:25: PROCESS-NAME,SogouInput`
 - `non_ip/sogouinput.conf:26: PROCESS-NAME,SogouTaskManager`

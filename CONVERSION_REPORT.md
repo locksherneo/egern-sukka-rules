@@ -9,7 +9,7 @@ Upstream: https://ruleset.skk.moe/
 | Item | Count |
 |---|---:|
 | Generated Egern rulesets | 64 |
-| Clean source rules | 388385 |
+| Clean source rules | 388906 |
 | Removed Sukka markers | 67 |
 | Removed duplicate rules | 0 |
 | Covered domain suffixes removed | 0 |
@@ -25,7 +25,7 @@ Upstream: https://ruleset.skk.moe/
 | Unsupported source rules | 117 |
 | Invalid source rules | 0 |
 | iOS Lite rulesets | 60 |
-| iOS Lite total rules | 23461 |
+| iOS Lite total rules | 23964 |
 | iOS Lite excluded files | 4 |
 
 ## Marker cleanup by category
@@ -74,12 +74,12 @@ For exact DNS behavior, reference the following companion files
 in the displayed order and assign all of them the same policy:
 
 - Source: `ip/ai.conf`
-  1. `ip/ai.no_resolve.yaml` (150 rules; DNS resolution disabled)
+  1. `ip/ai.no_resolve.yaml` (400 rules; DNS resolution disabled)
   2. `ip/ai.resolve.yaml` (1 rules; normal DNS behavior)
   - Compatibility filename: `ip/ai.yaml`
 - Source: `ip/reject.conf`
   1. `ip/reject.no_resolve.yaml` (42 rules; DNS resolution disabled)
-  2. `ip/reject.resolve.yaml` (738 rules; normal DNS behavior)
+  2. `ip/reject.resolve.yaml` (739 rules; normal DNS behavior)
   - Compatibility filename: `ip/reject.yaml`
 
 ## Rulesets with no_resolve

@@ -1,6 +1,6 @@
 {
   "converter_version": "V1.3.0",
-  "upstream_build": "2026-11-04T13:01:04.047Z",
+  "upstream_build": "2026-11-05T13:14:02.008Z",
   "upstream_url": "https://ruleset.skk.moe",
   "source_files": [
     {
@@ -35,21 +35,21 @@
     },
     {
       "source": "List/domainset/reject.conf",
-      "bytes": 3317144,
-      "sha256": "0a4f150860ef2f675e8998b999c1816edd12754fbf88598b739fcf06321bc286",
-      "upstream_content_hash": "rxfBxQNL07heBUv1Df4-Fc_e0kzfTIKueYwZEdgg7eQ"
+      "bytes": 3319420,
+      "sha256": "a5c198c47fb99f61c8b9465afa573ffddb5bde761f530df57dd891249bcd8a6f",
+      "upstream_content_hash": "L1DazgxAKHlBm2ob82zu59Bf6mDm8f0ZMtmKaXfY35Q"
     },
     {
       "source": "List/domainset/reject_extra.conf",
-      "bytes": 1587282,
-      "sha256": "5ab8e8df7d2905af23b52444890452ae9d0017a3bf40fc1d35c0ffb84240a488",
-      "upstream_content_hash": "ADp2GIYNkS3rUaRJEPVJ7E9ZGevff6Npfc7om3egwMY"
+      "bytes": 1590126,
+      "sha256": "d6db08fbf207a3c38e78ef1f48f375efadcbe7871001bb0d989e7222591ee6c7",
+      "upstream_content_hash": "JlaB3D14I5upGiFZ0Z3pm4CBR69lpnGrHW0j9xf_Yjc"
     },
     {
       "source": "List/domainset/reject_phishing.conf",
-      "bytes": 3128644,
-      "sha256": "e7be117cde82625be84185390fe24d8a5be7b79f080cdb83ab93af107ba33339",
-      "upstream_content_hash": "ObNi6Ghc_KAWw6BSeOD0hxDzPni9jrbc0X7cvgO6BX8"
+      "bytes": 3053846,
+      "sha256": "7d023c2c6d797b54fe21bc8ca61d7b7679cf6bfca9d1861d236d08cfe9ba709a",
+      "upstream_content_hash": "_cLdq1lxYWFPP0Xt_2nmJZ03K8fwEh_Jpu-1UfrkUvU"
     },
     {
       "source": "List/domainset/reject_sukka.conf",
@@ -59,9 +59,9 @@
     },
     {
       "source": "List/domainset/speedtest.conf",
-      "bytes": 89195,
-      "sha256": "bce520500d91b2d5692ea14c8142a05779cc484aa8be2ae05b6805d4c14ee65f",
-      "upstream_content_hash": "fHLF6jxKhSQ699K8afO5cxRAl4oHMw3n580GloxLOCc"
+      "bytes": 89242,
+      "sha256": "7d8dee8a11c839b2075b13399efb31525fbb1dd7febb09dac645ab8312badd80",
+      "upstream_content_hash": "L845Tf_mYIEpIR8K6xqWfWRCq9-dFFV2dQsztwSOK2g"
     },
     {
       "source": "List/ip/ai.conf",
@@ -83,15 +83,15 @@
     },
     {
       "source": "List/ip/china_ip.conf",
-      "bytes": 92009,
-      "sha256": "3a719f80bf9f5814c4093a6005419fae840b7b6fb1d27e8a6ef1783193529d9c",
-      "upstream_content_hash": "K2HjNIf-j4qSOcwI7NLt2hBbVwhP61BSGtOmCqoXf88"
+      "bytes": 92082,
+      "sha256": "2fe9878df50f9bd222fe1fe46888ae51e624a46296e191bc4ac80bc71aad09dd",
+      "upstream_content_hash": "4kASodMd45GdfscDp68mi-xTBX9eZYnQ1pnER4wDvaY"
     },
     {
       "source": "List/ip/china_ip_ipv6.conf",
-      "bytes": 89268,
-      "sha256": "2c3977449635131c6684a9dfe6a2715a454f3d012670f7dddb301d2309053913",
-      "upstream_content_hash": "MCl671eOIYMkfpHM5OcxPOKqn13Mk0wktK8w1kQZn_0"
+      "bytes": 88656,
+      "sha256": "fe82591c47c6e8e70801898c983ae8093499eb4310f3fa83bb277c1166b549c8",
+      "upstream_content_hash": "TXjNwz8FdZydjU3b9YEIw-LJ9aeqmh0hmrJN1dW3gzQ"
     },
     {
       "source": "List/ip/domestic.conf",
@@ -119,9 +119,9 @@
     },
     {
       "source": "List/ip/reject.conf",
-      "bytes": 22341,
-      "sha256": "ee6b6505e7f980e5668725bd9d6e046aab8e8e558ca810d16073ff69fa0ee756",
-      "upstream_content_hash": "Apf3yR3lQpO95qb8_dEo1zjUTx7Sx-_TxqS6djTmY2o"
+      "bytes": 22393,
+      "sha256": "1825c530c21920b6f883c11f04fe26da44f2e180845751bda5b25a8305442885",
+      "upstream_content_hash": "oQ0ICoXUUFYmBmZbJHaen4fjukUNf_w5mxksanhnE1M"
     },
     {
       "source": "List/ip/stream.conf",
@@ -239,9 +239,9 @@
     },
     {
       "source": "List/non_ip/domestic.conf",
-      "bytes": 22733,
-      "sha256": "33346c9173e9af4230d654eec45c37154c17e8d0240977eb853f535abce3858e",
-      "upstream_content_hash": "y7L2wtlvCeD6OPUOWtzQfz3XV7Sjbdp7NF6R58_pKuc"
+      "bytes": 22760,
+      "sha256": "0af51e348f438c4e66dce60f132e20aa7bac476664591f8ba383ed62e28819ed",
+      "upstream_content_hash": "gNEtFZTFRC9JO1efrlNeTZOOhOdo0qMAoECNQxaCxcc"
     },
     {
       "source": "List/non_ip/domestic_cdn.conf",

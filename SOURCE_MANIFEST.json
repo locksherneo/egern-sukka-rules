@@ -1,6 +1,6 @@
 {
   "converter_version": "V1.3.0",
-  "upstream_build": "2026-11-07T11:45:07.090Z",
+  "upstream_build": "2026-11-08T11:57:25.694Z",
   "upstream_url": "https://ruleset.skk.moe",
   "source_files": [
     {
@@ -35,21 +35,21 @@
     },
     {
       "source": "List/domainset/reject.conf",
-      "bytes": 3350758,
-      "sha256": "4a24d7e4f2cc86861dbf0765d5b737967205ff7cbb132c1862a2b78f675fad87",
-      "upstream_content_hash": "83Oe4h2lY2xXTFjTz1gWSvpRiiBMTF2mtykykaGYz2Y"
+      "bytes": 3355431,
+      "sha256": "a0a65a1b0939e2f8c062a539a66b5eb5d5a25a5369a403b436b1f5a81d439e58",
+      "upstream_content_hash": "bc9zwBIueR_fIWxzK1YtmwElQYu64k91zD7iKP5Gy0Y"
     },
     {
       "source": "List/domainset/reject_extra.conf",
-      "bytes": 1623847,
-      "sha256": "edc3a589865e97e198b3f96f2f1d77cc02e4c9e61c4fd22a1d206838106601fd",
-      "upstream_content_hash": "pasHjG_n6oF0MUFzeqaqZ_NFTYVcf1zX2BAsUvf7xOE"
+      "bytes": 1626817,
+      "sha256": "32e26659dfea7759ba2fbd42cfdcd5b0b502ac7154507db233f42f3b81e89e65",
+      "upstream_content_hash": "Xlyp_ty2THW5FObFuT9SiH4T31levAPOIHAZUotwcCY"
     },
     {
       "source": "List/domainset/reject_phishing.conf",
-      "bytes": 3039731,
-      "sha256": "f14b87c2dcf7898fc33aa51c95642cf85efaca247b1a140d91bf866c88488f85",
-      "upstream_content_hash": "4VrFrUQC-lT6iXuAV5tShgEOT9nn6nbIOyE91T2Z4mE"
+      "bytes": 3029181,
+      "sha256": "87ec790d84d561e8cbad9504fbd092e06ab9abb9ff98b3f62e8e564680be1eb4",
+      "upstream_content_hash": "Z7UnqPMnfSivYGCFY5tOdJkrHbAoKevK9A0SGb7zwZ0"
     },
     {
       "source": "List/domainset/reject_sukka.conf",
@@ -59,9 +59,9 @@
     },
     {
       "source": "List/domainset/speedtest.conf",
-      "bytes": 89484,
-      "sha256": "f8d59fe6b451a497de98d20a264ed33a889c62b79665c546aea00c9ffa6100d6",
-      "upstream_content_hash": "poIfhns1cSEq6D6Bt37Jze8n3yPnKumv3mi5RBsFvZs"
+      "bytes": 89574,
+      "sha256": "a940ec573c2c64dc081ff69d77150715288d7cade44a4e8e8242044b9f689f64",
+      "upstream_content_hash": "xypNve0Vf91BBkx3B-Ey_R3_Be1EhalUFuYZuI-2qa8"
     },
     {
       "source": "List/ip/ai.conf",

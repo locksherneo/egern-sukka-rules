@@ -1,6 +1,6 @@
 {
   "converter_version": "V1.3.0",
-  "upstream_build": "2026-11-08T11:57:25.694Z",
+  "upstream_build": "2026-11-09T13:56:36.895Z",
   "upstream_url": "https://ruleset.skk.moe",
   "source_files": [
     {
@@ -35,21 +35,21 @@
     },
     {
       "source": "List/domainset/reject.conf",
-      "bytes": 3355431,
-      "sha256": "a0a65a1b0939e2f8c062a539a66b5eb5d5a25a5369a403b436b1f5a81d439e58",
-      "upstream_content_hash": "bc9zwBIueR_fIWxzK1YtmwElQYu64k91zD7iKP5Gy0Y"
+      "bytes": 3306512,
+      "sha256": "5df01361f06f57010c4f9c64458ff12a386d8730fa6402dddf4e4be2936626b0",
+      "upstream_content_hash": "VaJ1JQHd_CIx0qykA2bPAz99XRaa65rSxGpPxJwQFhs"
     },
     {
       "source": "List/domainset/reject_extra.conf",
-      "bytes": 1626817,
-      "sha256": "32e26659dfea7759ba2fbd42cfdcd5b0b502ac7154507db233f42f3b81e89e65",
-      "upstream_content_hash": "Xlyp_ty2THW5FObFuT9SiH4T31levAPOIHAZUotwcCY"
+      "bytes": 1615193,
+      "sha256": "dcd4c80918ed84928ce8b67e9c4871c0bb15ad1899ebac3575aed5bc8506ce83",
+      "upstream_content_hash": "_2o71bgFFCO0W-NuE2IwqJYEGSmBCKOFjpxAvcsLxmU"
     },
     {
       "source": "List/domainset/reject_phishing.conf",
-      "bytes": 3029181,
-      "sha256": "87ec790d84d561e8cbad9504fbd092e06ab9abb9ff98b3f62e8e564680be1eb4",
-      "upstream_content_hash": "Z7UnqPMnfSivYGCFY5tOdJkrHbAoKevK9A0SGb7zwZ0"
+      "bytes": 3028368,
+      "sha256": "ddc770b36742f565102318cad0f5c4ce323b8bdc36f8dbfce1ae5be9de9d31b3",
+      "upstream_content_hash": "xzlabV0qlRL4RQ984GAEIe5BjeN-N8LQ5SwryE79sDE"
     },
     {
       "source": "List/domainset/reject_sukka.conf",
@@ -59,9 +59,9 @@
     },
     {
       "source": "List/domainset/speedtest.conf",
-      "bytes": 89574,
-      "sha256": "a940ec573c2c64dc081ff69d77150715288d7cade44a4e8e8242044b9f689f64",
-      "upstream_content_hash": "xypNve0Vf91BBkx3B-Ey_R3_Be1EhalUFuYZuI-2qa8"
+      "bytes": 89592,
+      "sha256": "1c802a6eaf7089a56c616ac234ea20b9b4be040b8f1fde6813e195bd32e30640",
+      "upstream_content_hash": "ns0YOGKL8Lo1gknPxMoMSGTB8UGxECYW57sqLgDy2Ww"
     },
     {
       "source": "List/ip/ai.conf",
@@ -83,15 +83,15 @@
     },
     {
       "source": "List/ip/china_ip.conf",
-      "bytes": 92010,
-      "sha256": "77227dc00babdd6f4d66a498783439ea7ce39c0139369b97aa2aa959df87e805",
-      "upstream_content_hash": "XoFIfidT9ODnKzL3qhMsqJl5NCA0lVYyIM9xmqGH6Zk"
+      "bytes": 92109,
+      "sha256": "e7107707956ba6973538bf48b23af852f3810924cf104e4df44cdd081fb4b086",
+      "upstream_content_hash": "ButuxvJ5ku2lkHpZ4K1LYbLSshqWBjLLKtUNHiLT79Y"
     },
     {
       "source": "List/ip/china_ip_ipv6.conf",
-      "bytes": 88686,
-      "sha256": "3fe95110cf9970fcbaa08eb4b4d2f4cbd0dee8e60e576dcdb62e898db761d77f",
-      "upstream_content_hash": "7B_6_n-mC6y_tQWF35_5s_HnhlMuvNbyyZ34InD-GSc"
+      "bytes": 88712,
+      "sha256": "c86358567036159aede9d075b827888c7cf0d62e043c77d31804b0a6b96ebb80",
+      "upstream_content_hash": "aAYoQ56UaMzABGBrQItU_eWOIkQ5mQzubeLz0wUFGcQ"
     },
     {
       "source": "List/ip/domestic.conf",

@@ -1,7 +1,7 @@
 {
   "version": "V1.3.0",
   "stats": {
-    "source_rule_lines": 391522,
+    "source_rule_lines": 393341,
     "generated": 64,
     "deprecated": 3,
     "unsupported": 117,
@@ -11,7 +11,7 @@
     "ipv6_networks_pruned": 2,
     "no_resolve_files": 13
   },
-  "conversion_coverage_percent": 99.970126,
+  "conversion_coverage_percent": 99.970264,
   "generated_by_category": {
     "domain": 9,
     "ip": 19,
@@ -126,7 +126,7 @@
             "kind": "domain_marker"
           },
           {
-            "line": 3439,
+            "line": 3443,
             "kind": "domain_marker"
           }
         ]
@@ -719,7 +719,7 @@
       "strict_non_ip": null,
       "strict_no_resolve": "ip/ai.no_resolve.yaml",
       "strict_resolve": "ip/ai.resolve.yaml",
-      "no_resolve_rules": 400,
+      "no_resolve_rules": 421,
       "resolve_rules": 1
     },
     {
@@ -877,7 +877,7 @@
       "ip": 19,
       "non_ip": 35
     },
-    "total_rules": 23928,
+    "total_rules": 23972,
     "max_rules_per_set": 25000,
     "excluded_files": [
       {
@@ -924,8 +924,8 @@
   "safety_guard": {
     "previous_files": 64,
     "current_files": 64,
-    "previous_source_rules": 391093,
-    "current_source_rules": 391522,
+    "previous_source_rules": 391522,
+    "current_source_rules": 393341,
     "file_drop_percent": 0.0,
     "rule_drop_percent": 0.0,
     "required_rulesets": [

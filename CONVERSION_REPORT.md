@@ -9,7 +9,7 @@ Upstream: https://ruleset.skk.moe/
 | Item | Count |
 |---|---:|
 | Generated Egern rulesets | 64 |
-| Clean source rules | 396228 |
+| Clean source rules | 396128 |
 | Removed Sukka markers | 67 |
 | Removed duplicate rules | 0 |
 | Covered domain suffixes removed | 0 |
@@ -25,7 +25,7 @@ Upstream: https://ruleset.skk.moe/
 | Unsupported source rules | 117 |
 | Invalid source rules | 0 |
 | iOS Lite rulesets | 60 |
-| iOS Lite total rules | 24241 |
+| iOS Lite total rules | 24243 |
 | iOS Lite excluded files | 4 |
 
 ## Marker cleanup by category

@@ -9,23 +9,23 @@ Upstream: https://ruleset.skk.moe/
 | Item | Count |
 |---|---:|
 | Generated Egern rulesets | 64 |
-| Clean source rules | 396128 |
+| Clean source rules | 394454 |
 | Removed Sukka markers | 67 |
 | Removed duplicate rules | 0 |
 | Covered domain suffixes removed | 0 |
 | Covered exact domains removed | 0 |
 | IPv4 CIDR networks compressed | 0 |
 | IPv6 CIDR networks compressed | 2 |
-| Conversion coverage | 99.9705% |
+| Conversion coverage | 99.9673% |
 | no_resolve rulesets | 13 |
 | Mixed no_resolve source files | 2 |
 | Strict semantic companion files | 4 |
 | Deprecated source files | 3 |
 | Empty source files | 7 |
-| Unsupported source rules | 117 |
+| Unsupported source rules | 129 |
 | Invalid source rules | 0 |
 | iOS Lite rulesets | 60 |
-| iOS Lite total rules | 24243 |
+| iOS Lite total rules | 23984 |
 | iOS Lite excluded files | 4 |
 
 ## Marker cleanup by category
@@ -64,7 +64,7 @@ Upstream: https://ruleset.skk.moe/
 - Previous full rulesets: 64
 - Current full rulesets: 64
 - Ruleset decrease: 0.00%
-- Source rule decrease: 0.03%
+- Source rule decrease: 0.42%
 - Manual override: False
 
 ## Mixed no_resolve semantics
@@ -74,7 +74,7 @@ For exact DNS behavior, reference the following companion files
 in the displayed order and assign all of them the same policy:
 
 - Source: `ip/ai.conf`
-  1. `ip/ai.no_resolve.yaml` (538 rules; DNS resolution disabled)
+  1. `ip/ai.no_resolve.yaml` (409 rules; DNS resolution disabled)
   2. `ip/ai.resolve.yaml` (1 rules; normal DNS behavior)
   - Compatibility filename: `ip/ai.yaml`
 - Source: `ip/reject.conf`
@@ -166,6 +166,18 @@ in the displayed order and assign all of them the same policy:
 - `non_ip/cloudmounter.conf:49: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,10.0.0.0/8))`
 - `non_ip/cloudmounter.conf:50: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,172.16.0.0/12))`
 - `non_ip/cloudmounter.conf:51: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,192.168.0.0/16))`
+- `non_ip/cloudmounter.conf:52: AND,((DOMAIN,app.drime.cloud),(PROCESS-NAME,*CloudMounter))`
+- `non_ip/cloudmounter.conf:53: AND,((DOMAIN,app.drime.cloud),(SRC-IP,10.0.0.0/8))`
+- `non_ip/cloudmounter.conf:54: AND,((DOMAIN,app.drime.cloud),(SRC-IP,172.16.0.0/12))`
+- `non_ip/cloudmounter.conf:55: AND,((DOMAIN,app.drime.cloud),(SRC-IP,192.168.0.0/16))`
+- `non_ip/cloudmounter.conf:56: AND,((DOMAIN-SUFFIX,r2.cloudflarestorage.com),(PROCESS-NAME,*CloudMounter))`
+- `non_ip/cloudmounter.conf:57: AND,((DOMAIN-SUFFIX,r2.cloudflarestorage.com),(SRC-IP,10.0.0.0/8))`
+- `non_ip/cloudmounter.conf:58: AND,((DOMAIN-SUFFIX,r2.cloudflarestorage.com),(SRC-IP,172.16.0.0/12))`
+- `non_ip/cloudmounter.conf:59: AND,((DOMAIN-SUFFIX,r2.cloudflarestorage.com),(SRC-IP,192.168.0.0/16))`
+- `non_ip/cloudmounter.conf:60: AND,((DOMAIN-SUFFIX,r2.dev),(PROCESS-NAME,*CloudMounter))`
+- `non_ip/cloudmounter.conf:61: AND,((DOMAIN-SUFFIX,r2.dev),(SRC-IP,10.0.0.0/8))`
+- `non_ip/cloudmounter.conf:62: AND,((DOMAIN-SUFFIX,r2.dev),(SRC-IP,172.16.0.0/12))`
+- `non_ip/cloudmounter.conf:63: AND,((DOMAIN-SUFFIX,r2.dev),(SRC-IP,192.168.0.0/16))`
 - `non_ip/direct.conf:197: PROCESS-NAME,v2ray`
 - `non_ip/direct.conf:198: PROCESS-NAME,xray`
 - `non_ip/direct.conf:199: PROCESS-NAME,ss-local`

@@ -1,17 +1,17 @@
 {
   "version": "V1.3.0",
   "stats": {
-    "source_rule_lines": 396128,
+    "source_rule_lines": 394454,
     "generated": 64,
     "deprecated": 3,
-    "unsupported": 117,
+    "unsupported": 129,
     "empty": 7,
     "mixed_no_resolve_files": 2,
     "strict_companion_files": 4,
     "ipv6_networks_pruned": 2,
     "no_resolve_files": 13
   },
-  "conversion_coverage_percent": 99.970473,
+  "conversion_coverage_percent": 99.967307,
   "generated_by_category": {
     "domain": 9,
     "ip": 19,
@@ -719,7 +719,7 @@
       "strict_non_ip": null,
       "strict_no_resolve": "ip/ai.no_resolve.yaml",
       "strict_resolve": "ip/ai.resolve.yaml",
-      "no_resolve_rules": 538,
+      "no_resolve_rules": 409,
       "resolve_rules": 1
     },
     {
@@ -793,6 +793,18 @@
     "non_ip/cloudmounter.conf:49: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,10.0.0.0/8))",
     "non_ip/cloudmounter.conf:50: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,172.16.0.0/12))",
     "non_ip/cloudmounter.conf:51: AND,((DOMAIN-SUFFIX,upload.app.box.com),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:52: AND,((DOMAIN,app.drime.cloud),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:53: AND,((DOMAIN,app.drime.cloud),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:54: AND,((DOMAIN,app.drime.cloud),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:55: AND,((DOMAIN,app.drime.cloud),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:56: AND,((DOMAIN-SUFFIX,r2.cloudflarestorage.com),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:57: AND,((DOMAIN-SUFFIX,r2.cloudflarestorage.com),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:58: AND,((DOMAIN-SUFFIX,r2.cloudflarestorage.com),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:59: AND,((DOMAIN-SUFFIX,r2.cloudflarestorage.com),(SRC-IP,192.168.0.0/16))",
+    "non_ip/cloudmounter.conf:60: AND,((DOMAIN-SUFFIX,r2.dev),(PROCESS-NAME,*CloudMounter))",
+    "non_ip/cloudmounter.conf:61: AND,((DOMAIN-SUFFIX,r2.dev),(SRC-IP,10.0.0.0/8))",
+    "non_ip/cloudmounter.conf:62: AND,((DOMAIN-SUFFIX,r2.dev),(SRC-IP,172.16.0.0/12))",
+    "non_ip/cloudmounter.conf:63: AND,((DOMAIN-SUFFIX,r2.dev),(SRC-IP,192.168.0.0/16))",
     "non_ip/direct.conf:197: PROCESS-NAME,v2ray",
     "non_ip/direct.conf:198: PROCESS-NAME,xray",
     "non_ip/direct.conf:199: PROCESS-NAME,ss-local",
@@ -877,7 +889,7 @@
       "ip": 19,
       "non_ip": 35
     },
-    "total_rules": 24243,
+    "total_rules": 23984,
     "max_rules_per_set": 25000,
     "excluded_files": [
       {
@@ -924,10 +936,10 @@
   "safety_guard": {
     "previous_files": 64,
     "current_files": 64,
-    "previous_source_rules": 396228,
-    "current_source_rules": 396128,
+    "previous_source_rules": 396128,
+    "current_source_rules": 394454,
     "file_drop_percent": 0.0,
-    "rule_drop_percent": 0.025238,
+    "rule_drop_percent": 0.422591,
     "required_rulesets": [
       "domain/apple_cdn.yaml",
       "domain/cdn.yaml",

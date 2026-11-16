@@ -4,6 +4,7 @@
 
 domain_set:
   - "ai.google.dev"
+  - "cloud.zed.dev"
   - "openrouter.ai"
   - "api.github.com"
   - "api.jetbrains.ai"

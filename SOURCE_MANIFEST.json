@@ -1,6 +1,6 @@
 {
   "converter_version": "V1.3.0",
-  "upstream_build": "2026-11-15T12:46:05.055Z",
+  "upstream_build": "2026-11-16T13:41:31.512Z",
   "upstream_url": "https://ruleset.skk.moe",
   "source_files": [
     {
@@ -11,9 +11,9 @@
     },
     {
       "source": "List/domainset/cdn.conf",
-      "bytes": 90185,
-      "sha256": "0aa816564fd42899cc5460cf58ab84ae00423a530d088ec980073d643479df3a",
-      "upstream_content_hash": "dS0nS9j86lrWpSdVpc24H82W-aVWfK2DYkd7-qc9Gss"
+      "bytes": 90204,
+      "sha256": "fecae26cf40fa0ea96ec5ca4b8443a29581bb543210c45312d554af6f9601faa",
+      "upstream_content_hash": "6uM5hSmMY1rld61sUhRhy2byUu2k9-NufSDcMk0ch8k"
     },
     {
       "source": "List/domainset/download.conf",
@@ -35,21 +35,21 @@
     },
     {
       "source": "List/domainset/reject.conf",
-      "bytes": 3362792,
-      "sha256": "66c2ec6ae49fdb6ddccab9b2877706edd189c8c100d39dd705a468ee5bef31ac",
-      "upstream_content_hash": "U3WVr9NiHe3jtyJpfdDRMLxggCmfKwCaL7fJ7zj_-qU"
+      "bytes": 3344440,
+      "sha256": "c5dbd54bef8992adbde3623771f820263be2f00bb53588d123c57d44d900233e",
+      "upstream_content_hash": "s_s08k7zeazxFauRvIfQkxBenIZd4YpKbuaELqf2Edc"
     },
     {
       "source": "List/domainset/reject_extra.conf",
-      "bytes": 1640884,
-      "sha256": "5b01adab464a53b212850ab37d05b4d23323823ffd205ce9ccdf5d5eb3d3b2d0",
-      "upstream_content_hash": "9ROGigPU_CG8UolOCSlMufq13sLHIpyrb1jnn3mFvFw"
+      "bytes": 1628420,
+      "sha256": "780aa06d9cb0ed7a92e75934325a416ecb557d7903313d9d1dd09bd50c5e8521",
+      "upstream_content_hash": "RbBbs0Wo1pL4UXOW2tVbpJtiENQyk5e6SY7DU5a-ieA"
     },
     {
       "source": "List/domainset/reject_phishing.conf",
-      "bytes": 3065094,
-      "sha256": "4bf084c205148a62ea3ff1c3ef710c80d3766ac7c973da044f834e3ff463e9c1",
-      "upstream_content_hash": "tjPf-2NhIVcfjweFiNUObw_NWbzjSJd8S_wZMWjDCyY"
+      "bytes": 3063370,
+      "sha256": "62f8607c6de51edfb427f511eb4ab2cb94367d7ff5cde6a85ee9fbddd8c3f797",
+      "upstream_content_hash": "FDN2ayYO8YW2_81s-RR9FneDZGTkYJNJuczYkNsWknk"
     },
     {
       "source": "List/domainset/reject_sukka.conf",
@@ -65,9 +65,9 @@
     },
     {
       "source": "List/ip/ai.conf",
-      "bytes": 19988,
-      "sha256": "df6efb95514491486fb2b3a785f73f0757610b60011b6cc414999a42e38d96c4",
-      "upstream_content_hash": "7mTKB0z8GnU2Dc5FsgI9VSDvEu57jOE8GfjSxEWmCHU"
+      "bytes": 15351,
+      "sha256": "0a302fbee593dca126b1bbc2f8921ba3a0afbe4e6c9aefb30909550e18945f01",
+      "upstream_content_hash": "Vq3XwYqejg1KWwCHBzA691nQPy9QFMZMnvFEXI2_AmU"
     },
     {
       "source": "List/ip/apple_services.conf",
@@ -89,9 +89,9 @@
     },
     {
       "source": "List/ip/china_ip_ipv6.conf",
-      "bytes": 88810,
-      "sha256": "fdcf3ad1f7edc92e0b5fc57297871099c17bb1d10b571d6d16aa40f7ba3e6333",
-      "upstream_content_hash": "-3F-d0BnSo6bYVIeqUKrbMIRl21XkH_PPVmwrsfUmcs"
+      "bytes": 88728,
+      "sha256": "09eee25f1e1513b226052cec130766d45f2d01ecabe05de4eacdeccd4b225d22",
+      "upstream_content_hash": "16qunBk3YhYtVAmlLcu_vf8QamJM_HCvDeWFZns2Ubo"
     },
     {
       "source": "List/ip/domestic.conf",
@@ -191,9 +191,9 @@
     },
     {
       "source": "List/non_ip/ai.conf",
-      "bytes": 2203,
-      "sha256": "8a3c7c589f525c254a810b156f7bad9bcb6e8a11fb8e5539a97121012d331aa8",
-      "upstream_content_hash": "zL9QgXqC077Iq9x4xTTpGBBOxhtaPMnpq7fYl0mcCIE"
+      "bytes": 2224,
+      "sha256": "d03b69fe837f0cdb438dd36c18b70ef601d664c92295a7f477a7958a66fca339",
+      "upstream_content_hash": "llsbptQtp1iJSCMX20oO9ODcbilrqWqquo6yCLsMh3s"
     },
     {
       "source": "List/non_ip/apple_cdn.conf",
@@ -227,9 +227,9 @@
     },
     {
       "source": "List/non_ip/cloudmounter.conf",
-      "bytes": 2961,
-      "sha256": "20fb69d5969601b9ba4078fdc78faf0b1306d4fdd4e94c75ca3c40e500bc8186",
-      "upstream_content_hash": "F6FLVmlt8rpYAey4P7B4KdnYXjs5NYvYd-v5GzyQhjI"
+      "bytes": 3677,
+      "sha256": "5116595983f0b77ed39044d7982725d695f14772a885f3cdadc74e18a06edd03",
+      "upstream_content_hash": "MjF-vIo3UyFZ88jv9sR-Le8KRc7Wd2-Q9EIXNx1lsGc"
     },
     {
       "source": "List/non_ip/direct.conf",
